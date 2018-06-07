@@ -21,7 +21,9 @@ mike_list = chunked_list[3]
 # for recipe_id in anjali_list[0:250]:
 # for recipe_id in maura_list[0:250]:
 # for recipe_id in max_list[0:250]:
+itr = 0
 for recipe_id in mike_list[0:2]:
+    print 'List itr=', itr
     print 'id =', data[recipe_id]['id']
     print 'name =', data[recipe_id]['name']
     print 'ingredients:'
@@ -30,3 +32,4 @@ for recipe_id in mike_list[0:2]:
     print "\n"
     raw_input('Hit enter to continue')
     print "\n"
+    itr += 1
