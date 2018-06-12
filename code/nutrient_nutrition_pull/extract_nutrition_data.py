@@ -222,7 +222,13 @@ for food in nutrition_info_food_group_dict:
                 amount_of_food)
 
         ### CHANGE DIRECTORY ###
-        save_file = 'C:/Users/mgruz/Desktop/w210/data/nutrient/raw/{}_{}.csv'.format(food.replace(" ", "_").replace("/", "_"), itr_2)
+        # save_file = 'C:/Users/mgruz/Desktop/w210/data/nutrient/raw/{}_{}.csv'.format(food.replace(" ", "_").replace("/", "_"), itr_2)
+        save_dir = os.path.split(os.getcwd())[0]+'/data/nutrient/raw/'
+        # Check if directory exists - creat if it does not
+        if os.path.isdir(save_dir) is False:
+            os.makedirs(save_dir)
+
+        save_file = save_dir+'{}_{}.csv'.format(food.replace(" ", "_").replace("/", "_"), itr_2)
         ### CHANGE DIRECTORY ###
         urllib.urlretrieve(download_website, save_file)
         urllib.urlcleanup()
@@ -231,4 +237,3 @@ for food in nutrition_info_food_group_dict:
         print "\t Itr: ", itr_2, " out of 49 complete"
 
         itr_2 += 1
-

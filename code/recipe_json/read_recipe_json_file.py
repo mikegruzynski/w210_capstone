@@ -2,9 +2,16 @@ import json
 import pandas as pd
 import numpy as np
 import random
+import os
 
 ### NEED TO UPDATE LOCATION OF FILE###
-with open('C:/Users/mgruz/Desktop/w210/data/recipe/recipe_all.json') as f:
+# path = 'C:/Users/mgruz/Desktop/w210/data/recipe/recipe_all.json'
+# If you run this script from top of git directory w210_capstone and data folder
+# is one folder up (just outside of github)
+path = os.path.split(os.getcwd())[0]+'/data/recipe/recipe_all.json'
+####
+
+with open(path) as f:
     data = json.load(f)
 
 random.seed(42)
