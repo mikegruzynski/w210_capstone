@@ -1,7 +1,10 @@
 import json
+import os
 
 ### NEED TO UPDATE LOCATION OF FILE###
-recipe_json_file = 'C:/Users/mgruz/Desktop/w210/data/recipe/Recipes.txt'
+# recipe_json_file = 'C:/Users/mgruz/Desktop/w210/data/recipe/Recipes.txt'
+base_path = os.path.split(os.getcwd())[0]
+recipe_json_file = base_path+'/data/recipe/Recipes.txt'
 ### NEED TO UPDATE LOCATION OF FILE###
 
 with open(recipe_json_file, 'r') as f:
@@ -13,6 +16,7 @@ itr = 1
 ingredients_list = []
 instructions_list = []
 tags_list = []
+print("********FILE LINES ", len(file_lines))
 while itr < len(file_lines):
     temp_line = file_lines[itr].strip()
     temp_split_line = temp_line.split(",")
@@ -103,7 +107,12 @@ while itr < len(file_lines):
                     else:
                         instructions_list.append(temp_line.strip('"'))
                 itr += 1
-                temp_line = file_lines[itr].strip()
+                try:
+                    temp_line = file_lines[itr].strip()
+                except:
+                    print(itr, temp_id, recipe_json[temp_id]['name'],temp_line)
+                    temp_line = file_lines[itr].strip()
+
 
             itr -= 1
 
@@ -120,5 +129,5 @@ recipe_json[temp_id_ingredients]['instructions'] = instructions_list
 recipe_json[temp_id_ingredients]['tags'] = tags_list
 
 ### NEED TO UPDATE LOCATION OF FILE###
-with open('C:/Users/mgruz/Desktop/w210/data/recipe/recipe_all.json', 'w') as fp:
+with open(base_path+'/data/recipe/recipe_all.json', 'w') as fp:
     json.dump(recipe_json, fp)

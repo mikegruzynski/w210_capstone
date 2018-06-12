@@ -1,4 +1,6 @@
 from pandas import *
+import os
+
 set_option('display.height', 1000)
 set_option('display.max_rows', 500)
 set_option('display.max_columns', 500)
@@ -31,14 +33,28 @@ nutrition_info_food_group_dict = {'American Indian/Alaska Native Foods': 24,
                                   'Vegetables and Vegetable Products': 11}
 
 ### CHANGE DIRECTORY ###
-raw_dir = 'C:/Users/mgruz/Desktop/w210/data/nutrient/raw/'
+# raw_dir = 'C:/Users/mgruz/Desktop/w210/data/nutrient/raw/'
+base_path = os.path.split(os.getcwd())[0]+'/data/nutrient/'
+raw_dir = base_path+'raw/'
+print(raw_dir)
+if os.path.exists(raw_dir) is False:
+    os.mkdirs(raw_dir)
+
+# For saving data
+# Check if save_path exists and create if not
+save_dir = base_path+'compiled'
+if os.path.exists(save_dir) is False:
+    print("Creating Save Directory. \nData saved to %s" % save_dir)
+    os.mkdir(save_dir)
+    
 ### CHANGE DIRECTORY ###
 
 for food in nutrition_info_food_group_dict.keys():
     print food
     food = food.replace(" ", "_").replace("/", "_")
     ### CHANGE DIRECTORY ###
-    raw_dir = 'C:/Users/mgruz/Desktop/w210/data/nutrient/raw/'
+    # raw_dir = 'C:/Users/mgruz/Desktop/w210/data/nutrient/raw/'
+    raw_dir = raw_dir
     ### CHANGE DIRECTORY ###
     master_df_list = []
     for i in range(50):
@@ -86,7 +102,8 @@ for food in nutrition_info_food_group_dict.keys():
     master_df_use = master_df_use.replace('--', np.NaN)
 
     ### CHANGE DIRECTORY ###
-    master_df_use.to_csv('C:/Users/mgruz/Desktop/w210/data/nutrient/compiled/{}_master_df.csv'.format(food))
+    # master_df_use.to_csv('C:/Users/mgruz/Desktop/w210/data/nutrient/compiled/{}_master_df.csv'.format(food))
+    master_df_use.to_csv(save_dir+'/{}_master_df.csv'.format(food))
     ### CHANGE DIRECTORY ###
 
     print "\n"
