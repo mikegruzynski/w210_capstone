@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE HTML>
+<!--
+	Urban by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<head>
+		<!-- <title>Generic - Urban by TEMPLATED</title> -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{% static 'main_page/css/main.css' %}" />
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<!-- <div class="logo"><a href="index.html">Urban <span>by TEMPLATED</span></a></div> -->
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href="{% url 'index' %}">Home</a></li>
+					<li><a href="generic.html">Sign In</a></li>
+					<li><a href="elements.html">Get Started</a></li>
+				</ul>
+			</nav>
+
+		<!-- Main -->
+			<div id="main">
+
+				<!-- Section -->
+					<section class="wrapper">
+						<div class="inner">
+							<header class="align-center">
+								<h1>About The Project</h1>
+								<p>Anjali Kayal, Mike Gruzinski, Max Lee & Maura Cullen </p>
+							</header>
+							<div class="flex flex-2">
+								<div class="col col2">
+									<h3>The Project</h3>
+									<p>The "Root Cellar" project is the final capstone project for Univeristy of Caiforni, Berkeley Masters of Information and Data Science. Our goal is to make an easy to use meal planning and pantry to make nutitional eating easier and to try to lessen food waste.</p>
+									<p>Also some more text and text and text. blah blah blah about the project and our passion for nution and lowering food waste <p/>
+									<p>Add here detail about the project </p>
+									<ul>
+										<li>Data Sources</li>
+										<li>Algorthims and elements of Data Science Used</li>
+										<li>Information about nution and where we got sources</li>
+										<li>Food Waste info (?) - Drive home the problem we are trying to solve</li>
+									</ul>
+
+								</div>
+								<div class="col col1 first">
+									<div class="image round fit">
+										<a href="generic.html" class="link"><img src="{% static 'images/pic02.jpg' %}" alt="" /></a>
+									</div>
+								</div>
+							</div>
+							<p>We hope this impact project impacts:</p>
+							<ul>
+								<li>Enable consumers to efficiently find recipes and create meals that maximize nutrients and taste preferences based on items in their pantry</li>
+								<li>Reduce food waste by building a meal plan that optimizes utilization of ingredients in their pantry and supplements with e-grocery cart</li>
+								<li>Aid education and research as a tool to study how different diets and individual food plans alter when changing macro nutrients and quantities</li>
+								<li>Assist restaurants, caterers, and other industry players as a tool to create seasonal menus</li>
+								<li>Enable Health Care Practictioners to monitor patients nutrient intake and suggest potential options to redirect patients</li>
+							</ul>
+						</div>
+					</section>
+
+				<!-- Section -->
+					<section class="wrapper style1">
+						<div class="inner">
+							<header class="align-center">
+								<h2>Masterminds Behind Root Cellar</h2>
+								<p>About the Team</p>
+							</header>
+							<div class="flex flex-4">
+								<div class="col align-center">
+									<div class="image round fit">
+										<img src="{% static 'images/pic03.jpg' %}" alt="" />
+									</div>
+									<p>Anjali Kayal</p>
+									<p>blah blah blah </p>
+									<a href="#" class="button">LinkedIn</a>
+								</div>
+								<div class="col align-center">
+									<div class="image round fit">
+										<img src="{% static 'images/pic05.jpg' %}" alt="" />
+									</div>
+									<p>Mike Gruzinski</p>
+									<p>blah blah blah </p>
+									<a href="#" class="button">LinkedIn</a>
+								</div>
+								<div class="col align-center">
+									<div class="image round fit">
+										<img src="{% static 'images/pic04.jpg' %}" alt="" />
+									</div>
+									<p>Max Lee</p>
+									<p>blah blah blah </p>
+									<a href="#" class="button">LinkedIn</a>
+								</div>
+								<div class="col align-center">
+									<div class="image round fit">
+										<img src="{% static 'images/pic04.jpg' %}" alt="" />
+									</div>
+									<p>Maura Cullen</p>
+									<p>blah blah blah </p>
+									<a href="#" class="button">LinkedIn</a>
+								</div>
+							</div>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Footer -->
+			<!-- <footer id="footer">
+				<div class="copyright">
+					<ul class="icons">
+						<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="#" class="icon fa-snapchat"><span class="label">Snapchat</span></a></li>
+					</ul>
+					<p>&copy; Untitled. All rights reserved. Design: <a href="https://templated.co">TEMPLATED</a>. Images: <a href="https://unsplash.com">Unsplash</a>.</p>
+				</div>
+			</footer> -->
+
+		<!-- Scripts -->
+		<script src="{% static 'main_page/js/jquery.min.js' %}"></script>
+		<script src="{% static 'main_page/js/jquery.scrolly.min.js' %}"></script>
+		<script src="{% static 'main_page/js/jquery.scrollex.min.js' %}"></script>
+		<script src="{% static 'main_page/js/skel.min.js' %}"></script>
+		<script src="{% static 'main_page/js/util.js' %}"></script>
+		<script src="{% static 'main_page/js/main.js' %}"></script>
+
+	</body>
+</html>
