@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Root Cellar: Register</title>
+</head>
+<body>
+  <h1>Sign Up For Root Cellar!</h1>
+  <p>Register Here</p>
+  <form method="post" action="{% url 'register' %}">
+    {% csrf_token %}
+
+    {% if form.errors %}
+    <p>There are errors in te form</p>
+    {% endif %}
+
+    {{ form }}
+
+    <input type="submit" value="Register">
+
+  </form>
+</body>
+</html>

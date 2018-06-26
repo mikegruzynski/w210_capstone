@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Root Cellar: Sign In</title>
+</head>
+<body>
+  This is the registration login page
+  <h1>This is the index page!<h1>
+    {% if user.is_authenticated %}
+    <h2> Welcome {{user.username }}! </h2>
+    {% endif %}
+    <h2> You are not logged in! </h2>
+
+</body>
+</html>
