@@ -14,3 +14,9 @@ def recipe_examples(request):
 
 def survey_example(request):
     return render(request, 'main_page/survey_example.html')
+
+def user_login(request):
+    return render(request, 'user_example/templates/registration/login.html')
+
+def user_signup(request):
+    return render(request, 'user_example/templates/registration/register.html')
