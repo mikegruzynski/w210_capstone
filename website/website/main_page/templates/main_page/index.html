@@ -24,8 +24,7 @@
 			<nav id="menu">
 				<ul class="links">
 					<li><a href="{% url 'index' %}">Home</a></li>
-					<!-- <li><a href="guestbook/templates/guestbook/sign.html">Sign In</a></li> -->
-					<li><a href="elements.html">Get Started</a></li>
+					<li><a href="{% url 'user_login' %}">Log In</a></li>
 					<li><a href="{% url 'about_the_project' %}">About The Project</a></li>
 				</ul>
 			</nav>
@@ -37,7 +36,7 @@
 						<h1>Root Cellar</h1>
 						<p>An End to End Solution to Healthy “At Home” Eating</p>
 					</header>
-					<a href="{% url 'index' %}" class="button">Get Started</a>
+					<a href="{% url 'user_login' %}" class="button">Get Started</a>
 				</div>
 			</section>
 
@@ -58,7 +57,7 @@
 										<h3>About Root Cellar</h3>
 										<p>Our goal is to make nutional at home meal planneing easy while reducing waste by using everything you purchase in your pantry</p>
 										<p> You tell us your food prefernces, dietary restictions and what you already have in the house and we will sugget a meal or meals that will work for you and tell you what ingredients you need to shop for </p>
-										<a href="guestbook/templates/guestbook/index.html" class="button">Get Started</a>
+										<a href="{% url 'user_signup' %}" class="button">Get Started</a>
 									</div>
 								</div>
 						</div>
