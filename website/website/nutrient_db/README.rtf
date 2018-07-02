@@ -1,0 +1,129 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf400
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;\red64\green64\blue64;
+\red255\green255\blue255;}
+{\*\expandedcolortbl;;\csgray\c0;\csgray\c100000;\cssrgb\c31765\c31765\c31765;
+\cssrgb\c100000\c100000\c100000;}
+\margl1440\margr1440\vieww17660\viewh12140\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \
+\
+How to set up a Database with Django \
+\
+go to the local server admin site: \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "http://127.0.0.1:8000/admin/"}}{\fldrslt \cf0 http://127.0.0.1:8000/admin/}}\
+username: admin\
+password W210Capstone\
+\
+View Database tables \
+\
+\
+Run the following commands: \
+ - 
+\f1\fs22 \cf2 \cb3 \CocoaLigature0 python manage.py startapp [app_name]
+\f0\fs24 \cf0 \cb1 \CocoaLigature1 \
+  - 
+\f1\fs22 \cf2 \cb3 \CocoaLigature0 python manage.py makemigrations\
+ - python manage.py migrate --run-syncd\
+\
+Create models for your table: \
+Example: \
+\
+class Company(models.Model):\
+    name = models.CharField(max_length=20)\
+\
+    def __str__(self):\
+        return self.name\
+\
+\
+Run: \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \cb1 \CocoaLigature1   - 
+\f1\fs22 \cf2 \cb3 \CocoaLigature0 python manage.py makemigrations\
+ - python manage.py migrate --run-syncd\
+\
+_ add models to the admin.py script\
+\
+To interact with the table in shell run:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf2 \cb3  - python manage.py shell\
+ - from nutrient_db.models import Substitution_list\
+ - from nutrient_db.models import Nutritional_database\
+ - from django.contrib import admin\
+ - admin.site.register(Nutritional_database)\
+\
+\
+\
+To Populate the nutriet_db table\
+\
+Run this is python3 to save table with different name and stripped data: \
+# macro_list = ['Energy (kcal)', 'Total lipid (fat) (g)', 'Carbohydrate, by difference (g)',\
+# 'Fiber, total dietary (g)', 'Cholesterol (mg)',\
+# 'Fatty acids, total saturated (g)',\
+# 'Fatty acids, total monounsaturated (g)', 'Fatty acids, total polyunsaturated (g)',\
+#  'Fatty acids, total trans (g)' ]\
+#\
+# # path = '/root/w210_capstone/data/nutrient/compiled'\
+# path = '/Users/mauracullen/Documents/UCB_MIDS/W210_Capstone/w210_capstone/data/nutrient/compiled'\
+# nutritional_database = pd.read_csv(path+'/nutrition_master_df.csv')\
+#\
+# micro_list = ['Iron, Fe (mg)', 'Magnesium, Mg (mg)', 'Manganese, Mn (mg)', 'Thiamin (mg)',\
+#  'Vitamin D (D2 + D3) (\'b5g)']\
+#\
+# keep_list = ['NDB_NO', 'Measure', 'Weight(g)', 'Description', 'Category']\
+#\
+# macro_micro_list = keep_list + macro_list + micro_list\
+# ndb_columns_filtered = nutritional_database[macro_micro_list]\
+# ndb_columns_filtered['NDB_NO'] = ndb_columns_filtered['NDB_NO'].str.strip('"')\
+# ndb_columns_filtered.to_csv(path+'ndb_columns_filtered2.csv')\
+\
+\
+Run: python manage.py shell\
+Then run: \
+\
+import csv\
+import os\
+from nutrient_db.models import Nutritional_database\
+\
+path = '/Users/mauracullen/Documents/UCB_MIDS/W210_Capstone/w210_capstone/data/nutrient/compiled'\
+with open(path+'ndb_columns_filtered2.csv') as csvfile:\
+    reader = csv.DictReader(csvfile)\
+    for i, row in enumerate(reader):\
+        p = Nutritional_database(NDB_NO=row['NDB_NO'], Measure=row['Measure'],\
+                                 Weight_g = row['Weight_g'], Description = row['Description'],\
+                                 Category = row['Category'], Energy_kcal = row['Energy_kcal'],\
+                                 Total_lipid_fat_g = row['Total_lipid_fat_g'],\
+                                 Carbohydrate_by_diff_g = row['Carbohydrate_by_diff_g'],\
+                                 Fiber_total_dietary_g = row['Fiber_total_dietary_g'],\
+                                 Cholesterol_mg = row['Cholesterol_mg'],\
+                                 Fatty_acids_saturated_g = row['Fatty_acids_saturated_g'],\
+                                 Fatty_acids_total_monounsaturated_g = row['Fatty_acids_total_monounsaturated_g'],\
+                                 Fatty_acids_total_polyunsaturated_g = row['Fatty_acids_total_polyunsaturated_g'],\
+                                 Fatty_acids_total_trans_g = row['Fatty_acids_total_trans_g'],\
+                                 Iron_mg = row['Iron_mg'], Magnesium_mg = row['Magnesium_mg'],\
+                                 Magnesium_mng = row['Magnesium_mng'],\
+                                 Thiamin_mg = row['Thiamin_mg'], Vitamin_D_microg = row['Vitamin_D_microg']\
+                                 )\
+        p.save()\
+\
+\
+\
+\
+\
+Register the database in admin \
+admin.site.register(Nutritional_database)\
+\
+\
+admin\
+W210Capstone\
+\
+Helpful: \
+brew install 
+\f0\fs30\fsmilli15333 \cf4 \cb5 \expnd0\expndtw0\kerning0
+\CocoaLigature1 PostgreSQL\
+\
+\
+}

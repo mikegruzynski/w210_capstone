@@ -11,6 +11,5 @@ urlpatterns = [
     path('recipe_examples/', views.recipe_examples, name='recipe_examples'),
     path('survey_example/', views.survey_example, name='survey_example'),
     path('user_login/', views.user_login, name='user_login'),
-    path('user_signup/', views.user_signup, name='user_signup'),
-
+    path('user_signup/', views.user_signup, name='user_signup')
 ]

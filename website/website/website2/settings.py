@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'main_page',
     'user_example',
     'authenticate',
+    'forms',
+    'nutrient_db',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,6 +57,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'website2.urls'
 
 TEMPLATES = [
+
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
@@ -80,8 +83,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+
     }
 }
+
 
 
 # Password validation
