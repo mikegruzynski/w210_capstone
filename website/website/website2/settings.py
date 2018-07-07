@@ -25,7 +25,7 @@ SECRET_KEY = 'aibqt)*crs0=fyn5q7&7+nf4gu6e!lz!3sze)zn(jmpmd+$-k%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['mcullen28.pythonanywhere.com']
 
 
 # Application definition
@@ -41,8 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
-    'home',
+    'accounts'
 ]
 
 MIDDLEWARE = [
@@ -128,6 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/home/mcullen28/w210_capstone/website/website'
 
 # TODO: This should be the user profile!!!!
 LOGIN_REDIRECT_URL = 'pref_form'
