@@ -7,11 +7,23 @@
   <h2>User Profile</h2>
   <h2>This is the User Profile Page</h2>
 
+
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
+  Hi {{ user.first_name }}!
+
+  <ul>
+    {{ user.user_preferences.username }}
+  <li>Height: {{ user.userpreferences.height }}</li>
+  <li>Weight: {{ user.userpreferences.weight }}</li>
+  <li>Target Caloric Intake: {{ user.userpreferences.caloric_intake_goal }}</li>
+  <li>Target Meals:{{ user.userpreferences.num_meals }} </li>
+  </ul>
+
   <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">login</a>
+
+  <p><a href="{% url 'pref_form' %}">Fill in User Preferences</a></p>
 {% endif %}
 {% endblock %}

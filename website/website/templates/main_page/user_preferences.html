@@ -6,10 +6,23 @@
 {% block content %}
   <h2>User Preferneces</h2>
   <h2>User Preferneces Placeholder</h2>
-  <p>Let's get some User Preferences</p>
-  <p>This will be a form to take in user Prefenrces and Personal Details</p>
+  <p>This will be a form to take in user Preferences and Personal Details</p>
 
-  Hi {{ user.username }}!
+
+  Hi {{ user.first_name }}!
+  <p>Please Enter your User Preferences</p>
+
+  <p>Age</p>
+  <p>Height</p>
+  <p>Weight</p>
+  <p>Gender</p>
+  <p>Target Daily Calorie Intake</p>
+  <p>Number of Meals Per Day</p>
+  <p>Ingredient Aversions</p>
+
   <p><a href="{% url 'user_profile' %}">Go to User Profile</a></p>
+
+
+
 
 {% endblock %}

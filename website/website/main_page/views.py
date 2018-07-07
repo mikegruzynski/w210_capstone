@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.views.generic import TemplateView
+from main_page.forms import PrefForm
 
 def index(request):
     return render(request, 'main_page/index.html')
@@ -20,3 +22,13 @@ def user_profile(request):
 
 def pref_form(request):
     return render(request, 'main_page/user_preferences.html')
+    # template_name = 'main_page/user_preferences.html'
+    #
+    # def get(self, request):
+    #     form = PrefForm()
+    #     return render(request, self.template_name, {'form': form})
+
+def home_form(TemplateView):
+    template_name='main_page/home_form.html'
+
+    return render(request, self.template_name, {'form':form})
