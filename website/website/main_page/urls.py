@@ -10,6 +10,10 @@ urlpatterns = [
     path('sample_dashboard/', views.sample_dashboard, name='sample_dashboard'),
     path('recipe_examples/', views.recipe_examples, name='recipe_examples'),
     path('survey_example/', views.survey_example, name='survey_example'),
-    path('user_login/', views.user_login, name='user_login'),
-    path('user_signup/', views.user_signup, name='user_signup')
+    path('user_profile/', views.user_profile, name='user_profile'),
+    path('pref_form/', views.pref_form, name='pref_form'),
+
+    # path('accounts/login/', views.user_login, name='user_login'),
+    # path('user_signup/', views.user_signup, name='user_signup'),
+    # path('login_index/', views.login_index, name='login_index')
 ]

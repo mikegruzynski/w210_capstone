@@ -29,19 +29,19 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+#     'user_example',
+    # 'authenticate',
+    # 'forms',
+    # 'nutrient_db',
 
 INSTALLED_APPS = [
-    'main_page',
-    'user_example',
-    'authenticate',
-    'forms',
-    'nutrient_db',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -56,11 +56,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'website2.urls'
 
+
 TEMPLATES = [
 
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -127,4 +128,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_REDIRECT_URL = '/main_page/'
+# TODO: This should be the user profile!!!!
+LOGIN_REDIRECT_URL = 'pref_form'
+LOGOUT_REDIRECT_URL = '/'

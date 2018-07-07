@@ -1,0 +1,15 @@
+<!-- templates/signup.html -->
+{% extends 'base.html' %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+  <h2>User Preferneces</h2>
+  <h2>User Preferneces Placeholder</h2>
+  <p>Let's get some User Preferences</p>
+  <p>This will be a form to take in user Prefenrces and Personal Details</p>
+
+  Hi {{ user.username }}!
+  <p><a href="{% url 'user_profile' %}">Go to User Profile</a></p>
+
+{% endblock %}
