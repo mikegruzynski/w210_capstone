@@ -21,3 +21,13 @@ def __repr__(self):
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+
+# class UserPreference(db.Model, UserMixin):
+#     id = db.Column(db.Integer, primary_key=True)
+#     username = db.Column(db.String(64), index=True, unique=True)
+#     gender = db.Column(db.String(64), index=True, unique=True)
+#     age = db.Column(db.Integer, index=True)
+#     weight_lb = db.Column(db.Integer, index=True)
+#     height_in = db.Column(db.Integer, index=True)
+#     foods_allergic = db.Column(db.String(1200), index=True)

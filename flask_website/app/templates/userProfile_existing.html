@@ -1,0 +1,308 @@
+
+<!DOCTYPE HTML>
+<!--
+	Urban by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+
+<html>
+	<head>
+		<!-- <title>Generic - Urban by TEMPLATED</title> -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<!-- <div class="logo"><a href="index.html">Urban <span>by TEMPLATED</span></a></div> -->
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project</a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+					</li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Main -->
+			<div id="main">
+        <section id="banner">
+          <div class="inner">
+            <header>
+              <h1>Hello {{ user }}!</h1>
+              <p>Welcome Back to Root Cellar!</p>
+            </header>
+          </div>
+        </section>
+
+<!--  Make Dynamic to query the real preferences-->
+				<section class="wrapper style1">
+					<div class="inner">
+						<!-- 2 Columns -->
+							<div class="flex flex-1">
+							<div class="col col1">
+								<h2>User Preferences Choices</h2>
+								<ul class="links">
+								 <li>Name: Johnn Appleseed</li>
+								 <li>Gender: Male</li>
+								 <li>Age: 28</li>
+								 <li>Height (Inches): 71 </li>
+								 <li>Weight (Pounds): 198</li>
+								 <li>Exercise: 1-3 Times Per Week</li>
+								 <li>No Dietary Restrictions</li>
+								 <li>Goal Diet: Low Carb</li>
+								 <li>Will spend Some effort (less than 60 min) for a meal</li>
+							 </ul>
+									<a href = "https://goo.gl/forms/4vlsZmaRuwUcCiam2" class="button">Edit My Preferences</a>
+								</div>
+							</div>
+						</div>
+				</section>
+
+				<!-- Make Dynamic Name with Suggetsed Goals fro Nutrients  -->
+				<section class="wrapper style1">
+					<div class="inner">
+						<!-- 2 Columns -->
+							<div class="flex flex-5">
+							<div class="col col1">
+								<h2>Nutrient Goals</h2>
+								<h5>Macro Nutrients</h5>
+								<table style="width:100%">
+								  <tr>
+								    <th>Nutrient</th>
+								    <th>Goal</th>
+										<th>Nutrient</th>
+										<th>Goal</th>
+								  </tr>
+								  <tr>
+								    <td>calories</td>
+								    <td>3049.3</td>
+										<td>Carbohydrates</td>
+										<td>467.3</td>
+								  </tr>
+								  <tr>
+								    <td>Protein</td>
+								    <td>142.5</td>
+										<td>Fat</td>
+										<td>67.8</td>
+								  </tr>
+									<tr>
+										<td>Cholesterol</td>
+										<td>300.0</td>
+										<td>Saturated Fat</td>
+										<td>33.9</td>
+									</tr>
+									<tr>
+										<td>Unsaturated Fat</td>
+										<td>101.6</td>
+										<td>Sugar</td>
+										<td>33.9</td>
+									</tr>
+								</table>
+
+								<h5>Micro Nutrients</h5>
+									<p>Based on your selected preferences and personal inputs. These Should be your target Nutrients For the Day!
+										<table style="width:100%">
+											<tr>
+												<th>Nutrient</th>
+												<th>Goal</th>
+												<th>Nutrient</th>
+												<th>Goal</th>
+											</tr>
+											<tr>
+												<td>Calcium, Ca (mg)</td>
+												<td>1000</td>
+												<td>Iron, Fe (mg)</td>
+												<td>8</td>
+											</tr>
+											<tr>
+												<td>Magnesium, Mg (mg)</td>
+												<td>420</td>
+												<th>Phosphorus, P (mg)</th>
+												<th>700</th>
+											</tr>
+											<tr>
+												<td>Potassium, K (mg)</td>
+												<td>4.7</td>
+												<td>Sodium, Na (mg)</td>
+												<td>2300</td>
+											</tr>
+											<tr>
+												<td>Zinc, Zn (mg)</td>
+												<td>11</td>
+												<th>Copper, Cu (mg)</th>
+												<th>0.9</th>
+											</tr>
+											<tr>
+												<td>Manganese, Mn (mg)</td>
+												<td>2.3</td>
+												<td>Selenium, Se (microg)</td>
+												<td>55</td>
+											</tr>
+											<tr>
+												<td>Fluoride, F (microg)</td>
+												<td>4000</td>
+												<th>Vitamin C, total ascorbic acid (mg)</th>
+												<th>90</th>
+											</tr>
+											<tr>
+												<td>Thiamin (mg)</td>
+												<td>1.2</td>
+												<td>Riboflavin (mg)</td>
+												<td>1.3</td>
+											</tr>
+											<tr>
+												<td>Niacin (mg)</td>
+												<td>16</td>
+												<td>Pantothenic acid (mg)</td>
+												<td>5</td>
+											</tr>
+											<tr>
+												<td>Vitamin B-6 (mg)</td>
+												<td>1.3</td>
+												<td>Folate, total (microg)</td>
+												<td>400</td>
+											</tr>
+
+											<tr>
+												<td>Folic acid (microg)</td>
+												<td>400</td>
+												<td>Folate, food (microg)</td>
+												<td>400</td>
+											</tr>
+											<tr>
+												<td>Folate, DFE (microg)</td>
+												<td>400</td>
+												<td>Choline, total (mg)</td>
+												<td>0.035</td>
+											</tr>
+											<tr>
+												<td>Betaine (mg)</td>
+												<td>2000</td>
+												<td>Vitamin B-12 (microg)</td>
+												<td>2.4</td>
+											</tr>
+											<tr>
+												<td>Vitamin B-12, added (microg)</td>
+												<td>2.4</td>
+												<td>Vitamin A, RAE (microg)</td>
+												<td>900</td>
+											</tr>
+											<tr>
+												<td>Retinol (microg)</td>
+												<td>900</td>
+												<td>Vitamin E (alpha-tocopherol) (mg)</td>
+												<td>900</td>
+											</tr>
+
+											<tr>
+												<td>Vitamin E, added (mg)</td>
+												<td>15</td>
+												<td>Vitamin D (D2 + D3) (microg)</td>
+												<td>15</td>
+											</tr>
+											<tr>
+												<td>Vitamin D2 (ergocalciferol) (microg)</td>
+												<td>15</td>
+												<td>Vitamin D3 (cholecalciferol) (microg)</td>
+												<td>15</td>
+											</tr>
+											<tr>
+												<td>Vitamin D (IU)</td>
+												<td>15</td>
+												<td>Vitamin E (alpha-tocopherol) (mg)</td>
+												<td>15</td>
+											</tr>
+											<tr>
+												<td>Retinol (microg)</td>
+												<td>15</td>
+												<td>Vitamin K (phylloquinone) (microg)</td>
+												<td>90</td>
+											</tr>
+										</table>
+								</div>
+							</div>
+						</div>
+					</section>
+
+					<!-- Radar and Bar Plots - Add from Python Images -->
+						<section class="wrapper style1">
+						<div class="inner">
+							<!-- 2 Columns -->
+							<div class="flex flex-2">
+								<div class="col align-center">
+									<div class="image square fit">
+										<img src="{{ url_for('static', filename='images/radar1.png') }}" alt="" />
+									</div>
+									<p>Radar Plot Image 1</p>
+								</div>
+								<div class="col align-center">
+									<div class="image square fit">
+										<img src="{{ url_for('static', filename='images/radar1.png') }}" alt="" />
+									</div>
+									<p>Radar Plot Image 2</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="inner">
+							<!-- 2 Columns -->
+							<div class="flex flex-2">
+								<div class="col align-center">
+									<div class="image square fit">
+										<img src="{{ url_for('static', filename='images/barchart_stacked.png') }}" alt="" />
+									</div>
+									<p>Bar Plot Image 1</p>
+								</div>
+								<div class="col align-center">
+									<div class="image square fit">
+										<img src="{{ url_for('static', filename='images/barchart_stacked.png') }}" alt="" />
+									</div>
+									<p>Bar Plot Image 1</p>
+								</div>
+							</div>
+						</div>
+
+						</section>
+
+
+						<section class="wrapper style1">
+						<div class="inner">
+							<!-- 2 Columns -->
+								<div class="flex flex-1">
+								 <div class="col col1">
+									<h2>Your Meal Suggetions for the Week</h2>
+									 <ul class="links">
+										<li><a href = "https://www.epicurious.com/recipes/food/views/grilled-leg-of-lamb-with-ancho-chile-marinade-359334">Grilled Leg of Lamb with Ancho Chile Marinade</a></li>
+										<li><a href = "https://www.epicurious.com/recipes/food/views/buttermilk-fried-shrimp">buttermilk-fried-shrimp</a></li>
+										<li><a href = "https://www.epicurious.com/recipes/food/views/lamb-goat-cheese-and-heirloom-tomato-salad">Lamb Goat Cheese and Heirloom Tomato Salad</a></li>
+										<li><a href = "https://www.epicurious.com/recipes/food/views/stuffed-sweet-potatoes-with-beans-and-guacamole">stuffed-sweet-potatoes-with-beans-and-guacamole</a></li>
+										<li><a href = "https://www.epicurious.com/recipes/food/views/orecchiette-pasta-with-buttermilk-peas-and-pistachios">Orecchiette Pasta With Buttermilk Peas and Pistachios</a></li>
+									</ul>
+									</div>
+								</div>
+							</div>
+						</section>
+
+       <p>
+
+			</div>
+	</body>
+</html>
