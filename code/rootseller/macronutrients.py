@@ -8,13 +8,13 @@ class Macronutrients(object):
     def __init__(self, user_df):
         self.user_df = user_df
         self.macronutrient_column_map_dict = {
-            'calories': {'map_key': 'Energy (kcal)', 'unit': 'mg'},
+            'calories': {'map_key': 'Energy (kcal)', 'unit': 'kcal'},
             'fat': {'map_key': 'Total lipid (fat) (g)', 'unit': 'g'},
             'carbohydrate': {'map_key': 'Carbohydrate, by difference (g)', 'unit': 'g'},
             'fiber': {'map_key': 'Fiber, total dietary (g)', 'unit': 'g'},
             'cholesterol': {'map_key': 'Cholesterol (mg)', 'unit': 'mg'},
-            'saturated_fat': {'map_key': 'Fatty acids, total saturated (g)', 'unit': 'mg'},
-            'unsaturated_fat': {'map_key': ["Fatty acids, total monounsaturated (g)", "Fatty acids, total polyunsaturated (g)", "Fatty acids, total saturated (g)"], 'unit': 'g'},
+            'saturated_fat': {'map_key': 'Fatty acids, total saturated (g)', 'unit': 'g'},
+            'unsaturated_fat': {'map_key': ["Fatty acids, total monounsaturated (g)", "Fatty acids, total polyunsaturated (g)", "Fatty acids, total trans (g)"], 'unit': 'g'},
             'sugar': {'map_key': 'Sugars, total (g)', 'unit': 'g'},
             'protein': {'map_key': 'Protein (g)', 'unit': 'g'}
         }
