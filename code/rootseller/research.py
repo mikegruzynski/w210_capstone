@@ -1,4 +1,5 @@
 import json
+import pandas as pd
 from collections import Counter
 import networkx as nx
 from rootseller import nutrtion
@@ -54,7 +55,6 @@ class Research(object):
                 except:
                     print 'ERROR', sub_key
         for key in label_dict.keys():
-            print key, label_dict[key]
             G.add_node(label_dict[key])
         for key in social_food_dict.keys():
             for sub_key in social_food_dict[key].keys():
@@ -64,9 +64,33 @@ class Research(object):
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
         nx.draw(G, pos)
         nx.write_gexf(G, 'test.gexf')
-#
+        return G
+
+    def shortest_paths_and_weights(self, G, food_1, food_2, **kwargs):
+        if 'cutoff' in kwargs.keys():
+            path_list = nx.all_simple_paths(G, food_1, food_2, cutoff=kwargs['cutoff'])
+        else:
+            path_list = nx.all_simple_paths(G, food_1, food_2, cutoff=2)
+
+        edge_weight_list = []
+        edge_list = []
+        for edge in (list(path_list)):
+            edge_list.append(edge)
+            itr = 0
+            total_path_weight = 0
+            while itr < len(edge) - 1:
+                total_path_weight += G.get_edge_data(edge[itr], edge[itr + 1])['weight']
+                itr += 1
+            edge_weight_list.append(total_path_weight)
+
+        path_df = pd.DataFrame({'edge_weight': edge_weight_list, 'path': edge_list})
+
+        return path_df
+
+
 research_init = Research()
 social_food_dict = research_init.make_social_network_dict()
-research_init.build_recipe_graph(social_food_dict)
+G = research_init.build_recipe_graph(social_food_dict)
+path_df = research_init.shortest_paths_and_weights(G, 'Eggplant, raw', 'Celery, raw', cutoff=2)
 
 
