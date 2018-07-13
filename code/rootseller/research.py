@@ -1,10 +1,7 @@
 import json
 from collections import Counter
 import networkx as nx
-import matplotlib.pyplot as plt
-import pylab
 from rootseller import nutrtion
-from rootseller import recipes
 
 class Research(object):
     def __init__(self):
@@ -19,8 +16,6 @@ class Research(object):
 
     def make_social_network_dict(self):
         network_dict = {}
-        # recipe_keys_list = list(self.recipe_clean.keys())[:10]/
-        # for key in recipe_keys_list:
         for key in self.recipe_clean.keys():
             tag_list = self.recipe_clean[key]['NDB_NO_tags'][:]
             for i in range(len(tag_list)):
