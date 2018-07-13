@@ -29,7 +29,6 @@ class Recipes(object):
         self.filter_list = profile_init.micro_list + profile_init.macro_list
         self.nutrtion_init = nutrtion.Nutrition()
 
-
         self.food_unit_standard_dictionary = {
             'teaspoon': {'options': ["tsp.", "tsp", "t", "t.", "teaspoon", "teaspoons"], 'type': 'volume'},
             'tablespoon': {'options': ["tbsp.", "tbsp", "T", "T.", "tablespoon", "tablespoons", "tbs.", "tbs", "TBSP"], 'type': 'volume'},
