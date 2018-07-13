@@ -1,0 +1,2 @@
+userid,birthday,first_name,last_name,age,weight,height,gender,breastfeeding,pregnant,activity_level,macro_nutrients,micro_nutrients
+mikegruzynski,2/7/1990,Mike,Gruzynski,28,255,"6'4""",male,no,no,moderate,"['calories', 'fat', 'carbohydrate', 'fiber', 'cholesterol', 'saturated_fat', 'unsaturated_fat', 'sugar', 'protein']","['iron', 'magnesium', 'manganese', 'thiamin', 'Vitamin D']"
