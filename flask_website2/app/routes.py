@@ -1,9 +1,10 @@
 from flask import render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user
 from app import app
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
 from app.models import User
 from app import db
+
 
 @app.route('/')
 @app.route('/index')
@@ -54,33 +55,47 @@ def register():
 
 # Render User Profile page
 @app.route('/user_profile_new')
+# @login_required
 def user_profile_new():
     if current_user.is_authenticated:
-        # How do I query the User Model?
-        # user = User.query.filter_by(username=username.data).first()
-        user = 'Johnny Appleseed' # Fix this to be Dynamic
-        return render_template('userProfile_new.html', user=user)
+        user = current_user.username # TODO: Change to real name when we get it
+        return render_template('userProfile_new.html', title="User Preferneces", user=user)
     return redirect(url_for('index'))
 
 
-# Render the User Preferneces Form To Set Up Account
-# @app.route('/')
-# def user_profile_new():
-#     if current_user.is_authenticated:
-#         # How do I query the User Model?
-#         user = 'User' # Fix this to be Dynamic
-#         return render_template('userProfile_new.html', user=user)
-#     return redirect(url_for('index'))
-
+# User Prefernece Form
+@app.route('/user_preferences', methods=['GET', 'POST'])
+def user_preferences():
+    if current_user.is_authenticated:
+        user = current_user.username
+        form = UserPreferenceForm()
+        gender_list = ['Male', 'Female', 'Prefer Not to Say']
+        return render_template('user_preferences.html', user=user, form=form, gender_list=gender_list)
+    #     if form.validate_on_submit():
+    #         user_pref = UserPreference(
+    #         username=form.username.data,
+    #         firstname=form.firstname.data,
+    #         lastname=form.lastname.data,
+    #         gender=form.gender.data,
+    #         age=form.age.data,
+    #         weight_lb=form.weight_lb.data,
+    #         height_in=form.height_in.data,
+    #         foods_allergic=form.foods_allergic.data
+    #         )
+    #         db.session.add(user_pref)
+    #         db.session.commit()
+    #         flash('Congratulations, you are now a registered user!')
+    #         return redirect(url_for('user_profile_existing'))
+    # return redirect(url_for('user_preferences'))
 
 
 
 # Render User Profile After User Has Set Up preferneces
 # Note! This is a fake - needs to be changed to dynamic
 @app.route('/user_profile_existing')
+# @login_required
 def user_profile_existing():
     if current_user.is_authenticated:
-        # How do I query the User Model?
-        user = 'Johnny' # Fix this to be Dynamic
+        user = current_user.username
         return render_template('userProfile_existing.html', user=user)
     return redirect(url_for('index'))

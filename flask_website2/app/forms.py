@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from app.models import User
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, NumberRange
+from app.models import User, UserPreference
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -28,11 +28,13 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different email address.')
 
 
-# class UserPreferenceForm(FlaskForm):
-#     username = StringField('Username', validators=[DataRequired()])
-#     gender = StringField('gender', validators=[DataRequired()])
-#     age = IntField('age', validators=[DataRequired()])
-#     weight_lb = IntegerField('weight_lb', validators=[DataRequired()])
-#     height_in = IntegerField('height_in', validators=[DataRequired()])
-#     foods_allergic = StringField('foods_allergic')
-#     submit = SubmitField('UserPreference')
+class UserPreferenceForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    firstname = StringField('Firstname', validators=[DataRequired()])
+    lastname = StringField('Lastname', validators=[DataRequired()])
+    gender = SelectField('gender',  choices=[('male', 'Male'), ('Female', 'female'), ('na', 'Prefer Not to Say')])
+    age = IntegerField('age',  validators = [NumberRange(min=0, max=120)])
+    weight_lb = IntegerField('weight_lb', validators = [NumberRange(min=65, max=500)])
+    height_in = IntegerField('height_in', validators = [NumberRange(min=0, max=96)])
+    foods_allergic = StringField('foods_allergic')
+    submit = SubmitField('Set My Preference')
