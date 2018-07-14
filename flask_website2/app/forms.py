@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, SelectField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import SelectMultipleField, IntegerField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, NumberRange
 from app.models import User, UserPreference
 
@@ -32,7 +33,7 @@ class UserPreferenceForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     firstname = StringField('Firstname', validators=[DataRequired()])
     lastname = StringField('Lastname', validators=[DataRequired()])
-    gender = SelectField('gender',  choices=[('male', 'Male'), ('Female', 'female'), ('na', 'Prefer Not to Say')])
+    gender = SelectField('gender',  choices=[('male', 'Male'), ('female', 'Female'), ('na', 'Prefer Not to Say')])
     age = IntegerField('age',  validators = [NumberRange(min=0, max=120)])
     weight_lb = IntegerField('weight_lb', validators = [NumberRange(min=65, max=500)])
     height_in = IntegerField('height_in', validators = [NumberRange(min=0, max=96)])

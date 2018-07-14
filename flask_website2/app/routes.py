@@ -1,9 +1,10 @@
 from flask import render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user
-from app import app
+from app import app, db
 from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
-from app.models import User
-from app import db
+from app.models import User #  UserPreference
+from app.user_profile_support.get_user_nutrients import *
+# import StringIO
 
 
 @app.route('/')
@@ -64,31 +65,33 @@ def user_profile_new():
 
 
 # User Prefernece Form
-@app.route('/user_preferences', methods=['GET', 'POST'])
-def user_preferences():
-    if current_user.is_authenticated:
-        user = current_user.username
-        form = UserPreferenceForm()
-        gender_list = ['Male', 'Female', 'Prefer Not to Say']
-        return render_template('user_preferences.html', user=user, form=form, gender_list=gender_list)
-    #     if form.validate_on_submit():
-    #         user_pref = UserPreference(
-    #         username=form.username.data,
-    #         firstname=form.firstname.data,
-    #         lastname=form.lastname.data,
-    #         gender=form.gender.data,
-    #         age=form.age.data,
-    #         weight_lb=form.weight_lb.data,
-    #         height_in=form.height_in.data,
-    #         foods_allergic=form.foods_allergic.data
-    #         )
-    #         db.session.add(user_pref)
-    #         db.session.commit()
-    #         flash('Congratulations, you are now a registered user!')
-    #         return redirect(url_for('user_profile_existing'))
-    # return redirect(url_for('user_preferences'))
+# @app.route('/user_preferences', methods=['GET', 'POST'])
+# def user_preferences():
+#     if current_user.is_authenticated:
+#         user = current_user.username
+#         gender_list = ['Male', 'Female', 'Prefer Not to Say']
+#         form = UserPreferenceForm()
+#         if form.validate_on_submit():
+#             user_pref = UserPreference(
+#             username=user,
+#             firstname=form.firstname.data,
+#             lastname=form.lastname.data,
+#             gender=form.gender.data,
+#             age=form.age.data,
+#             weight_lb=form.weight_lb.data,
+#             height_in=form.height_in.data,
+#             foods_allergic=form.foods_allergic.data
+#             )
+#             db.session.add(user_pref)
+#             db.session.commit()
+#             # flash('Congratulations, you are now a registered user!')
+#             return redirect('/user_profile_existing')
+#     return render_template('user_preferences.html', user=user, form=form, gender_list=gender_list)
 
-
+# User Prefernce Survey
+@app.route('/preference_survey')
+def preference_survey():
+   return render_template('survey.html', title='Preferences')
 
 # Render User Profile After User Has Set Up preferneces
 # Note! This is a fake - needs to be changed to dynamic
@@ -97,5 +100,14 @@ def user_preferences():
 def user_profile_existing():
     if current_user.is_authenticated:
         user = current_user.username
-        return render_template('userProfile_existing.html', user=user)
+        # name = UserPreference.firstname
+        # TODO: get true values based on user preferneces
+        # TODO: Check which Micro Nutrients the User Wants
+
+        user_pref_dict = {'age':28, 'gender':'Female', 'is_breastfeeding':False, 'is_pregnant':False,
+        'height_in':61, 'weight_lb':140}
+        macros = get_macro_nutrients(user_pref_dict)
+        micros = get_micro_nutrients(user_pref_dict)
+
+        return render_template('userProfile_existing.html', user=user, user_data =user_pref_dict, macros=macros, micros=micros)
     return redirect(url_for('index'))

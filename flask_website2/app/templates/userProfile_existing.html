@@ -52,7 +52,6 @@
           </div>
         </section>
 
-<!--  Make Dynamic to query the real preferences-->
 				<section class="wrapper style1">
 					<div class="inner">
 						<!-- 2 Columns -->
@@ -60,23 +59,25 @@
 							<div class="col col1">
 								<h2>User Preferences Choices</h2>
 								<ul class="links">
-								 <li>Name: Johnn Appleseed</li>
-								 <li>Gender: Male</li>
-								 <li>Age: 28</li>
-								 <li>Height (Inches): 71 </li>
-								 <li>Weight (Pounds): 198</li>
+								 <li>Name: {{ user }}</li>
+								 <li>Gender: {{user_data.gender}}</li>
+								 <li>Age: {{user_data.age	}}</li>
+								 <li>Height (Inches): {{user_data.height_in}} </li>
+								 <li>Weight (Pounds): {{user_data.weight_lb}}</li>
 								 <li>Exercise: 1-3 Times Per Week</li>
-								 <li>No Dietary Restrictions</li>
+								 <!-- TODO -->
+								 <!-- <li>No Dietary Restrictions</li>
 								 <li>Goal Diet: Low Carb</li>
-								 <li>Will spend Some effort (less than 60 min) for a meal</li>
+								 <li>Will spend Some effort (less than 60 min) for a meal</li> -->
 							 </ul>
-									<a href = "https://goo.gl/forms/4vlsZmaRuwUcCiam2" class="button">Edit My Preferences</a>
+									<a href = "/preference_survey" class="button">Edit My Preferences</a>
 								</div>
 							</div>
 						</div>
 				</section>
 
 				<!-- Make Dynamic Name with Suggetsed Goals fro Nutrients  -->
+				<!-- TODO Create dynamic table, with Names Dynamic  -->
 				<section class="wrapper style1">
 					<div class="inner">
 						<!-- 2 Columns -->
@@ -93,27 +94,27 @@
 								  </tr>
 								  <tr>
 								    <td>calories</td>
-								    <td>3049.3</td>
+								    <td>{{ macros.calories }}</td>
 										<td>Carbohydrates</td>
-										<td>467.3</td>
+										<td>{{ macros.carbs }}</td>
 								  </tr>
 								  <tr>
 								    <td>Protein</td>
-								    <td>142.5</td>
+								    <td>{{ macros.protein }}</td>
 										<td>Fat</td>
-										<td>67.8</td>
+										<td>{{ macros.fat }}</td>
 								  </tr>
 									<tr>
 										<td>Cholesterol</td>
-										<td>300.0</td>
+										<td>{{ macros.cholesterol }}</td>
 										<td>Saturated Fat</td>
-										<td>33.9</td>
+										<td>{{ macros.sat_fat }}</td>
 									</tr>
 									<tr>
 										<td>Unsaturated Fat</td>
-										<td>101.6</td>
+										<td>{{ macros.unsat_fat }}</td>
 										<td>Sugar</td>
-										<td>33.9</td>
+										<td>{{ macros.sugar }}</td>
 									</tr>
 								</table>
 
@@ -128,113 +129,107 @@
 											</tr>
 											<tr>
 												<td>Calcium, Ca (mg)</td>
-												<td>1000</td>
+												<td>{{micros.Calcium[0]}}</td>
 												<td>Iron, Fe (mg)</td>
-												<td>8</td>
+												<td>{{micros.Iron[0]}}</td>
 											</tr>
 											<tr>
 												<td>Magnesium, Mg (mg)</td>
-												<td>420</td>
+												<td>{{micros.Magnesium[0]}}</td>
 												<th>Phosphorus, P (mg)</th>
-												<th>700</th>
+												<th>{{micros.Phosphorus[0]}}</th>
 											</tr>
 											<tr>
 												<td>Potassium, K (mg)</td>
-												<td>4.7</td>
+												<td>{{micros.Potassium[0]}}</td>
 												<td>Sodium, Na (mg)</td>
-												<td>2300</td>
+												<td>{{micros.Sodium[0]}}</td>
 											</tr>
 											<tr>
 												<td>Zinc, Zn (mg)</td>
-												<td>11</td>
+												<td>{{micros.Zinc[0]}}</td>
 												<th>Copper, Cu (mg)</th>
-												<th>0.9</th>
+												<th>{{micros.Copper[0]}}</th>
 											</tr>
 											<tr>
 												<td>Manganese, Mn (mg)</td>
-												<td>2.3</td>
+												<td>{{micros.Manganese[0]}}</td>
 												<td>Selenium, Se (microg)</td>
-												<td>55</td>
+												<td>{{micros.Selenium[0]}}</td>
 											</tr>
 											<tr>
 												<td>Fluoride, F (microg)</td>
-												<td>4000</td>
+												<td>{{micros.Fluoride[0]}}</td>
 												<th>Vitamin C, total ascorbic acid (mg)</th>
-												<th>90</th>
+												<th>{{micros.Vitamin_C[0]}}</th>
 											</tr>
 											<tr>
 												<td>Thiamin (mg)</td>
-												<td>1.2</td>
+												<td>{{micros.Thiamin[0]}}</td>
 												<td>Riboflavin (mg)</td>
-												<td>1.3</td>
+												<td>{{micros.Riboflavin[0]}}</td>
 											</tr>
 											<tr>
 												<td>Niacin (mg)</td>
-												<td>16</td>
+												<td>{{micros.Niacin[0]}}</td>
 												<td>Pantothenic acid (mg)</td>
-												<td>5</td>
+												<td>{{micros.Pantothenic_acid[0]}}</td>
 											</tr>
 											<tr>
 												<td>Vitamin B-6 (mg)</td>
-												<td>1.3</td>
+												<td>{{micros.Vitamin_B6[0]}}</td>
 												<td>Folate, total (microg)</td>
-												<td>400</td>
+												<td>{{micros.Folate[0]}}</td>
 											</tr>
 
 											<tr>
 												<td>Folic acid (microg)</td>
-												<td>400</td>
+												<td>{{micros.Folic_acid[0]}}</td>
 												<td>Folate, food (microg)</td>
-												<td>400</td>
+												<td>{{micros.Folate_food[0]}}</td>
 											</tr>
 											<tr>
 												<td>Folate, DFE (microg)</td>
-												<td>400</td>
+												<td>{{micros.Folate_DFE[0]}}</td>
 												<td>Choline, total (mg)</td>
-												<td>0.035</td>
+												<td>{{micros.Choline[0]}}</td>
 											</tr>
 											<tr>
 												<td>Betaine (mg)</td>
-												<td>2000</td>
+												<td>{{micros.Betaine[0]}}</td>
 												<td>Vitamin B-12 (microg)</td>
-												<td>2.4</td>
+												<td>{{micros.Vitamin_B12[0]}}</td>
 											</tr>
 											<tr>
 												<td>Vitamin B-12, added (microg)</td>
-												<td>2.4</td>
+												<td>{{micros.Vitamin_B12_added[0]}}</td>
 												<td>Vitamin A, RAE (microg)</td>
-												<td>900</td>
+												<td>{{micros.Vitamin_A[0]}}</td>
 											</tr>
 											<tr>
-												<td>Retinol (microg)</td>
-												<td>900</td>
+												<td>Vitamin K (phylloquinone) (microg)</td>
+												<td>{{micros.Vitamin_K[0]}}</td>
 												<td>Vitamin E (alpha-tocopherol) (mg)</td>
-												<td>900</td>
+												<td>{{micros.Vitamin_E[0]}}</td>
 											</tr>
 
 											<tr>
 												<td>Vitamin E, added (mg)</td>
-												<td>15</td>
+												<td>{{micros.Vitamin_E_added[0]}}</td>
 												<td>Vitamin D (D2 + D3) (microg)</td>
-												<td>15</td>
+												<td>{{micros.Vitamin_D[0]}}</td>
 											</tr>
 											<tr>
 												<td>Vitamin D2 (ergocalciferol) (microg)</td>
-												<td>15</td>
+												<td>{{micros.Vitamin_D2[0]}}</td>
 												<td>Vitamin D3 (cholecalciferol) (microg)</td>
-												<td>15</td>
-											</tr>
-											<tr>
-												<td>Vitamin D (IU)</td>
-												<td>15</td>
-												<td>Vitamin E (alpha-tocopherol) (mg)</td>
-												<td>15</td>
+												<td>{{micros.Vitamin_D3[0]}}</td>
 											</tr>
 											<tr>
 												<td>Retinol (microg)</td>
-												<td>15</td>
-												<td>Vitamin K (phylloquinone) (microg)</td>
-												<td>90</td>
+												<td>{{micros.Retinol[0]}}</td>
+												<td>Vitamin E (alpha-tocopherol) (mg)</td>
+												<td>{{micros.Vitamin_E[0]}}</td>
 											</tr>
 										</table>
 								</div>

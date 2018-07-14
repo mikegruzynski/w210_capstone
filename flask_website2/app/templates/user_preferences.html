@@ -51,13 +51,6 @@
 									</header>
 									<form action="" method="post" class="align-center">
                                             {{ form.hidden_tag() }}
-                                            <p>
-                                                {{ form.username.label }}<br>
-                                                {{ form.username(size=32) }}<br>
-                                                {% for error in form.username.errors %}
-                                                <span style="color: red;">[{{ error }}]</span>
-                                                {% endfor %}
-                                            </p>
 																						<p>
 																								{{ form.firstname.label }}<br>
 																								{{ form.firstname(size=64) }}<br>
@@ -81,14 +74,12 @@
                                             </p> -->
                                             <p>
                                             {{ form.gender.label }}<br>
-                                            <!--TODO: improve drop down lost or make radio buttons  -->
                                             <select>
                                             {% for gender in gender_list %}
-                                              <option value="{{gender}}">{{gender}}</option>
+                                                <option type="radio" value="{{gender}}">{{gender}}</option>
                                             {% endfor %}
                                             </select>
                                           </p>
-
                                             <p>
                                                 {{ form.age.label }}<br>
                                                 {{ form.age(size=32) }}<br>
