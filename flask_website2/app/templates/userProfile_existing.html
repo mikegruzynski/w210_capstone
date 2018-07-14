@@ -46,7 +46,7 @@
         <section id="banner">
           <div class="inner">
             <header>
-              <h1>Hello {{ user }}!</h1>
+              <h1>Hello {{ user_data.firstname }}!</h1>
               <p>Welcome Back to Root Cellar!</p>
             </header>
           </div>
@@ -59,12 +59,12 @@
 							<div class="col col1">
 								<h2>User Preferences Choices</h2>
 								<ul class="links">
-								 <li>Name: {{ user }}</li>
+								 <li>Name: {{ user_data.firstname }}</li>
 								 <li>Gender: {{user_data.gender}}</li>
 								 <li>Age: {{user_data.age	}}</li>
 								 <li>Height (Inches): {{user_data.height_in}} </li>
 								 <li>Weight (Pounds): {{user_data.weight_lb}}</li>
-								 <li>Exercise: 1-3 Times Per Week</li>
+								 <li>Activity Level: {{user_data.activity_level}}</li>
 								 <!-- TODO -->
 								 <!-- <li>No Dietary Restrictions</li>
 								 <li>Goal Diet: Low Carb</li>
@@ -94,27 +94,31 @@
 								  </tr>
 								  <tr>
 								    <td>calories</td>
-								    <td>{{ macros.calories }}</td>
+								    <td>{{ macros.calories[0] }}</td>
 										<td>Carbohydrates</td>
-										<td>{{ macros.carbs }}</td>
+										<td>{{ macros.carbohydrate[0] }}</td>
 								  </tr>
 								  <tr>
 								    <td>Protein</td>
-								    <td>{{ macros.protein }}</td>
+								    <td>{{ macros.protein[0] }}</td>
 										<td>Fat</td>
-										<td>{{ macros.fat }}</td>
+										<td>{{ macros.fat[0] }}</td>
 								  </tr>
 									<tr>
 										<td>Cholesterol</td>
-										<td>{{ macros.cholesterol }}</td>
+										<td>{{ macros.cholesterol[0] }}</td>
 										<td>Saturated Fat</td>
-										<td>{{ macros.sat_fat }}</td>
+										<td>{{ macros.saturated_fat[0] }}</td>
 									</tr>
 									<tr>
 										<td>Unsaturated Fat</td>
-										<td>{{ macros.unsat_fat }}</td>
+										<td>{{ macros.unsaturated_fat[0] }}</td>
 										<td>Sugar</td>
-										<td>{{ macros.sugar }}</td>
+										<td>{{ macros.sugar[0] }}</td>
+									</tr>
+									<tr>
+										<td>Fiber</td>
+										<td>{{ macros.fiber[0] }}</td>
 									</tr>
 								</table>
 

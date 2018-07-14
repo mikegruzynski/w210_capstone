@@ -94,7 +94,7 @@ def preference_survey():
    return render_template('survey.html', title='Preferences')
 
 # Render User Profile After User Has Set Up preferneces
-# Note! This is a fake - needs to be changed to dynamic
+# TODO: Find out if prefernecs have been provided yet and route to correct user page
 @app.route('/user_profile_existing')
 # @login_required
 def user_profile_existing():
@@ -105,9 +105,10 @@ def user_profile_existing():
         # TODO: Check which Micro Nutrients the User Wants
 
         user_pref_dict = {'age':28, 'gender':'Female', 'is_breastfeeding':False, 'is_pregnant':False,
-        'height_in':61, 'weight_lb':140}
+        'height_in':61, 'weight_lb':140, 'activity_level':'low',
+        'firstname':'My FirstName', 'lastname':'My LastName', 'user':user}
         macros = get_macro_nutrients(user_pref_dict)
         micros = get_micro_nutrients(user_pref_dict)
 
-        return render_template('userProfile_existing.html', user=user, user_data =user_pref_dict, macros=macros, micros=micros)
+        return render_template('userProfile_existing.html', user_data =user_pref_dict, macros=macros, micros=micros)
     return redirect(url_for('index'))
