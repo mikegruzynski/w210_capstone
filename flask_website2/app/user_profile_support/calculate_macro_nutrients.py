@@ -4,7 +4,6 @@ def calculate_macros(user_profile_dict):
     # user_profile_dict - contains the users information
     # return macors_dictionasry for user
 
-
     height = user_profile_dict.get('height_in')
     weight = user_profile_dict.get('weight_lb')
     activity_level = user_profile_dict.get('activity_level')
