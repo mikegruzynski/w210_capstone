@@ -1,0 +1,291 @@
+
+<!DOCTYPE HTML>
+<!--
+	Urban by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+
+<html>
+	<head>
+		<!-- <title>Generic - Urban by TEMPLATED</title> -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<!-- <div class="logo"><a href="index.html">Urban <span>by TEMPLATED</span></a></div> -->
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project</a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+					<li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Main -->
+			<div id="main">
+        <section id="banner">
+          <div class="inner">
+            <header>
+              <h1>Hello {{ current_user.username }}!</h1>
+              <p>Welcome Back to Root Cellar!</p>
+            </header>
+          </div>
+        </section>
+
+				<section class="wrapper style1">
+					<div class="inner">
+						<!-- 2 Columns -->
+							<div class="flex flex-1">
+							<div class="col col1">
+								<h2>User Preferences Choices</h2>
+								<ul class="links">
+								 <li>Name: {{ user_data.firstname }}</li>
+								 <li>Gender: {{user_data.gender}}</li>
+								 <li>Age: {{user_data.age	}}</li>
+								 <li>Height (Inches): {{user_data.height_in}} </li>
+								 <li>Weight (Pounds): {{user_data.weight_lb}}</li>
+								 <li>Activity Level: {{user_data.activity_level}}</li>
+								 <!-- TODO -->
+								 <!-- <li>No Dietary Restrictions</li>
+								 <li>Goal Diet: Low Carb</li>
+								 <li>Will spend Some effort (less than 60 min) for a meal</li> -->
+							 </ul>
+									<a href = "/preference_survey" class="button">Edit My Preferences</a>
+								</div>
+							</div>
+						</div>
+				</section>
+
+				<!-- Make Dynamic Name with Suggetsed Goals fro Nutrients  -->
+				<!-- TODO Create dynamic table, with Names Dynamic  -->
+				<section class="wrapper style1">
+					<div class="inner">
+						<!-- 2 Columns -->
+							<div class="flex flex-5">
+							<div class="col col1">
+								<h2>Nutrient Goals</h2>
+								<h5>Macro Nutrients</h5>
+								<table style="width:100%">
+								  <tr>
+								    <th>Nutrient</th>
+								    <th>Goal</th>
+										<th>Nutrient</th>
+										<th>Goal</th>
+								  </tr>
+								  <tr>
+								    <td>calories</td>
+								    <td>{{ macros.calories[0] }}</td>
+										<td>Carbohydrates</td>
+										<td>{{ macros.carbohydrate[0] }}</td>
+								  </tr>
+								  <tr>
+								    <td>Protein</td>
+								    <td>{{ macros.protein[0] }}</td>
+										<td>Fat</td>
+										<td>{{ macros.fat[0] }}</td>
+								  </tr>
+									<tr>
+										<td>Cholesterol</td>
+										<td>{{ macros.cholesterol[0] }}</td>
+										<td>Saturated Fat</td>
+										<td>{{ macros.saturated_fat[0] }}</td>
+									</tr>
+									<tr>
+										<td>Unsaturated Fat</td>
+										<td>{{ macros.unsaturated_fat[0] }}</td>
+										<td>Sugar</td>
+										<td>{{ macros.sugar[0] }}</td>
+									</tr>
+									<tr>
+										<td>Fiber</td>
+										<td>{{ macros.fiber[0] }}</td>
+									</tr>
+								</table>
+
+								<h5>Micro Nutrients</h5>
+									<p>Based on your selected preferences and personal inputs. These Should be your target Nutrients For the Day!
+										<table style="width:100%">
+											<tr>
+												<th>Nutrient</th>
+												<th>Goal</th>
+												<th>Nutrient</th>
+												<th>Goal</th>
+											</tr>
+											<tr>
+												<td>Calcium, Ca (mg)</td>
+												<td>{{micros.Calcium[0]}}</td>
+												<td>Iron, Fe (mg)</td>
+												<td>{{micros.Iron[0]}}</td>
+											</tr>
+											<tr>
+												<td>Magnesium, Mg (mg)</td>
+												<td>{{micros.Magnesium[0]}}</td>
+												<th>Phosphorus, P (mg)</th>
+												<th>{{micros.Phosphorus[0]}}</th>
+											</tr>
+											<tr>
+												<td>Potassium, K (mg)</td>
+												<td>{{micros.Potassium[0]}}</td>
+												<td>Sodium, Na (mg)</td>
+												<td>{{micros.Sodium[0]}}</td>
+											</tr>
+											<tr>
+												<td>Zinc, Zn (mg)</td>
+												<td>{{micros.Zinc[0]}}</td>
+												<th>Copper, Cu (mg)</th>
+												<th>{{micros.Copper[0]}}</th>
+											</tr>
+											<tr>
+												<td>Manganese, Mn (mg)</td>
+												<td>{{micros.Manganese[0]}}</td>
+												<td>Selenium, Se (microg)</td>
+												<td>{{micros.Selenium[0]}}</td>
+											</tr>
+											<tr>
+												<td>Fluoride, F (microg)</td>
+												<td>{{micros.Fluoride[0]}}</td>
+												<th>Vitamin C, total ascorbic acid (mg)</th>
+												<th>{{micros.Vitamin_C[0]}}</th>
+											</tr>
+											<tr>
+												<td>Thiamin (mg)</td>
+												<td>{{micros.Thiamin[0]}}</td>
+												<td>Riboflavin (mg)</td>
+												<td>{{micros.Riboflavin[0]}}</td>
+											</tr>
+											<tr>
+												<td>Niacin (mg)</td>
+												<td>{{micros.Niacin[0]}}</td>
+												<td>Pantothenic acid (mg)</td>
+												<td>{{micros.Pantothenic_acid[0]}}</td>
+											</tr>
+											<tr>
+												<td>Vitamin B-6 (mg)</td>
+												<td>{{micros.Vitamin_B6[0]}}</td>
+												<td>Folate, total (microg)</td>
+												<td>{{micros.Folate[0]}}</td>
+											</tr>
+
+											<tr>
+												<td>Folic acid (microg)</td>
+												<td>{{micros.Folic_acid[0]}}</td>
+												<td>Folate, food (microg)</td>
+												<td>{{micros.Folate_food[0]}}</td>
+											</tr>
+											<tr>
+												<td>Folate, DFE (microg)</td>
+												<td>{{micros.Folate_DFE[0]}}</td>
+												<td>Choline, total (mg)</td>
+												<td>{{micros.Choline[0]}}</td>
+											</tr>
+											<tr>
+												<td>Betaine (mg)</td>
+												<td>{{micros.Betaine[0]}}</td>
+												<td>Vitamin B-12 (microg)</td>
+												<td>{{micros.Vitamin_B12[0]}}</td>
+											</tr>
+											<tr>
+												<td>Vitamin B-12, added (microg)</td>
+												<td>{{micros.Vitamin_B12_added[0]}}</td>
+												<td>Vitamin A, RAE (microg)</td>
+												<td>{{micros.Vitamin_A[0]}}</td>
+											</tr>
+											<tr>
+												<td>Vitamin K (phylloquinone) (microg)</td>
+												<td>{{micros.Vitamin_K[0]}}</td>
+												<td>Vitamin E (alpha-tocopherol) (mg)</td>
+												<td>{{micros.Vitamin_E[0]}}</td>
+											</tr>
+
+											<tr>
+												<td>Vitamin E, added (mg)</td>
+												<td>{{micros.Vitamin_E_added[0]}}</td>
+												<td>Vitamin D (D2 + D3) (microg)</td>
+												<td>{{micros.Vitamin_D[0]}}</td>
+											</tr>
+											<tr>
+												<td>Vitamin D2 (ergocalciferol) (microg)</td>
+												<td>{{micros.Vitamin_D2[0]}}</td>
+												<td>Vitamin D3 (cholecalciferol) (microg)</td>
+												<td>{{micros.Vitamin_D3[0]}}</td>
+											</tr>
+											<tr>
+												<td>Retinol (microg)</td>
+												<td>{{micros.Retinol[0]}}</td>
+												<td>Vitamin E (alpha-tocopherol) (mg)</td>
+												<td>{{micros.Vitamin_E[0]}}</td>
+											</tr>
+										</table>
+								</div>
+							</div>
+						</div>
+					</section>
+
+					<!-- Radar and Bar Plots - Add from Python Images -->
+						<section class="wrapper style1">
+						<div class="inner">
+							<!-- 2 Columns -->
+							<div class="flex flex-1">
+								<div class="col align-center">
+									<div class="image square fit">
+										<img src="{{ url_for('static', filename='images/test_radar.png') }}" alt="" />
+									</div>
+									<p>Radar Plot Image</p>
+
+						<div class="inner">
+							<!-- 2 Columns -->
+							<div class="flex flex-1">
+								<div class="col align-center">
+									<div class="image square fit">
+										<img src="{{ url_for('static', filename='images/test_stacked_barplot.png') }}" alt="" />
+									</div>
+									<p>Bar Plot Image</p>
+								</div>
+						</div>
+
+						</section>
+
+
+						<section class="wrapper style1">
+						<div class="inner">
+							<!-- 2 Columns -->
+								<div class="flex flex-1">
+								 <div class="col col1">
+									<h2>Your Meal Suggetions for the Week</h2>
+									 <ul class="links">
+										<li><a href = "https://www.epicurious.com/recipes/food/views/grilled-leg-of-lamb-with-ancho-chile-marinade-359334">Grilled Leg of Lamb with Ancho Chile Marinade</a></li>
+										<li><a href = "https://www.epicurious.com/recipes/food/views/buttermilk-fried-shrimp">buttermilk-fried-shrimp</a></li>
+										<li><a href = "https://www.epicurious.com/recipes/food/views/lamb-goat-cheese-and-heirloom-tomato-salad">Lamb Goat Cheese and Heirloom Tomato Salad</a></li>
+										<li><a href = "https://www.epicurious.com/recipes/food/views/stuffed-sweet-potatoes-with-beans-and-guacamole">stuffed-sweet-potatoes-with-beans-and-guacamole</a></li>
+										<li><a href = "https://www.epicurious.com/recipes/food/views/orecchiette-pasta-with-buttermilk-peas-and-pistachios">Orecchiette Pasta With Buttermilk Peas and Pistachios</a></li>
+									</ul>
+									</div>
+								</div>
+							</div>
+						</section>
+
+       <p>
+
+			</div>
+	</body>
+</html>
