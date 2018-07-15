@@ -59,7 +59,6 @@
 							<div class="col col1">
 								<h2>User Profile Information</h2>
 								<ul class="links">
-								 <li>Name: {{ user_data.firstname.values[0] }}</li>
 								 <li>Gender: {{user_data.gender.values[0]}}</li>
 								 <li>Age: {{user_data.age.values[0]	}}</li>
 								 <li>Height (Inches): {{user_data.height_in.values[0]}} </li>
@@ -78,6 +77,7 @@
 
 				<!-- Make Dynamic Name with Suggetsed Goals fro Nutrients  -->
 				<!-- TODO Create dynamic table, with Names Dynamic  -->
+				<!-- TODO Add units -->
 				<section class="wrapper style1">
 					<div class="inner">
 						<!-- 2 Columns -->
@@ -127,7 +127,7 @@
 								</table>
 
 								<h4>Micro Nutrients</h4>
-									<p>Based on your selected preferences and personal inputs. These Should be your target Nutrients For the Day!
+									<p>Target Nutrients For the Day!
 										<table style="width:100%">
 										<thead>
 											<tr>

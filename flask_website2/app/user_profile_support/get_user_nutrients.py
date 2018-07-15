@@ -39,10 +39,5 @@ def get_micro_nutrients(user_profile_data, user_micro_choices=False):
     return user_micros_dict
 
 def get_macro_nutrients(user_profile_data):
-
     macros_dict = calculate_macros(user_profile_data)
-    # macros_dict = dict(calories=2000, carbs=467.3,
-    # protein=142.5, fat=67.8, cholesterol=300.0,
-    # sat_fat=33.9, unsat_fat=101.6, sugar=33.9)
-
     return macros_dict

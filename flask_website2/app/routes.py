@@ -71,12 +71,11 @@ def user_profile():
         if user_profile_data is not False:
 
             # Calculate Micro and Macros for the User
-            macros, macros_df = get_macro_nutrients(user_profile_data)
+            macros = get_macro_nutrients(user_profile_data)
             micros = get_micro_nutrients(user_profile_data)
 
             # Render the Users Profile Page
-            return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros,
-            macros_df=macros_df, micros=micros)
+            return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros,micros=micros)
         else:
             # Render the New User SetUp page until they comlete prefernece
             return render_template('userProfile_new.html', title="User Preferneces", user=user)

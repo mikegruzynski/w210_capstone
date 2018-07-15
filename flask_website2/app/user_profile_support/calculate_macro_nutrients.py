@@ -70,10 +70,5 @@ def calculate_macros(user_profile_data):
                              'unsaturated_fat': [unsaturated_fat],
                              'sugar': [sugar]
                              }
-    nutrients =  ['calories',' protein', 'fat', 'carbohydrate', 'fiber',
-    'cholesterol', 'saturated_fat', 'unsaturated_fat', 'sugar']
-    values =  [[calories], [protein], [fat], [carbohydrates], [fiber],
-    [cholesterol], [saturated_fat],  [unsaturated_fat], [sugar]]
-    macros_df = pd.DataFrame(data = {'Nutrient':nutrients, 'Amounts':values})
 
-    return macros_dict, macros_df
+    return macros_dict 
