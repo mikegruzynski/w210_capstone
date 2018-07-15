@@ -2,10 +2,14 @@ import json
 import pandas as pd
 from collections import Counter
 import networkx as nx
+from sklearn.decomposition import PCA
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.preprocessing import MinMaxScaler
 from rootseller import nutrtion
+from rootseller import rootprofile
 
 class Research(object):
-    def __init__(self):
+    def __init__(self, profile_init):
         try:
             with open('C:/Users/mgruz/Desktop/w210/data/recipe/recipe_clean_USE.json') as f:
                 self.recipe_clean = json.load(f)
@@ -13,7 +17,13 @@ class Research(object):
             with open('C:/Users/pa351d/Desktop/w210/data/recipe/recipe_clean_USE.json') as f:
                 self.recipe_clean = json.load(f)
 
+        try:
+            self.df_pca = pd.read_csv('C:/Users/mgruz/Desktop/w210/data/nutrient/compiled/pca_nutrition_normalized_minmax_df.csv')
+        except:
+            self.df_pca = None
+
         self.nutrtion_init = nutrtion.Nutrition()
+        self.profile_init = profile_init
 
     def make_social_network_dict(self):
         network_dict = {}
@@ -53,7 +63,7 @@ class Research(object):
                 try:
                     label_dict[sub_key] = self.nutrtion_init.NDB_NO_lookup(sub_key, filter_list='Description').get_values()[0]
                 except:
-                    print 'ERROR', sub_key
+                    print('ERROR', sub_key)
         for key in label_dict.keys():
             G.add_node(label_dict[key])
         for key in social_food_dict.keys():
@@ -87,10 +97,50 @@ class Research(object):
 
         return path_df
 
+    def pca_space_transformation(self, filter_list):
+        minmax_scaler = MinMaxScaler()
+        pca_method_three = PCA(n_components=3)
+        pca_transform_3 = pca_method_three.fit_transform(minmax_scaler.fit_transform(self.nutrtion_init.nutritional_normalized_database[filter_list]))
+        df_pca = pd.DataFrame(pca_transform_3)
+        df_pca.columns = ['PCA_1', 'PCA_2', 'PCA_3']
+        df_pca['Category'] = self.nutrtion_init.nutritional_normalized_database['Category']
+        df_pca['Description'] = self.nutrtion_init.nutritional_normalized_database['Description']
+        df_pca['NDB_NO'] = self.nutrtion_init.nutritional_normalized_database['NDB_NO']
 
-research_init = Research()
-social_food_dict = research_init.make_social_network_dict()
-G = research_init.build_recipe_graph(social_food_dict)
-path_df = research_init.shortest_paths_and_weights(G, 'Eggplant, raw', 'Celery, raw', cutoff=2)
+        df_pca.to_csv('C:/Users/mgruz/Desktop/w210/data/nutrient/compiled/pca_nutrition_normalized_minmax_df.csv')
 
+        return df_pca
+
+    def macro_space_distance_top_n(self, n_values, tag, food_category_list):
+        minmax_scaler = MinMaxScaler()
+        food_to_replace = self.nutrtion_init.NDB_NO_lookup_normalized(tag, filter_list=['Description']).get_values()[0][0]
+
+        temp_row = self.nutrtion_init.NDB_NO_lookup_normalized(tag, filter_list=self.profile_init.macro_list)
+        temp_df = self.nutrtion_init.nutritional_normalized_database.copy()
+
+        if 'raw' in food_to_replace.lower():
+            temp_df = temp_df[(temp_df['Description'].str.contains('raw'))].reset_index()
+
+        temp_minmax_df = minmax_scaler.fit_transform(temp_df[self.profile_init.macro_list])
+        temp_row_minmax = minmax_scaler.transform(temp_row)[0]
+
+        distance_list = []
+        for i in range(len(temp_df)):
+            distance_list.append(1 - cosine_similarity(temp_row_minmax.reshape(1, -1), temp_minmax_df[i].reshape(1, -1))[0][0])
+        se2 = pd.Series(distance_list)
+        temp_df['distance'] = se2.values
+
+        tag_list = []
+        for description in food_category_list:
+            print(description)
+            for i in range(n_values):
+                tag_list.append(temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['NDB_NO'].get_values()[i])
+                print('\t', temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['distance'].get_values()[i], temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['Description'].get_values()[i])
+                for ii in self.profile_init.macro_list:
+                    normalized_food = temp_row[ii].get_values()[0]
+                    normalized_food_next = self.nutrtion_init.nutritional_database[self.nutrtion_init.nutritional_database['NDB_NO'] == temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['NDB_NO'].get_values()[i]][ii].get_values()[0]
+                    # print('\t\t', "{:40s}, {:10f}, {:10f}".format(ii, normalized_food, normalized_food_next))
+                print('\n')
+
+        return tag_list
 

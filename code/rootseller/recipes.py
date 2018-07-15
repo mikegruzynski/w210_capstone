@@ -96,6 +96,8 @@ class Recipes(object):
                                               'kilogram': [0.001]
                                               })
 
+        self.food_size = ["small", "medium", "large", "about"]
+
     def extract_recipe_dataframe(self, tag, conversion_factor):
         df_temp = self.nutrtion_init.NDB_NO_lookup(tag, filter_list=self.filter_list)
         df_temp = df_temp * float(conversion_factor)
@@ -107,7 +109,7 @@ class Recipes(object):
         temp_nutritional_df = self.nutrtion_init.NDB_NO_lookup(tag, filter_list=['Measure', 'Weight(g)'])
         nutrition_df_measure = temp_nutritional_df['Measure'].get_values()[0].replace(",", "")
         nutrition_df_measure_list = nutrition_df_measure.split(" ")
-        nutrition_df_amount = float(filter(None, re.findall(r"([/.0-9]*)", nutrition_df_measure))[0])
+        nutrition_df_amount = float(list(filter(None, re.findall(r"([/.0-9]*)", nutrition_df_measure)))[0])
 
         nutrition_df_weight = temp_nutritional_df['Weight(g)'].get_values()[0]
 
@@ -130,6 +132,8 @@ class Recipes(object):
             nutrition_df_key = 'whole'
             nutrition_df_type = 'unit'
 
+
+
         if recipe_type == 'weight':
             temp_recipe_g = float(recipe_amount) * (float(self.weight_unit_df['gram'].get_values()[0]) / float(self.weight_unit_df[recipe_key].get_values()[0]))
             conversion_factor = temp_recipe_g / nutrition_df_weight
@@ -137,7 +141,6 @@ class Recipes(object):
         elif recipe_type == 'volume' and recipe_type == nutrition_df_type:
             conversion_factor = (float(recipe_amount) * float(self.volume_unit_df[nutrition_df_key].get_values()[0])) / (float(nutrition_df_amount) * float(self.volume_unit_df[recipe_key].get_values()[0]))
         else:
-            # conversion_factor = 'LOOKUP DATABASE'
             conversion_factor = self.ambiguous_df_look_up(tag, recipe_ingredient, recipe_key)
 
         return conversion_factor
@@ -156,14 +159,21 @@ class Recipes(object):
 
         itr = 0
         matching_levenstein_ratio_list = []
-        while itr < len(filtered_ambiguous_df):
-            temp_ambiguos_ingredient = filtered_ambiguous_df.loc[itr, 'Ingredient']
-            temp_ambiguos_ingredient = re.sub(r"([/.0-9]*)", "", temp_ambiguos_ingredient).lstrip(" ")
 
-            matching_levenstein_ratio_list.append(Levenshtein.ratio(temp_ambiguos_ingredient, temp_recipe_ingredient))
-            itr += 1
+        if len(filtered_ambiguous_df) > 1:
+            while itr < len(filtered_ambiguous_df):
+                temp_ambiguos_ingredient = filtered_ambiguous_df.loc[itr, 'Ingredient']
+                temp_ambiguos_ingredient = re.sub(r"([/.0-9]*)", "", temp_ambiguos_ingredient).lstrip(" ")
 
-        levenstein_index = matching_levenstein_ratio_list.index(max(matching_levenstein_ratio_list))
+                matching_levenstein_ratio_list.append(Levenshtein.ratio(temp_ambiguos_ingredient, temp_recipe_ingredient))
+                itr += 1
+
+            levenstein_index = matching_levenstein_ratio_list.index(max(matching_levenstein_ratio_list))
+        elif len(filtered_ambiguous_df) == 1:
+            levenstein_index = 0
+        else:
+            print("\t\tERROR", recipe_ingredient, tag, unit_recip, self.food_unit_standard_dictionary[unit_recip]['type'])
+            levenstein_index = 0
 
         if self.food_unit_standard_dictionary[unit_recip]['type'] == 'weight':
             temp_recipe_g = float(amount_recipe) * float(self.weight_unit_df['gram'])
@@ -189,10 +199,11 @@ class Recipes(object):
         ingredient_split = " ".join(ingredient_split)
         ingredient_split = ingredient_split.split(" ")
 
+
         unit_list = list(set(unit_list_all).intersection(ingredient_split))
 
         food_unit_dict = {}
-        if unit_list > 1:
+        if len(unit_list) >= 1:
             for unit in unit_list:
                 food_unit_dict[ingredient_split.index(unit)] = unit
 
@@ -201,17 +212,31 @@ class Recipes(object):
     def extact_number_from_recipe(self, ingredient, food_unit_dict):
         ingredient_split = ingredient.split("-")
         ingredient_split = " ".join(ingredient_split)
-        amount_list = filter(None, re.findall(r"([/.0-9]*)", ingredient_split))
         ingredient_split = ingredient_split.strip("'").strip('"').split(" ")
 
+        initial_itr = 0
+        while initial_itr < len(ingredient_split):
+            if '/' in ingredient_split[initial_itr]:
+                try:
+                    top = ingredient_split[initial_itr].split('/')[0]
+                    bot = ingredient_split[initial_itr].split('/')[-1]
+                    ingredient_split[initial_itr] = str(float(top) / float(bot))
+                except:
+                    pass
+            initial_itr += 1
+
+        ingredient_split = " ".join(ingredient_split)
+
+        amount_list = list(filter(None, re.findall(r"([/.0-9]*)", ingredient_split)))
+
         food_amount_dict = {}
-        if amount_list > 1:
+        if len(amount_list) >= 1:
             for amount in amount_list:
                 if not amount == '.':
                     food_amount_dict[ingredient_split.index(amount)] = amount
 
-        amount_key_list = food_amount_dict.keys()
-        unit_key_list = food_unit_dict.keys()
+        amount_key_list = list(food_amount_dict.keys())
+        unit_key_list = list(food_unit_dict.keys())
 
         if len(amount_key_list) == 1 and len(unit_key_list) == 1:
             amount = float(food_amount_dict[amount_key_list[0]])
@@ -251,22 +276,74 @@ class Recipes(object):
 
         return amount, unit
 
-    def recipe_list_to_conversion_factor_list(self, recipe_id):
-        print recipe_id, self.recipe_clean[recipe_id]['name']
+    def recipe_list_to_conversion_factor_list(self, recipe_id, **kwargs):
+        if kwargs:
+            temp_dict = kwargs['dict']
+            # print recipe_id, temp_dict[recipe_id]['name']
+            itr = 0
+            df_list = []
+            while itr < len(temp_dict[recipe_id]['ingredients']):
+                try:
+                    if temp_dict[recipe_id]['ingredients'][itr] and temp_dict[recipe_id]['NDB_NO_tags'][itr] != 'np.nan' and temp_dict[recipe_id]['NDB_NO_tags'][itr] != '':
+                        food_unit_dict = self.extact_unit_from_recipe(temp_dict[recipe_id]['ingredients'][itr])
+                        amount, unit = self.extact_number_from_recipe(temp_dict[recipe_id]['ingredients'][itr], food_unit_dict)
+                        conversion_factor = self.unit_food_conversion(amount, unit, temp_dict[recipe_id]['NDB_NO_tags'][itr], temp_dict[recipe_id]['ingredients'][itr])
 
-        itr = 0
-        df_list = []
-        while itr < len(self.recipe_clean[recipe_id]['ingredients']):
-            if self.recipe_clean[recipe_id]['ingredients'][itr] and self.recipe_clean[recipe_id]['NDB_NO_tags'][itr] != 'np.nan' and self.recipe_clean[recipe_id]['NDB_NO_tags'][itr] != '':
-                food_unit_dict = self.extact_unit_from_recipe(self.recipe_clean[recipe_id]['ingredients'][itr])
-                amount, unit = self.extact_number_from_recipe(self.recipe_clean[recipe_id]['ingredients'][itr], food_unit_dict)
-                conversion_factor = self.unit_food_conversion(amount, unit, self.recipe_clean[recipe_id]['NDB_NO_tags'][itr], self.recipe_clean[recipe_id]['ingredients'][itr])
+                        if conversion_factor != 'LOOKUP DATABASE':
+                            df_temp = self.extract_recipe_dataframe(temp_dict[recipe_id]['NDB_NO_tags'][itr], conversion_factor)
+                            df_list.append(df_temp)
 
-                if conversion_factor != 'LOOKUP DATABASE':
-                    df_temp = self.extract_recipe_dataframe(self.recipe_clean[recipe_id]['NDB_NO_tags'][itr], conversion_factor)
+                    itr += 1
+                except:
+                    print("FAILED ingredient:", temp_dict[recipe_id]['ingredients'][itr])
+                    conversion_factor = 0
+                    df_temp = self.extract_recipe_dataframe(temp_dict[recipe_id]['NDB_NO_tags'][itr], conversion_factor)
                     df_list.append(df_temp)
+                    itr += 1
 
-            itr += 1
+            recipe_master_df = pd.concat(df_list)
+        else:
+            # print recipe_id, self.recipe_clean[recipe_id]['name']
+            itr = 0
+            df_list = []
+            while itr < len(self.recipe_clean[recipe_id]['ingredients']):
+                if self.recipe_clean[recipe_id]['ingredients'][itr] and self.recipe_clean[recipe_id]['NDB_NO_tags'][itr] != 'np.nan' and self.recipe_clean[recipe_id]['NDB_NO_tags'][itr] != '':
+                    food_unit_dict = self.extact_unit_from_recipe(self.recipe_clean[recipe_id]['ingredients'][itr])
+                    amount, unit = self.extact_number_from_recipe(self.recipe_clean[recipe_id]['ingredients'][itr], food_unit_dict)
 
-        recipe_master_df = pd.concat(df_list)
+
+                    conversion_factor = self.unit_food_conversion(amount, unit, self.recipe_clean[recipe_id]['NDB_NO_tags'][itr], self.recipe_clean[recipe_id]['ingredients'][itr])
+
+                    if conversion_factor != 'LOOKUP DATABASE':
+                        df_temp = self.extract_recipe_dataframe(self.recipe_clean[recipe_id]['NDB_NO_tags'][itr], conversion_factor)
+                        df_list.append(df_temp)
+    
+                itr += 1
+            recipe_master_df = pd.concat(df_list)
+
         return recipe_master_df
+
+    def recipe_alternitive_create(self, replace_tag, tag_list, new_recipe_dict):
+
+        for key in new_recipe_dict.keys():
+            if '_ALT_' not in key:
+                orig_recipe_dict_names = key
+
+        index_to_replace = new_recipe_dict[orig_recipe_dict_names]['NDB_NO_tags'].index("\"{}\"".format(replace_tag.strip('"')))
+        original_NDB_list = new_recipe_dict[orig_recipe_dict_names]['NDB_NO_tags'][:]
+
+        recipe_id_list = [orig_recipe_dict_names]
+        for i in range(len(tag_list)):
+            recipe_name_itr = len(new_recipe_dict.keys())
+            new_dict_name = orig_recipe_dict_names + '_ALT_' + str(recipe_name_itr)
+            recipe_id_list.append(new_dict_name)
+            new_recipe_dict[new_dict_name] = new_recipe_dict[key].copy()
+
+            temp_NDB_list = original_NDB_list[:]
+            temp_NDB_list[index_to_replace] = tag_list[i]
+
+            new_recipe_dict[new_dict_name]['NDB_NO_tags'] = temp_NDB_list
+            new_recipe_dict[new_dict_name]['name'] = str(new_recipe_dict[orig_recipe_dict_names]['name']) + ' ALT_' + str(recipe_name_itr)
+
+
+        return new_recipe_dict

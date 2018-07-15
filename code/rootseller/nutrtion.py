@@ -23,3 +23,10 @@ class Nutrition(object):
             return self.nutritional_database[self.nutritional_database['NDB_NO'] == "\"{}\"".format(tag.strip('"'))][kwargs["filter_list"]]
         else:
             return self.nutritional_database[self.nutritional_database['NDB_NO'] ==  "\"{}\"".format(tag.strip('"'))]
+
+    def NDB_NO_lookup_normalized(self, tag, **kwargs):
+
+        if "filter_list" in kwargs.keys():
+            return self.nutritional_normalized_database[self.nutritional_normalized_database['NDB_NO'] == "\"{}\"".format(tag.strip('"'))][kwargs["filter_list"]]
+        else:
+            return self.nutritional_normalized_database[self.nutritional_normalized_database['NDB_NO'] ==  "\"{}\"".format(tag.strip('"'))]
