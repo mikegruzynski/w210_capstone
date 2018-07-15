@@ -1,35 +1,39 @@
 import pandas as pd
 
-def calculate_macros(user_profile_dict):
+def calculate_macros(user_profile_data):
     # user_profile_dict - contains the users information
     # return macors_dictionasry for user
 
-    height = user_profile_dict.get('height_in')
-    weight = user_profile_dict.get('weight_lb')
-    activity_level = user_profile_dict.get('activity_level')
-    age = user_profile_dict.get('age')
+    height = int(user_profile_data.height_in.values[0])
+    weight = int(user_profile_data.weight_lb.values[0])
+    activity_level = user_profile_data.activity_level.values[0]
+    age = int(user_profile_data.age.values[0])
 
-    if activity_level == 'none':
+    if activity_level == 'Little to no exercise':
         calorie_factor = 1.2
         protein_factor = 0.4
-    elif activity_level == 'low':
+    elif activity_level == 'Exercise 1-3 times per week':
         calorie_factor = 1.375
         protein_factor = 0.75
-    elif activity_level == 'moderate':
+    elif activity_level == 'Exercise 3-5 times per week':
         calorie_factor = 1.55
         protein_factor = 0.75
-    elif activity_level == 'heavy':
+    elif (activity_level == 'Exercise 6+ times per week') or (activity_level == 'Exercise 6+ times per week?'):
         calorie_factor = 1.9
         protein_factor = 1.0
 
     profile_dict = {}
 
-    if user_profile_dict.get('gender') == 'Male':
+    if user_profile_data.gender.values[0] == 'Male':
         # The Original Harris-Benedict Equation
         calories = 66.473 + 13.7516 * (weight / 2.2) + 5.0033 * (height * 2.54) - 6.755 * age
         calories = round(calories * calorie_factor, 1)
-    elif user_profile_dict.get('gender') == 'Female':
-        calories = 655.0955 + 9.5634 * (weight / 2.2) + 1.8496 * (height * 2.54) - 4.6756 * age
+    elif user_profile_data.gender.values[0] == 'Female':
+        calories = 655.0955 + 9.5634 * (int(weight) / 2.2) + 1.8496 * (height * 2.54) - 4.6756 * age
+        calories = round(calories * calorie_factor, 1)
+    elif user_profile_data.gender.values[0] == 'Prefer Not to Say':
+        # Using Male Calculation if geder is unknown
+        calories = 66.473 + 13.7516 * (weight / 2.2) + 5.0033 * (height * 2.54) - 6.755 * age
         calories = round(calories * calorie_factor, 1)
 
     # Proteins (g)
@@ -66,6 +70,10 @@ def calculate_macros(user_profile_dict):
                              'unsaturated_fat': [unsaturated_fat],
                              'sugar': [sugar]
                              }
+    nutrients =  ['calories',' protein', 'fat', 'carbohydrate', 'fiber',
+    'cholesterol', 'saturated_fat', 'unsaturated_fat', 'sugar']
+    values =  [[calories], [protein], [fat], [carbohydrates], [fiber],
+    [cholesterol], [saturated_fat],  [unsaturated_fat], [sugar]]
+    macros_df = pd.DataFrame(data = {'Nutrient':nutrients, 'Amounts':values})
 
-
-    return macros_dict
+    return macros_dict, macros_df

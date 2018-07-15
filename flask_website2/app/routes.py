@@ -2,10 +2,9 @@ from flask import render_template, flash, redirect, url_for
 from flask_login import current_user, login_user, logout_user
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
-from app.models import User #  UserPreference
+from app.models import User
 from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPrefernece_Answers import get_userPreferences
-# import StringIO
 
 
 @app.route('/')
@@ -68,19 +67,16 @@ def user_profile():
     if current_user.is_authenticated:
         user = current_user.username
         # Check if user has completed user preferneces form
-        user_pref_dict = get_userPreferences(user)
-        if user_pref_dict is not False:
-            # TODO: Fix to use the dict from google
-            user_pref_dict = {'age':28, 'gender':'Female', 'is_breastfeeding':False, 'is_pregnant':False,
-            'height_in':61, 'weight_lb':140, 'activity_level':'low',
-            'firstname':'My FirstName', 'lastname':'My LastName', 'user':user}
+        user_profile_data = get_userPreferences(user)
+        if user_profile_data is not False:
 
             # Calculate Micro and Macros for the User
-            macros = get_macro_nutrients(user_pref_dict)
-            micros = get_micro_nutrients(user_pref_dict)
+            macros, macros_df = get_macro_nutrients(user_profile_data)
+            micros = get_micro_nutrients(user_profile_data)
 
             # Render the Users Profile Page
-            return render_template('userProfile_existing.html', user_data =user_pref_dict, macros=macros, micros=micros)
+            return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros,
+            macros_df=macros_df, micros=micros)
         else:
             # Render the New User SetUp page until they comlete prefernece
             return render_template('userProfile_new.html', title="User Preferneces", user=user)

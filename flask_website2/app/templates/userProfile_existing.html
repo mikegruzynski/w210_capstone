@@ -46,7 +46,7 @@
         <section id="banner">
           <div class="inner">
             <header>
-              <h1>Hello {{ user_data.firstname }}!</h1>
+              <h1>Hello {{ user_data.firstname.values[0] }}!</h1>
               <p>Welcome Back to Root Cellar!</p>
             </header>
           </div>
@@ -57,14 +57,14 @@
 						<!-- 2 Columns -->
 							<div class="flex flex-1">
 							<div class="col col1">
-								<h2>User Preferences Choices</h2>
+								<h2>User Profile Information</h2>
 								<ul class="links">
-								 <li>Name: {{ user_data.firstname }}</li>
-								 <li>Gender: {{user_data.gender}}</li>
-								 <li>Age: {{user_data.age	}}</li>
-								 <li>Height (Inches): {{user_data.height_in}} </li>
-								 <li>Weight (Pounds): {{user_data.weight_lb}}</li>
-								 <li>Activity Level: {{user_data.activity_level}}</li>
+								 <li>Name: {{ user_data.firstname.values[0] }}</li>
+								 <li>Gender: {{user_data.gender.values[0]}}</li>
+								 <li>Age: {{user_data.age.values[0]	}}</li>
+								 <li>Height (Inches): {{user_data.height_in.values[0]}} </li>
+								 <li>Weight (Pounds): {{user_data.weight_lb.values[0]}}</li>
+								 <li>Activity Level: {{user_data.activity_level.values[0]}}</li>
 								 <!-- TODO -->
 								 <!-- <li>No Dietary Restrictions</li>
 								 <li>Goal Diet: Low Carb</li>
@@ -84,14 +84,17 @@
 							<div class="flex flex-5">
 							<div class="col col1">
 								<h2>Nutrient Goals</h2>
-								<h5>Macro Nutrients</h5>
-								<table style="width:100%">
-								  <tr>
+								<h4>Macro Nutrients</h4>
+								<table style="width:90%">
+							 <thead>
+									<tr>
 								    <th>Nutrient</th>
-								    <th>Goal</th>
+								    <th align="center">Goal</th>
 										<th>Nutrient</th>
-										<th>Goal</th>
+										<th align="center">Goal</th>
 								  </tr>
+								</thead>
+								<tbody>
 								  <tr>
 								    <td>calories</td>
 								    <td>{{ macros.calories[0] }}</td>
@@ -120,34 +123,38 @@
 										<td>Fiber</td>
 										<td>{{ macros.fiber[0] }}</td>
 									</tr>
+								</tbody>
 								</table>
 
-								<h5>Micro Nutrients</h5>
+								<h4>Micro Nutrients</h4>
 									<p>Based on your selected preferences and personal inputs. These Should be your target Nutrients For the Day!
 										<table style="width:100%">
+										<thead>
 											<tr>
 												<th>Nutrient</th>
-												<th>Goal</th>
+												<th align="center">Goal</th>
 												<th>Nutrient</th>
-												<th>Goal</th>
+												<th align="center">Goal</th>
+											</tr>
+										</thead>
+											<tbody>
+											<tr>
+												<td>Calcium</td>
+												<td>{{micros.Calcium[0]}} mg</td>
+												<td>Iron</td>
+												<td>{{micros.Iron[0]}} mg</td>
 											</tr>
 											<tr>
-												<td>Calcium, Ca (mg)</td>
-												<td>{{micros.Calcium[0]}}</td>
-												<td>Iron, Fe (mg)</td>
-												<td>{{micros.Iron[0]}}</td>
+												<td>Magnesium</td>
+												<td>{{micros.Magnesium[0]}} mg</td>
+												<th>Phosphorus</th>
+												<th>{{micros.Phosphorus[0]}} mg</th>
 											</tr>
 											<tr>
-												<td>Magnesium, Mg (mg)</td>
-												<td>{{micros.Magnesium[0]}}</td>
-												<th>Phosphorus, P (mg)</th>
-												<th>{{micros.Phosphorus[0]}}</th>
-											</tr>
-											<tr>
-												<td>Potassium, K (mg)</td>
-												<td>{{micros.Potassium[0]}}</td>
-												<td>Sodium, Na (mg)</td>
-												<td>{{micros.Sodium[0]}}</td>
+												<td>Potassium</td>
+												<td>{{micros.Potassium[0]}} mg</td>
+												<td>Sodium</td>
+												<td>{{micros.Sodium[0]}} mg</td>
 											</tr>
 											<tr>
 												<td>Zinc, Zn (mg)</td>
@@ -156,85 +163,86 @@
 												<th>{{micros.Copper[0]}}</th>
 											</tr>
 											<tr>
-												<td>Manganese, Mn (mg)</td>
-												<td>{{micros.Manganese[0]}}</td>
-												<td>Selenium, Se (microg)</td>
-												<td>{{micros.Selenium[0]}}</td>
+												<td>Manganese</td>
+												<td>{{micros.Manganese[0]}} mg</td>
+												<td>Selenium</td>
+												<td>{{micros.Selenium[0]}} microg</td>
 											</tr>
 											<tr>
-												<td>Fluoride, F (microg)</td>
-												<td>{{micros.Fluoride[0]}}</td>
-												<th>Vitamin C, total ascorbic acid (mg)</th>
-												<th>{{micros.Vitamin_C[0]}}</th>
+												<td>Fluoride </td>
+												<td>{{micros.Fluoride[0]}} microg</td>
+												<th>Vitamin C, total ascorbic acid</th>
+												<th>{{micros.Vitamin_C[0]}} mg</th>
 											</tr>
 											<tr>
-												<td>Thiamin (mg)</td>
-												<td>{{micros.Thiamin[0]}}</td>
-												<td>Riboflavin (mg)</td>
-												<td>{{micros.Riboflavin[0]}}</td>
+												<td>Thiamin</td>
+												<td>{{micros.Thiamin[0]}} mg</td>
+												<td>Riboflavin</td>
+												<td>{{micros.Riboflavin[0]}} mg</td>
 											</tr>
 											<tr>
-												<td>Niacin (mg)</td>
-												<td>{{micros.Niacin[0]}}</td>
-												<td>Pantothenic acid (mg)</td>
-												<td>{{micros.Pantothenic_acid[0]}}</td>
+												<td>Niacin</td>
+												<td>{{micros.Niacin[0]}} mg</td>
+												<td>Pantothenic Acid</td>
+												<td>{{micros.Pantothenic_acid[0]}} mg</td>
 											</tr>
 											<tr>
-												<td>Vitamin B-6 (mg)</td>
-												<td>{{micros.Vitamin_B6[0]}}</td>
-												<td>Folate, total (microg)</td>
-												<td>{{micros.Folate[0]}}</td>
+												<td>Vitamin B-6 </td>
+												<td>{{micros.Vitamin_B6[0]}} mg</td>
+												<td>Folate, total </td>
+												<td>{{micros.Folate[0]}} microg</td>
 											</tr>
 
 											<tr>
-												<td>Folic acid (microg)</td>
-												<td>{{micros.Folic_acid[0]}}</td>
-												<td>Folate, food (microg)</td>
-												<td>{{micros.Folate_food[0]}}</td>
+												<td>Folic acid </td>
+												<td>{{micros.Folic_acid[0]}} microg</td>
+												<td>Folate, food </td>
+												<td>{{micros.Folate_food[0]}} microg</td>
 											</tr>
 											<tr>
-												<td>Folate, DFE (microg)</td>
-												<td>{{micros.Folate_DFE[0]}}</td>
-												<td>Choline, total (mg)</td>
-												<td>{{micros.Choline[0]}}</td>
+												<td>Folate, DFE </td>
+												<td>{{micros.Folate_DFE[0]}} microg</td>
+												<td>Choline, total</td>
+												<td>{{micros.Choline[0]}} mg</td>
 											</tr>
 											<tr>
-												<td>Betaine (mg)</td>
-												<td>{{micros.Betaine[0]}}</td>
-												<td>Vitamin B-12 (microg)</td>
-												<td>{{micros.Vitamin_B12[0]}}</td>
+												<td>Betaine </td>
+												<td>{{micros.Betaine[0]}} mg</td>
+												<td>Vitamin B-12 </td>
+												<td>{{micros.Vitamin_B12[0]}} microg</td>
 											</tr>
 											<tr>
-												<td>Vitamin B-12, added (microg)</td>
-												<td>{{micros.Vitamin_B12_added[0]}}</td>
-												<td>Vitamin A, RAE (microg)</td>
-												<td>{{micros.Vitamin_A[0]}}</td>
+												<td>Vitamin B-12, added</td>
+												<td>{{micros.Vitamin_B12_added[0]}} microg</td>
+												<td>Vitamin A, RAE </td>
+												<td>{{micros.Vitamin_A[0]}} microg</td>
 											</tr>
 											<tr>
-												<td>Vitamin K (phylloquinone) (microg)</td>
-												<td>{{micros.Vitamin_K[0]}}</td>
-												<td>Vitamin E (alpha-tocopherol) (mg)</td>
-												<td>{{micros.Vitamin_E[0]}}</td>
+												<td>Vitamin K (phylloquinone)</td>
+												<td>{{micros.Vitamin_K[0]}} microg</td>
+												<td>Vitamin E (alpha-tocopherol)</td>
+												<td>{{micros.Vitamin_E[0]}} mg</td>
 											</tr>
 
 											<tr>
-												<td>Vitamin E, added (mg)</td>
-												<td>{{micros.Vitamin_E_added[0]}}</td>
-												<td>Vitamin D (D2 + D3) (microg)</td>
-												<td>{{micros.Vitamin_D[0]}}</td>
+												<td>Vitamin E, added</td>
+												<td>{{micros.Vitamin_E_added[0]}} mg</td>
+												<td>Vitamin D (D2 + D3)</td>
+												<td>{{micros.Vitamin_D[0]}} microg</td>
 											</tr>
 											<tr>
-												<td>Vitamin D2 (ergocalciferol) (microg)</td>
-												<td>{{micros.Vitamin_D2[0]}}</td>
-												<td>Vitamin D3 (cholecalciferol) (microg)</td>
-												<td>{{micros.Vitamin_D3[0]}}</td>
+												<td>Vitamin D2 </td>
+												<td>{{micros.Vitamin_D2[0]}} microg </td>
+												<td>Vitamin D3 </td>
+												<td>{{micros.Vitamin_D3[0]}} microg </td>
 											</tr>
 											<tr>
-												<td>Retinol (microg)</td>
-												<td>{{micros.Retinol[0]}}</td>
-												<td>Vitamin E (alpha-tocopherol) (mg)</td>
-												<td>{{micros.Vitamin_E[0]}}</td>
+												<td>Retinol </td>
+												<td>{{micros.Retinol[0]}} microg</td>
+												<td>Vitamin E </td>
+												<td>{{micros.Vitamin_E[0]}} mg</td>
 											</tr>
+											</tbody>
 										</table>
 								</div>
 							</div>

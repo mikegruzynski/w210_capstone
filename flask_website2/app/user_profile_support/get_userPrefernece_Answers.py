@@ -4,7 +4,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 
 def get_userPreferences(user):
-    # Returns the user preferences from teh googo
+    # Returns the user preferences from the google Form
     # Get User Prefernece Results from Google Drive for users
     # if None exist in data, return
     scope = ['https://spreadsheets.google.com/feeds',
@@ -27,19 +27,27 @@ def get_userPreferences(user):
       'Timestamp': u'7/9/2018 19:43:02',
       'What are you looking for in a nutrition app? (Multiple choice)': '',
       'What foods are you allergic to? (Please separate each item with a comma)': 'allergies',
-      'What is your age?': 'age',
+      'Age': 'age',
+      'First Name': 'firstname',
+      'Last Name': 'lastname',
+      'Are you Pregnant or Breastfeeding ': 'is_pregnant_breastfeeding',
       'What is your current / aspired diet type? (Pick the one that most applies to you)': 'diet',
       'What is your gender?': 'gender',
       'What is your height (in inches)?': 'height_in',
       'What is your weight (in lbs)?': 'weight_lb',
-      'Which of the following apply to you? (Multiple choice)': 'dietary_restrictions'}
+      'What foods are you allergic to or dislike? (Please separate each item with a comma)':'food_allergies',
+      'Which of the following apply to you? (Multiple choice)': 'dietary_restrictions',
+      'Timestamp':'timestamp'}
 
     userPref_df.rename(columns=rename_dict, inplace=True)
 
     # Look for user if exists in user preferneces
-    if any(userPref_df.username == 'user_mc'):
-        user_prefs = userPref_df[userPref_df.username == 'user_mc']
-        user_prefs = user_prefs.to_dict()
+    if any(userPref_df.username == user):
+        user_prefs = userPref_df[userPref_df.username == user]
+        # Choose Most Recent Answers
+        if len(user_prefs > 1):
+            user_prefs = user_prefs[user_prefs.timestamp == user_prefs.timestamp.max()]
+
         return(user_prefs)
     else:
         # Send to the user new user_profile page to fill out preferneces
