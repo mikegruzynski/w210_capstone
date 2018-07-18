@@ -71,4 +71,4 @@ def calculate_macros(user_profile_data):
                              'sugar': [sugar]
                              }
 
-    return macros_dict 
+    return macros_dict

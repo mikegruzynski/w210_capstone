@@ -5,6 +5,7 @@ from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
 from app.models import User
 from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPrefernece_Answers import get_userPreferences
+from app.user_profile_support.ingredientSubsitutions import run_master_ingredient_sub
 
 
 @app.route('/')
@@ -81,6 +82,54 @@ def user_profile():
             return render_template('userProfile_new.html', title="User Preferneces", user=user)
         return redirect(url_for('index'))
 
+
+@app.route('/sub_ingredients')
+def sub_ingredients():
+    if current_user.is_authenticated:
+        user = current_user.username
+        # Check if user has recipies
+        user_profile_data = get_userPreferences(user)
+        # filter_list
+        if user_profile_data is not False:
+
+            # Calculate Micro and Macros for the User
+            # macros = get_macro_nutrients(user_profile_data)
+            # micros = get_micro_nutrients(user_profile_data)
+            # filter_list = macros.keys() # micros.keys() # +
+
+            # TODO: Check User Profile for Which nutrients they are interested in
+            # Test with multiple Recipies
+            # Fix the fileter/micro/macro lists
+            # Visuals
+            # Figure out interaction
+            # User feedback save
+            # If All  - have a list of all prepared
+
+            filter_list = ['Iron, Fe (mg)', 'Magnesium, Mg (mg)', 'Manganese, Mn (mg)',
+            'Thiamin (mg)', 'Vitamin D (D2 + D3) (microg)', 'Energy (kcal)', 'Total lipid (fat) (g)',
+            'Carbohydrate, by difference (g)', 'Fiber, total dietary (g)', 'Cholesterol (mg)',
+            'Fatty acids, total saturated (g)', 'Fatty acids, total monounsaturated (g)',
+            'Fatty acids, total polyunsaturated (g)',
+             'Fatty acids, total trans (g)', 'Sugars, total (g)', 'Protein (g)']
+            # user_profile_data.filter_list = [filter_list]
+            # Get Recipe info from sub_ingredients
+            # list_keys = ['RECIPE_48743', 'RECIPE_9117']
+            # list_keys = ['RECIPE_48743']
+            # df_list, df_summed_list, name_list, recipe_id_list = get_df_recipe_ids(list_keys, user_profile_data, filter_list, micros, macros)
+            list_keys = ['RECIPE_24578']
+            df, df_list = run_master_ingredient_sub(user_profile_data, list_keys)
+
+            # TODO: Visualizations for Recipies
+            # TODO: get single replacement in UI
+            # Render the Users Profile Page
+            return render_template('sub_ingredients.html',
+            user_data=user_profile_data,
+            df=df,
+            df_list=df_list)
+        else:
+            # Render the New User SetUp page until they comlete prefernece
+            return render_template('userProfile_new.html', title="User Preferneces", user=user)
+        return redirect(url_for('index'))
 
 
 # User Prefernece Form
