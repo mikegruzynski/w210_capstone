@@ -1,0 +1,58 @@
+
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="#menu">Menu</a>
+			</header>
+
+			<!-- Nav -->
+				<nav id="menu">
+					<ul class="links">
+						<li><a href = "/index">Home</a></li>
+						<li><a href = "/about">About the Project </a></li>
+						{% if current_user.is_anonymous %}
+						<li><a href="/login">Login</a></li>
+						{% else %}
+					    <li><a href="/logout">Logout</a></li>
+					    <li><a href="/user_profile">User Profile</a></li>
+						{% endif %}
+					</ul>
+				</nav>
+
+		<!-- Main -->
+			<div id="main">
+
+				<!-- Section -->
+					<section class="wrapper">
+						<div class="inner">
+							<header class="align-center">
+								<h1>Please Fill Out the Below!</h1>
+								<p>Once submitted please visit your profile link from the menu</p>
+							</header>
+
+                            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScje_AVitzASqydFcGAFNJ3_sa1J9KBWCbx2-Df4N38gk5CIw/viewform?embedded=true" width="1200"
+                             height="600" frameborder="0" marginheight="0" marginwidth="0" align="center">Loading...</iframe>
+
+                        </div>
+					</section>
+
+
+			</div>
+
+	</body>
+</html>

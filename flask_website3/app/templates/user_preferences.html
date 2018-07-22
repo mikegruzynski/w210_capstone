@@ -1,0 +1,115 @@
+
+<!DOCTYPE HTML>
+<!--
+	Urban by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<head>
+		<!-- <title>Generic - Urban by TEMPLATED</title> -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<!-- <div class="logo"><a href="index.html">Urban <span>by TEMPLATED</span></a></div> -->
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project </a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+          </li><a href="/user_profile">User Profile</a></li>
+					<li></li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Main -->
+			<div id="main">
+
+				<!-- Section -->
+					<section class="wrapper">
+							<div class="inner">
+									<header class="align-center">
+										<h1>Enter User Preferneces</h1>
+									</header>
+									<form action="" method="post" class="align-center">
+                                            {{ form.hidden_tag() }}
+																						<p>
+																								{{ form.firstname.label }}<br>
+																								{{ form.firstname(size=64) }}<br>
+																								{% for error in form.firstname.errors %}
+																								<span style="color: red;">[{{ error }}]</span>
+																								{% endfor %}
+																						</p>
+                                            <p>
+                                                {{ form.lastname.label }}<br>
+                                                {{ form.lastname(size=32) }}<br>
+                                                {% for error in form.lastname.errors %}
+                                                <span style="color: red;">[{{ error }}]</span>
+                                                {% endfor %}
+                                            </p>
+                                            <p>
+                                            {{ form.gender.label }}<br>
+                                            <select>
+                                            {% for gender in gender_list %}
+                                                <option type="radio" value="{{gender}}">{{gender}}</option>
+                                            {% endfor %}
+                                            </select>
+                                          </p>
+                                            <p>
+                                                {{ form.age.label }}<br>
+                                                {{ form.age(size=32) }}<br>
+                                                {% for error in form.age.errors %}
+                                                <span style="color: red;">[{{ error }}]</span>
+                                                {% endfor %}
+                                            </p>
+                                            <p>
+                                                {{ form.weight_lb.label }}<br>
+                                                {{ form.weight_lb(size=32) }}<br>
+                                                {% for error in form.weight_lb.errors %}
+                                                <span style="color: red;">[{{ error }}]</span>
+                                                {% endfor %}
+                                            </p>
+                                            <p>
+                                                {{ form.height_in.label }}<br>
+                                                {{ form.height_in(size=32) }}<br>
+                                                {% for error in form.height_in.errors %}
+                                                <span style="color: red;">[{{ error }}]</span>
+                                                {% endfor %}
+                                            </p>
+                                            <p>
+                                                {{ form.foods_allergic.label }}<br>
+                                                {{ form.foods_allergic(size=32) }}<br>
+                                                {% for error in form.foods_allergic.errors %}
+                                                <span style="color: red;">[{{ error }}]</span>
+                                                {% endfor %}
+                                            </p>
+                                            <p>{{ form.submit() }}</p>
+
+									</form>
+							</div>
+
+					</section>
+
+			</div>
+
+	</body>
+</html>

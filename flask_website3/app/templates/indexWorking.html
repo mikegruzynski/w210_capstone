@@ -1,0 +1,145 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Root Cellar</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<!-- Scripts -->
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+
+	</head>
+	<body>
+
+		<!-- Header -->
+		<header id="header" class="alt">
+
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project </a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+				    <li><a href="/logout">Logout</a></li><p>
+				    <li><a href="/user_profile">User Profile</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Banner -->
+			<section id="banner">
+				<div class="inner">
+					<header>
+						<h1>Root Cellar</h1>
+						<p>An End to End Solution to Healthy “At Home” Eating</p>
+					</header>
+					<a href ="/register" class="button">Get Started</a>
+				</div>
+			</section>
+
+		<!-- Main -->
+		<div id="main">
+
+		<!-- Section -->
+			<section class="wrapper style1">
+				<div class="inner">
+					<!-- 2 Columns -->
+						<div class="flex flex-2">
+							<div class="col col1">
+								<div class="image round fit">
+									<a class="link"><img src="{{ url_for('static', filename='images/produce.jpg') }}" alt="" /></a>
+								</div>
+							</div>
+						<div class="col col2">
+							<h3>About Root Cellar</h3>
+								<p>Our goal is to make nutional at home meal planneing easy while reducing waste by using everything you purchase in your pantry</p>
+								<p>You tell us your food prefernces, dietary restictions and what you already have in the house and we will sugget a meal or meals that will work for you and tell you what ingredients you need to shop for </p>
+								<a href = "/about" class="button">Learn More</a>
+							</div>
+						</div>
+					</div>
+				</section>
+
+		<!-- Section -->
+			<section class="wrapper style2">
+					<div class="inner">
+						<div class="flex flex-2">
+							<div class="col col2">
+								<h3>How does it work?!</h3>
+								<p>We will ask you to fill out preferneces survery and we will use thoughfully collected and powerful algorithms to suggest meals. We can even give recomendtaions for meals to have with leftover ingredients or items to swap out for things you do not like! </p>
+								<a class="button">Get the Details</a>
+							</div>
+							<div class="col col1 first">
+								<div class="image round fit">
+									<a class="link"><img src="{{ url_for('static', filename='images/meal.jpg') }}" alt="" /></a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+
+			<!-- Section -->
+			<section class="wrapper style1">
+				<div class="inner">
+				<header class="align-center">
+					<h2>Example</h2>
+					<p>1. Give preferences</p>
+					<p>2. Tell us what you have</p>
+					<p>3. We will help you create the perfect healthy meal plans and make you're shopping list!</p>
+				</header>
+				<div class="flex flex-3">
+					<div class="col align-center">
+						<div class="image round fit">
+							<img src="{{ url_for('static', filename='images/shopping_bag.jpg') }}" alt="" />
+						</div>
+						<p>We promise to make the survey and boring preferneces part as easy as possible. Try it out for yourself!</p>
+						<a href = "https://goo.gl/forms/4vlsZmaRuwUcCiam2" class="button">Fill Out A Survey</a>
+					</div>
+					<div class="col align-center">
+						<div class="image round fit">
+							<img src="{{ url_for('static', filename='images/meal2.jpg') }}" alt="" />
+						</div>
+						<p>Although we want to suggest meals which are healthy and nutionally balanced, our real focus is taste. See for yourself!</p>
+						<a class="button">What We Have Cooking</a>
+					</div>
+					<div class="col align-center">
+						<div class="image round fit">
+							<img src="{{ url_for('static', filename='images/dashboard.jpg') }}" alt="" />
+						</div>
+						<p>We will take your input and give you an easy to understand dashboard of nutrients, meals and shopping suggetsions!</p>
+						<a href ="/user_profile" class="button">See Sample User Profile</a>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+
+	<!-- Footer -->
+	<footer id="footer">
+	<div class="copyright">
+		<ul class="icons">
+		</ul>
+	</div>
+	</footer>
+
+
+
+
+	</body>
+</html>

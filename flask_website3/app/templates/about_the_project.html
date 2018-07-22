@@ -1,0 +1,139 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project </a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+					<li><a href="/user_profile">User Profile</a></li>
+					<li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Main -->
+			<div id="main">
+
+				<!-- Section -->
+					<section class="wrapper">
+						<div class="inner">
+							<header class="align-center">
+								<h1>About The Project</h1>
+								<p>Anjali Kayal, Mike Gruzinski, Max Lee & Maura Cullen </p>
+							</header>
+							<div class="flex flex-2">
+								<div class="col col2">
+									<h3>The Project</h3>
+									<p>The "Root Cellar" project is the final capstone project for Univeristy of Caifornia, Berkeley Masters of Information
+											and Data Science. Our goal is to make an easy to use meal-plan and pantry to make nutitional eating easier.  A more concsientous, data-driven
+											approach to weekly menu planning and cart sourcing not only encourages a more data-drven nutritional effort but also can lead to less waste.</p>
+
+									<p>The concept of this platform was created by team leader, Mike Gruzinski, as a pitch for a capstone project in the Berkeley MIDS program.  The
+										project requirements are relatively sparse and allow the team to develop from scratch a Data Science product over the course of 12 weeks.</p>
+
+									<p> Below are a couple of quick summaries that detailed what went into the project. </p>
+									<ul>
+										<li><strong>Data Sources</strong></li>
+
+											<p>Insert here where recipes and nutritional info tables came from</p>
+
+										<li><strong>Algorthims and elements of Data Science Used</strong></li>
+											<p>Insert here about optimization and classification algorithm</p>
+
+										<li>User Feedback</li>
+
+											<p>Insert here about Mechanical Turk etc.</p>
+
+										<li>Food Waste info (?) - Drive home the problem we are trying to solve</li>
+									</ul>
+
+								</div>
+								<div class="col col1 first">
+									<div class="image round fit">
+										<a class="link"><img src="{{ url_for('static', filename='images/pic02.jpg') }}" alt="" /></a>
+									</div>
+								</div>
+							</div>
+							<p>We hope this impact project impacts:</p>
+							<ul>
+								<li>Enable consumers to efficiently find recipes and create meals that maximize nutrients and taste preferences based on items in their pantry</li>
+								<li>Reduce food waste by building a meal plan that optimizes utilization of ingredients in their pantry and supplements with e-grocery cart</li>
+								<li>Aid education and research as a tool to study how different diets and individual food plans alter when changing macro nutrients and quantities</li>
+								<li>Assist restaurants, caterers, and other industry players as a tool to create seasonal menus</li>
+								<li>Enable Health Care Practictioners to monitor patients nutrient intake and suggest potential options to redirect patients</li>
+							</ul>
+						</div>
+					</section>
+
+				<!-- Section -->
+					<section class="wrapper style1">
+						<div class="inner">
+							<header class="align-center">
+								<h2>Creators of Root Cellar</h2>
+								<p>About the Team</p>
+							</header>
+							<div class="flex flex-4">
+								<div class="col align-center">
+									<div class="image round fit">
+										<img src="{{ url_for('static', filename='images/pic03.jpg') }}" alt="" />
+									</div>
+									<p>Anjali Kayal</p>
+									<p>blah blah blah </p>
+									<a href="#" class="button">LinkedIn</a>
+								</div>
+								<div class="col align-center">
+									<div class="image round fit">
+										<img src="{{ url_for('static', filename='images/pic05.jpg') }}" alt="" />
+									</div>
+									<p>Mike Gruzinski</p>
+									<p>blah blah blah </p>
+									<a href="#" class="button">LinkedIn</a>
+								</div>
+								<div class="col align-center">
+									<div class="image round fit">
+										<img src="{{ url_for('static', filename='images/pic04.jpg') }}" alt="" />
+									</div>
+									<p>Max Lee</p>
+									<p>blah blah blah </p>
+									<a href="#" class="button">LinkedIn</a>
+								</div>
+								<div class="col align-center">
+									<div class="image round fit">
+										<img src="{{ url_for('static', filename='images/pic04.jpg') }}" alt="" />
+									</div>
+									<p>Maura Cullen</p>
+									<p>blah blah blah </p>
+									<a href="#" class="button">LinkedIn</a>
+								</div>
+							</div>
+						</div>
+					</section>
+
+			</div>
+
+	</body>
+</html>
