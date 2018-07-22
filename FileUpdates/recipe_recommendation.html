@@ -1,0 +1,103 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<!-- <div class="logo"><a href="index.html">Urban <span>by TEMPLATED</span></a></div> -->
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project</a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+					</li><a href="/user_profile">User Profile</a></li>
+					<li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Main -->
+			<!-- <div id="main">
+        <section id="banner">
+          <div class="inner">
+            <header>
+              <h1>Hello {{ user_data.firstname.values[0] }}!</h1>
+              <p>Recipe Selection Page!</p>
+            </header>
+          </div>
+        </section> -->
+
+				<section class="wrapper style1">
+					<div class="inner">
+					<h1>Recipe Selection Page</h1>
+					</div>
+
+				<p></p>
+					<div class="inner">
+						<!-- 2 Columns -->
+							<div class="flex flex-1">
+							<div class="col col1">
+								<h2>My Recipe Plan</h2>
+								<h5>Enter Recipes you do not want to make into the survey below to remove from list. We will replace it better recipe option!</h5>
+								<h5>Based on your user preferneces. We suggest the following Recipes:</h5>
+
+								<div style="float: left; width: 50%;">
+										<ul>
+											{% for id in user_data.list_keys %}
+												<li> {{id+":"}} </li>
+											{%endfor%}
+										</ul>
+								</div>
+								<div style="float: right; width: 50%;">
+										<ul style="list-style: none;">
+											{% for name in user_data.recipe_names %}
+												<li> {{name}} </li>
+											{%endfor%}
+										</ul>
+								</div>
+
+									<a href = "/recipe_recommendation" class="button">Edit Recipe Plan</a>
+									<p></p>
+									<!-- <a href = "/subsitute_ingredients" class="button">Subsitute Ingredients in Meals </a> -->
+								</div>
+							</div>
+						</div>
+
+						<section class="wrapper">
+							<div class="inner">
+								<header class="align-center">
+									<h2>Find a Recipe you did not like and never want to see again?</h2>
+									<p>We are sorry! Please fill out the form below and we will make sure you never see it again!</p>
+									<!-- <p>Once submitted please visit your profile link from the menu</p> -->
+								</header>
+															<iframe src="https://docs.google.com/forms/d/1NolLCQfXgA2k4iBniKsQAKNK62bvglqUDPAQc7pl0CA/viewform?embedded=true" width="1200"
+															 height="600" frameborder="0" marginheight="0" marginwidth="0" align="center">Loading...</iframe>
+													</div>
+						</section>
+
+
+       <p>
+
+			</div>
+	</body>
+</html>
