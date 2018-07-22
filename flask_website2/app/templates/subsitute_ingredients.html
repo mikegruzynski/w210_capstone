@@ -1,0 +1,130 @@
+
+<!DOCTYPE HTML>
+<!-- TODO: Update this page -->
+
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<!-- <div class="logo"><a href="index.html">Urban <span>by TEMPLATED</span></a></div> -->
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+		<nav id="menu">
+			<ul class="links">
+				<li><a href = "/index">Home</a></li>
+				<li><a href = "/about">About the Project </a></li>
+				{% if current_user.is_anonymous %}
+				<li><a href="/login">Login</a></li>
+				{% else %}
+				</li><a href="/user_profile">User Profile</a></li>
+				<li><a href="/shopping_list">Recipe Selection</a></li>
+				<li><a href="/shopping_list">Shopping List</a></li>
+				<li></li><a href="/logout">Logout</a></li>
+				{% endif %}
+			</ul>
+		</nav>
+
+		<!-- Main -->
+			<div id="main">
+				<section class="wrapper style1">
+					<div class="inner">
+						<!-- 2 Columns -->
+							<div class="flex flex-1">
+							<div class="col col1">
+								<h2>Subsitute Ingredients</h2>
+								<h4>Recipe Options</h4>
+								<div class="dropdown">
+									<button onclick="myFunction()" class="dropbtn">Recipes</button>
+									<p></p>
+									<p></p>
+									<ul class="links">
+										<!-- TOOD: List correct recipies  -->
+										<li><a href="#"> {{ df.recipe_name.values[0] }}</a></li>
+										<li><a href="#"> {{ df.recipe_name.values[1] }}</a></li>
+										<li><a href="#">Link 3</a></li>
+									</ul>
+									</div>
+								<!-- <ul class="links"> -->
+								 <!-- <li>Recipie Optoins </li> -->
+								 <!-- drop down list Recipe options to start subsitution -->
+                 <!-- Add recipies and the ingredient list -->
+                 <!-- Display the recipe ID, ingredients and the macros -->
+                 <!-- Add False Button for subsitition option (?) -->
+                 <!-- Disply the visualizations Mike creates   -->
+							 </ul>
+								</div>
+							</div>
+						</div>
+				</section>
+
+
+        <section>
+					<div class="inner">
+	          <!-- <h4>{{ df.recipe_name.values }} </h4> -->
+						</div>
+						<h3>Possible Ingredient Subsitutions</h3>
+	          <!-- <p>{{ df_list }}</p> -->
+						<p></p>
+						{{df}}
+						<p></p>
+						<ul>
+						<li>{{ df.recipe_id.values[0] }}</li>
+					</ul>
+					</div>
+        </section>
+
+					<!-- Radar and Bar Plots - Add from Python Images -->
+						<section class="wrapper style1">
+						<div class="inner">
+							<!-- 2 Columns -->
+							<div class="flex flex-1">
+								<div class="col align-center">
+									<div class="image square fit">
+										<img src="{{ url_for('static', filename='images/recipes/test_radar.png') }}" alt="" />
+									</div>
+									<p>Radar Plot Image</p>
+
+						<div class="inner">
+							<!-- 2 Columns -->
+							<div class="flex flex-1">
+								<div class="col align-center">
+									<div class="image square fit">
+										<img src="{{ url_for('static', filename='images/recipes/test_bargraph_recipe.png') }}" alt="" />
+									</div>
+									<p>Bar Plot Image</p>
+								</div>
+						</div>
+
+						<div class="inner">
+							<!-- 2 Columns -->
+							<div class="flex flex-1">
+								<div class="col align-center">
+									<div class="image square fit">
+										<img src="{{ url_for('static', filename='images/recipes/stacked_plot.png') }}" alt="" />
+									</div>
+									<p>Bar Plot Image</p>
+								</div>
+						</div>
+
+						</section>
+
+       <p>
+
+			</div>
+	</body>
+</html>

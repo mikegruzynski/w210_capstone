@@ -72,3 +72,39 @@ def calculate_macros(user_profile_data):
                              }
 
     return macros_dict
+
+
+# Creates list of macro ingredients that which the user specifies.
+def get_macro_label_list(user_macro_choices):
+    macro_pref_list = user_macro_choices.split(', ')
+    macro_list = []
+    all_list = ['calories', 'fat', 'carbohydrate', 'fiber', 'cholesterol',
+                'saturated_fat', 'unsaturated_fat', 'sugar', 'protein']
+    for macro in macro_pref_list:
+        if macro == 'All':
+            macro_list = all_list
+            continue
+        elif macro == '':
+            # If undefined choices choose all
+            macro_list = all_list
+            continue
+        elif macro == 'None':
+            macro_list = None
+            continue
+        elif macro == 'Protiens':
+            macro_list = macro_list + ['protein']
+        elif macro == 'Fats':
+            macro_list = macro_list + ['unsaturated_fat']
+            macro_list = macro_list + ['saturated_fat']
+            macro_list = macro_list + ['fat']
+        elif macro == 'Carbohydrates':
+            macro_list = macro_list + ['carbohydrate']
+        elif macro == 'Cholesterol':
+            macro_list = macro_list + ['cholesterol']
+        elif macro == 'Sugars':
+            macro_list = macro_list + ['sugar']
+        elif macro == 'Fiber':
+            macro_list = macro_list + ['fiber']
+        elif macro == 'Calories':
+            macro_list = macro_list + ['calories']
+    return(macro_list)

@@ -1,14 +1,8 @@
 
 <!DOCTYPE HTML>
-<!--
-	Urban by TEMPLATED
-	templated.co @templatedco
-	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
--->
 
 <html>
 	<head>
-		<!-- <title>Generic - Urban by TEMPLATED</title> -->
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
@@ -24,7 +18,6 @@
 
 		<!-- Header -->
 			<header id="header">
-				<!-- <div class="logo"><a href="index.html">Urban <span>by TEMPLATED</span></a></div> -->
 				<a href="#menu">Menu</a>
 			</header>
 
@@ -64,21 +57,58 @@
 								 <li>Height (Inches): {{user_data.height_in.values[0]}} </li>
 								 <li>Weight (Pounds): {{user_data.weight_lb.values[0]}}</li>
 								 <li>Activity Level: {{user_data.activity_level.values[0]}}</li>
-								 <!-- TODO -->
-								 <!-- <li>No Dietary Restrictions</li>
-								 <li>Goal Diet: Low Carb</li>
-								 <li>Will spend Some effort (less than 60 min) for a meal</li> -->
 							 </ul>
 									<a href = "/preference_survey" class="button">Edit My Preferences</a>
 								</div>
 							</div>
 						</div>
-				</section>
+				<!-- </section> -->
+				<!-- <section class="wrapper style1"> -->
+				<p></p>
+				<p></p>
+					<div class="inner">
+						<!-- 2 Columns -->
+							<div class="flex flex-1">
+							<div class="col col1">
+								<h2>My Recipe Plan</h2>
+								<p>Based on your user preferneces. We suggest the following Recipes:
+								<ul class="links">
+									<!-- # TODO: MAKE DYNAMIC, will break if < 6 recipes are chosen by user -->
+									<!-- # TODO: link recipes to instructions (?) -->
 
-				<!-- Make Dynamic Name with Suggetsed Goals fro Nutrients  -->
-				<!-- TODO Create dynamic table, with Names Dynamic  -->
+								 <li>{{ user_data.list_keys[0] }}:	{{ user_data.recipe_names[0] }}</li>
+								 <li>{{ user_data.list_keys[1] }}:	{{ user_data.recipe_names[1] }}</li>
+								 <li>{{ user_data.list_keys[2] }}:	{{ user_data.recipe_names[2] }}</li>
+								 <li>{{ user_data.list_keys[3] }}:	{{ user_data.recipe_names[3] }}</li>
+								 <li>{{ user_data.list_keys[4] }}:	{{ user_data.recipe_names[4] }}</li>
+								 <li>{{ user_data.list_keys[5] }}:	{{ user_data.recipe_names[5] }}</li>
+							 </ul>
+									<a href = "/recipe_recommendation" class="button">Edit Recipe Plan</a>
+									<p></p>
+									<!-- <a href = "/subsitute_ingredients" class="button">Subsitute Ingredients in Meals </a> -->
+								</div>
+							</div>
+						</div>
+				<!-- </section> -->
+				<!-- <section class="wrapper style1"> -->
+					<p></p>
+					<div class="inner">
+						<!-- 2 Columns -->
+							<div class="flex flex-1">
+							<div class="col col1">
+								<h4>Shopping List</h4>
+								<ul class="links">
+							 </ul>
+									<a href = "/shopping_list" class="button">See My Shopping List</a>
+								</div>
+							</div>
+						</div>
+
+				<!-- </section> -->
+				<!-- TODO Create dynamic table, with Names Dynamic based on interest -->
 				<!-- TODO Add units -->
-				<section class="wrapper style1">
+				<!-- <section class="wrapper style1"> -->
+					<p></p>
 					<div class="inner">
 						<!-- 2 Columns -->
 							<div class="flex flex-5">
@@ -250,18 +280,17 @@
 					</section>
 
 					<!-- Radar and Bar Plots - Add from Python Images -->
-						<section class="wrapper style1">
-						<div class="inner">
+						<!-- <section class="wrapper style1">
+						<div class="inner"> -->
 							<!-- 2 Columns -->
-							<div class="flex flex-1">
+							<!-- <div class="flex flex-1">
 								<div class="col align-center">
 									<div class="image square fit">
 										<img src="{{ url_for('static', filename='images/test_radar.png') }}" alt="" />
 									</div>
-									<p>Radar Plot Image</p>
-
+									<p>Radar Plot Image</p> -->
+<!--
 						<div class="inner">
-							<!-- 2 Columns -->
 							<div class="flex flex-1">
 								<div class="col align-center">
 									<div class="image square fit">
@@ -269,15 +298,15 @@
 									</div>
 									<p>Bar Plot Image</p>
 								</div>
-						</div>
+						</div> -->
 
 						</section>
 
 
-						<section class="wrapper style1">
-						<div class="inner">
+						<!-- <section class="wrapper style1">
+						<div class="inner"> -->
 							<!-- 2 Columns -->
-								<div class="flex flex-1">
+								<!-- <div class="flex flex-1">
 								 <div class="col col1">
 									<h2>Your Meal Suggetions for the Week</h2>
 									 <ul class="links">
@@ -290,7 +319,23 @@
 									</div>
 								</div>
 							</div>
+						</section> -->
+
+
+						<section class="wrapper">
+							<div class="inner">
+								<header class="align-center">
+									<h2>Find a Recipe you did not like and never want to see again?</h2>
+									<p>We are sorry! Please fill out the form below and we will make sure you never see it again!</p>
+									<!-- <p>Once submitted please visit your profile link from the menu</p> -->
+								</header>
+
+															<iframe src="https://docs.google.com/forms/d/1NolLCQfXgA2k4iBniKsQAKNK62bvglqUDPAQc7pl0CA/viewform?embedded=true" width="1200"
+															 height="600" frameborder="0" marginheight="0" marginwidth="0" align="center">Loading...</iframe>
+
+													</div>
 						</section>
+
 
        <p>
 

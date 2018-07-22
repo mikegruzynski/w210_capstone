@@ -4,18 +4,20 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
 from app.models import User
 from app.user_profile_support.get_user_nutrients import *
-from app.user_profile_support.get_userPrefernece_Answers import get_userPreferences
-from app.user_profile_support.ingredientSubsitutions import run_master_ingredient_sub
+from app.user_profile_support.get_userPreference_Answers import get_userPreferences
+from app.user_profile_support.ingredientSubsitutions import run_master_ingredient_sub, get_recipe_list
+import numpy as np
 
+# TODO: Make user_profile_data global so list populated remain between loads and is doens;t have to recalculated everytime
+# TODO: If user_profile_data cannot be global save recipei suggestion index to something that will persist
 
 @app.route('/')
 @app.route('/index')
-
 def index():
     return render_template('indexWorking.html')
 
-@app.route('/about')
 
+@app.route('/about')
 def about():
     return render_template('about_the_project.html')
 
@@ -39,6 +41,7 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -68,12 +71,23 @@ def user_profile():
     if current_user.is_authenticated:
         user = current_user.username
         # Check if user has completed user preferneces form
+        # TODO: get global user_profile_data if exist instead of overwriting old one
         user_profile_data = get_userPreferences(user)
         if user_profile_data is not False:
 
             # Calculate Micro and Macros for the User
             macros = get_macro_nutrients(user_profile_data)
             micros = get_micro_nutrients(user_profile_data)
+
+            # Check if Recipe Suggetsions have been created for the user
+            # If not, calclate and pass to profile to list
+            print(user_profile_data.keys())
+            print('list_keys' not in user_profile_data.keys())
+            if 'list_keys' not in user_profile_data.keys():
+                print("Getting Best Recipe Combo for the Week")
+                best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(user_profile_data, user)
+
+                # TODO: Get names of recipes and not just index
 
             # Render the Users Profile Page
             return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros,micros=micros)
@@ -83,52 +97,72 @@ def user_profile():
         return redirect(url_for('index'))
 
 
-@app.route('/sub_ingredients')
-def sub_ingredients():
+# Links to page with recipe recommendations and ability to change out recipes
+@app.route('/recipe_recommendation')
+# @login_required
+def recipe_recommendation():
+    if current_user.is_authenticated:
+        user = current_user.username
+        # Check if user has completed user preferneces form
+        # TODO: get global user_profile_data instead of overwriting old one
+        user_profile_data = get_userPreferences(user)
+        if user_profile_data is not False:
+            # user_profile_data.meals_per_week = 6
+
+            # Get Recipe Reccomendations for the user
+            if 'list_keys' not in user_profile_data.keys():
+                best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(user_profile_data, user)
+
+            print(user_profile_data.keys)
+            # Sanity Check the ignore list before returning Results. If a recipe is in ignore list run again
+            while any(np.intersect1d(user_profile_data.ignore_list, best_recipe_combo)):
+                best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(user_profile_data, user)
+
+            # Render the Users Profile Page
+            return render_template('recipe_recommendation.html', user_data=user_profile_data)
+        else:
+            # Render the New User SetUp page until they comlete prefernece
+            return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros)
+        return redirect(url_for('index'))
+
+
+@app.route('/subsitute_ingredients')
+def subsitute_ingredients():
     if current_user.is_authenticated:
         user = current_user.username
         # Check if user has recipies
+        # TODO: get global user_profile_data if exist instead of overwriting old one
         user_profile_data = get_userPreferences(user)
         # filter_list
         if user_profile_data is not False:
-
-            # Calculate Micro and Macros for the User
-            # macros = get_macro_nutrients(user_profile_data)
-            # micros = get_micro_nutrients(user_profile_data)
-            # filter_list = macros.keys() # micros.keys() # +
-
-            # TODO: Check User Profile for Which nutrients they are interested in
-            # Test with multiple Recipies
-            # Fix the fileter/micro/macro lists
-            # Visuals
             # Figure out interaction
-            # User feedback save
-            # If All  - have a list of all prepared
+            df, df_list = run_master_ingredient_sub(user_profile_data)
 
-            filter_list = ['Iron, Fe (mg)', 'Magnesium, Mg (mg)', 'Manganese, Mn (mg)',
-            'Thiamin (mg)', 'Vitamin D (D2 + D3) (microg)', 'Energy (kcal)', 'Total lipid (fat) (g)',
-            'Carbohydrate, by difference (g)', 'Fiber, total dietary (g)', 'Cholesterol (mg)',
-            'Fatty acids, total saturated (g)', 'Fatty acids, total monounsaturated (g)',
-            'Fatty acids, total polyunsaturated (g)',
-             'Fatty acids, total trans (g)', 'Sugars, total (g)', 'Protein (g)']
-            # user_profile_data.filter_list = [filter_list]
-            # Get Recipe info from sub_ingredients
-            # list_keys = ['RECIPE_48743', 'RECIPE_9117']
-            # list_keys = ['RECIPE_48743']
-            # df_list, df_summed_list, name_list, recipe_id_list = get_df_recipe_ids(list_keys, user_profile_data, filter_list, micros, macros)
-            list_keys = ['RECIPE_24578']
-            df, df_list = run_master_ingredient_sub(user_profile_data, list_keys)
-
-            # TODO: Visualizations for Recipies
-            # TODO: get single replacement in UI
+            # TODO: get single replacement for ingredient in UI
             # Render the Users Profile Page
-            return render_template('sub_ingredients.html',
-            user_data=user_profile_data,
-            df=df,
-            df_list=df_list)
+            return render_template('subsitute_ingredients.html', user_data=user_profile_data,
+            df=df, df_list=df_list)
         else:
             # Render the New User SetUp page until they comlete prefernece
-            return render_template('userProfile_new.html', title="User Preferneces", user=user)
+            return render_template('userProfile_new.html', title="User Preferneces",
+             user=user)
+        return redirect(url_for('index'))
+
+
+@app.route('/shopping_list')
+def shopping_list():
+    if current_user.is_authenticated:
+        user = current_user.username
+        # TODO: get global user_profile_data if exist instead of overwriting old one
+        user_profile_data = get_userPreferences(user)
+        if user_profile_data is not False:
+            # Get Ingredient List to Create a Shopping List
+            ingredient_list = []
+            return render_template('shopping_list.html', ingredient_list=ingredient_list, user_data=user_profile_data)
+        else:
+            # Render the New User SetUp page until they comlete prefernece
+            return render_template('userProfile_existing.html', title="User Profile",
+             user=user)
         return redirect(url_for('index'))
 
 
