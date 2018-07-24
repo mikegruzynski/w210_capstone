@@ -6,7 +6,7 @@ pd.set_option('display.height', 1000)
 pd.set_option('display.max_rows', 5000)
 pd.set_option('display.max_columns', 5000)
 pd.set_option('display.width', 10000)
-from rootseller import nutrtion
+from rootseller import nutrition
 
 class Recipes(object):
     def __init__(self, profile_init):
@@ -27,7 +27,7 @@ class Recipes(object):
         self.micro_list = profile_init.micro_list
         self.macro_list = profile_init.macro_list
         self.filter_list = profile_init.micro_list + profile_init.macro_list
-        self.nutrtion_init = nutrtion.Nutrition()
+        self.nutrition_init = nutrition.Nutrition()
 
         self.food_unit_standard_dictionary = {
             'teaspoon': {'options': ["tsp.", "tsp", "t", "t.", "teaspoon", "teaspoons"], 'type': 'volume'},
@@ -99,14 +99,14 @@ class Recipes(object):
         self.food_size = ["small", "medium", "large", "about"]
 
     def extract_recipe_dataframe(self, tag, conversion_factor):
-        df_temp = self.nutrtion_init.NDB_NO_lookup(tag, filter_list=self.filter_list)
+        df_temp = self.nutrition_init.NDB_NO_lookup(tag, filter_list=self.filter_list)
         df_temp = df_temp * float(conversion_factor)
-        df_temp_tag = self.nutrtion_init.NDB_NO_lookup(tag, filter_list=['NDB_NO', 'Description', 'Category'])
+        df_temp_tag = self.nutrition_init.NDB_NO_lookup(tag, filter_list=['NDB_NO', 'Description', 'Category'])
 
         return df_temp_tag.join(df_temp)
 
     def unit_food_conversion(self, recipe_amount, recipe_unit, tag, recipe_ingredient):
-        temp_nutritional_df = self.nutrtion_init.NDB_NO_lookup(tag, filter_list=['Measure', 'Weight(g)'])
+        temp_nutritional_df = self.nutrition_init.NDB_NO_lookup(tag, filter_list=['Measure', 'Weight(g)'])
         nutrition_df_measure = temp_nutritional_df['Measure'].get_values()[0].replace(",", "")
         nutrition_df_measure_list = nutrition_df_measure.split(" ")
         nutrition_df_amount = float(list(filter(None, re.findall(r"([/.0-9]*)", nutrition_df_measure)))[0])
@@ -146,7 +146,7 @@ class Recipes(object):
         return conversion_factor
 
     def ambiguous_df_look_up(self, tag, recipe_ingredient, recipe_key):
-        temp_nutritional_df = self.nutrtion_init.NDB_NO_lookup(tag, filter_list=['Measure', 'Weight(g)'])
+        temp_nutritional_df = self.nutrition_init.NDB_NO_lookup(tag, filter_list=['Measure', 'Weight(g)'])
 
         filtered_ambiguous_df = self.ambiguous_df[self.ambiguous_df['NDB_NO'] == "\"{}\"".format(tag.strip('"'))]
         filtered_ambiguous_df = filtered_ambiguous_df.reset_index()
@@ -282,13 +282,14 @@ class Recipes(object):
             # print recipe_id, temp_dict[recipe_id]['name']
             itr = 0
             df_list = []
+            conversion_factor_list = []
             while itr < len(temp_dict[recipe_id]['ingredients']):
                 try:
                     if temp_dict[recipe_id]['ingredients'][itr] and temp_dict[recipe_id]['NDB_NO_tags'][itr] != 'np.nan' and temp_dict[recipe_id]['NDB_NO_tags'][itr] != '':
                         food_unit_dict = self.extact_unit_from_recipe(temp_dict[recipe_id]['ingredients'][itr])
                         amount, unit = self.extact_number_from_recipe(temp_dict[recipe_id]['ingredients'][itr], food_unit_dict)
                         conversion_factor = self.unit_food_conversion(amount, unit, temp_dict[recipe_id]['NDB_NO_tags'][itr], temp_dict[recipe_id]['ingredients'][itr])
-
+                        conversion_factor_list.append(conversion_factor)
                         if conversion_factor != 'LOOKUP DATABASE':
                             df_temp = self.extract_recipe_dataframe(temp_dict[recipe_id]['NDB_NO_tags'][itr], conversion_factor)
                             df_list.append(df_temp)
@@ -297,29 +298,38 @@ class Recipes(object):
                 except:
                     print("FAILED ingredient:", temp_dict[recipe_id]['ingredients'][itr])
                     conversion_factor = 0
+                    conversion_factor_list.append(conversion_factor)
                     df_temp = self.extract_recipe_dataframe(temp_dict[recipe_id]['NDB_NO_tags'][itr], conversion_factor)
                     df_list.append(df_temp)
                     itr += 1
-
             recipe_master_df = pd.concat(df_list)
         else:
             # print recipe_id, self.recipe_clean[recipe_id]['name']
             itr = 0
             df_list = []
+            conversion_factor_list = []
             while itr < len(self.recipe_clean[recipe_id]['ingredients']):
-                if self.recipe_clean[recipe_id]['ingredients'][itr] and self.recipe_clean[recipe_id]['NDB_NO_tags'][itr] != 'np.nan' and self.recipe_clean[recipe_id]['NDB_NO_tags'][itr] != '':
-                    food_unit_dict = self.extact_unit_from_recipe(self.recipe_clean[recipe_id]['ingredients'][itr])
-                    amount, unit = self.extact_number_from_recipe(self.recipe_clean[recipe_id]['ingredients'][itr], food_unit_dict)
-
-
-                    conversion_factor = self.unit_food_conversion(amount, unit, self.recipe_clean[recipe_id]['NDB_NO_tags'][itr], self.recipe_clean[recipe_id]['ingredients'][itr])
-
-                    if conversion_factor != 'LOOKUP DATABASE':
-                        df_temp = self.extract_recipe_dataframe(self.recipe_clean[recipe_id]['NDB_NO_tags'][itr], conversion_factor)
-                        df_list.append(df_temp)
-    
-                itr += 1
+                try:
+                    if self.recipe_clean[recipe_id]['ingredients'][itr] and self.recipe_clean[recipe_id]['NDB_NO_tags'][itr] != 'np.nan' and self.recipe_clean[recipe_id]['NDB_NO_tags'][itr] != '':
+                        food_unit_dict = self.extact_unit_from_recipe(self.recipe_clean[recipe_id]['ingredients'][itr])
+                        amount, unit = self.extact_number_from_recipe(self.recipe_clean[recipe_id]['ingredients'][itr], food_unit_dict)
+                        conversion_factor = self.unit_food_conversion(amount, unit, self.recipe_clean[recipe_id]['NDB_NO_tags'][itr], self.recipe_clean[recipe_id]['ingredients'][itr])
+                        conversion_factor_list.append(conversion_factor)
+                        if conversion_factor != 'LOOKUP DATABASE':
+                            df_temp = self.extract_recipe_dataframe(self.recipe_clean[recipe_id]['NDB_NO_tags'][itr], conversion_factor)
+                            df_list.append(df_temp)
+                    itr += 1
+                except:
+                    print("FAILED ingredient:", self.recipe_clean[recipe_id]['ingredients'][itr])
+                    conversion_factor = 0
+                    conversion_factor_list.append(conversion_factor)
+                    df_temp = self.extract_recipe_dataframe(self.recipe_clean[recipe_id]['NDB_NO_tags'][itr], conversion_factor)
+                    df_list.append(df_temp)
+                    itr += 1
             recipe_master_df = pd.concat(df_list)
+
+        se = pd.Series(conversion_factor_list)
+        recipe_master_df['conversion_factor'] = se.values
 
         return recipe_master_df
 

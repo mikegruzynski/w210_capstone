@@ -16,14 +16,14 @@ class Plots(object):
 
         ax_macro = fig.add_subplot(121, polar=True)
         ax_micro = fig.add_subplot(122, polar=True)
-
         itr = 0
         legend_list = []
         for df in self.df_list:
             labels_micro = np.array(self.rootprofile.micro_label_list)
             data_micro = df.loc[:, self.rootprofile.micro_list].sum()
-            data_micro = data_micro / self.rootprofile.profile_micro_filtered_df
+            data_micro = data_micro[self.rootprofile.profile_micro_filtered_df.columns] / self.rootprofile.profile_micro_filtered_df
             data_micro = data_micro.get_values()[0]
+
             angles_micro = np.linspace(0, 2 * np.pi, len(labels_micro), endpoint=False)
             data_micro = np.concatenate((data_micro, [data_micro[0]]))
             angles_micro = np.concatenate((angles_micro, [angles_micro[0]]))
@@ -31,19 +31,12 @@ class Plots(object):
             labels_macro = np.array(self.rootprofile.macro_label_list)
             data_macro = df.loc[:, self.rootprofile.macro_list]
 
-            data_macro['unsaturated_fat'] = data_macro['Fatty acids, total monounsaturated (g)'] + data_macro['Fatty acids, total polyunsaturated (g)'] + data_macro['Fatty acids, total trans (g)']
-            del data_macro['Fatty acids, total monounsaturated (g)']
-            del data_macro['Fatty acids, total polyunsaturated (g)']
-            del data_macro['Fatty acids, total trans (g)']
-
-            data_macro = data_macro[['Energy (kcal)', 'Total lipid (fat) (g)', 'Carbohydrate, by difference (g)',
-                                     'Fiber, total dietary (g)', 'Cholesterol (mg)', 'Fatty acids, total saturated (g)',
-                                     'unsaturated_fat', 'Sugars, total (g)', 'Protein (g)']]
-
-            data_macro.columns = self.rootprofile.profile_macro_filtered_df.columns
+            new_columns = self.rootprofile.init_macro.convert_labels_to_pretty_labels(data_macro.columns)
+            data_macro.columns = new_columns
+            data_macro = self.rootprofile.init_macro.add_unsaturated_fat_columns(data_macro)
             data_macro = data_macro.sum()
 
-            data_macro = data_macro / self.rootprofile.profile_macro_filtered_df
+            data_macro = data_macro[self.rootprofile.profile_macro_filtered_df.columns] / self.rootprofile.profile_macro_filtered_df
             data_macro = data_macro.get_values()[0]
             angles_macro = np.linspace(0, 2 * np.pi, len(labels_macro), endpoint=False)
             data_macro = np.concatenate((data_macro, [data_macro[0]]))
@@ -73,21 +66,16 @@ class Plots(object):
         df_new_list = []
         for df in self.df_list:
             data_micro = df.loc[:, self.rootprofile.micro_list].copy()
-            data_micro = data_micro.sum() / self.rootprofile.profile_micro_filtered_df
+            data_micro = data_micro[self.rootprofile.profile_micro_filtered_df.columns].sum() / self.rootprofile.profile_micro_filtered_df
             data_micro.columns = self.rootprofile.micro_label_list
 
             data_macro = df.loc[:, self.rootprofile.macro_list].copy()
-            data_macro['unsaturated_fat'] = data_macro['Fatty acids, total monounsaturated (g)'] + data_macro['Fatty acids, total polyunsaturated (g)'] + data_macro['Fatty acids, total trans (g)']
-            del data_macro['Fatty acids, total monounsaturated (g)']
-            del data_macro['Fatty acids, total polyunsaturated (g)']
-            del data_macro['Fatty acids, total trans (g)']
 
-            data_macro = data_macro[['Energy (kcal)', 'Total lipid (fat) (g)', 'Carbohydrate, by difference (g)',
-                                     'Fiber, total dietary (g)', 'Cholesterol (mg)', 'Fatty acids, total saturated (g)',
-                                     'unsaturated_fat', 'Sugars, total (g)', 'Protein (g)']]
+            new_columns = self.rootprofile.init_macro.convert_labels_to_pretty_labels(data_macro.columns)
+            data_macro.columns = new_columns
+            data_macro = self.rootprofile.init_macro.add_unsaturated_fat_columns(data_macro)
 
-            data_macro.columns = self.rootprofile.profile_macro_filtered_df.columns
-            data_macro = data_macro.sum() / self.rootprofile.profile_macro_filtered_df
+            data_macro = data_macro[self.rootprofile.profile_macro_filtered_df.columns].sum() / self.rootprofile.profile_macro_filtered_df
 
             df_out = data_macro.join(data_micro)
             df_new_list.append(df_out)
@@ -98,6 +86,8 @@ class Plots(object):
         df_master.columns = ['index'] + name_list
 
         ax = df_master.plot(x='index', y=name_list, kind="bar", color=self.color_list)
+        ax.plot(df_master.index, [1.0]*len(df_master.index), color='black', linestyle='--', lw=2)
+
         fig = ax.get_figure()
         fig.savefig('test_images/test_bargraph_recipe', bbox_inches='tight')
 
@@ -105,21 +95,20 @@ class Plots(object):
     def stacked_barplot(self, itr, recipe_list):
         df_temp = self.df_list[itr].copy()
 
-        df_temp['unsaturated_fat'] = df_temp['Fatty acids, total monounsaturated (g)'] + df_temp['Fatty acids, total polyunsaturated (g)'] + df_temp['Fatty acids, total trans (g)']
-        del df_temp['Fatty acids, total monounsaturated (g)']
-        del df_temp['Fatty acids, total polyunsaturated (g)']
-        del df_temp['Fatty acids, total trans (g)']
+        new_columns = self.rootprofile.init_macro.convert_labels_to_pretty_labels(df_temp.columns)
+        new_columns = self.rootprofile.init_micro.convert_labels_to_pretty_labels(new_columns)
+        df_temp.columns = new_columns
+        df_temp = self.rootprofile.init_macro.add_unsaturated_fat_columns(df_temp)
 
-        df_temp.columns = ['NDB_NO', 'Description', 'Category'] + self.rootprofile.micro_label_list + self.rootprofile.macro_label_list
-        df_string = df_temp[['NDB_NO', 'Description', 'Category']]
+        df_string = df_temp[['NDB_NO', 'Description', 'Category', 'conversion_factor']]
         df_numbers = df_temp[self.rootprofile.macro_label_list + self.rootprofile.micro_label_list]
 
-        df_numbers = df_numbers / df_numbers.sum()
+        df_numbers = df_numbers / df_numbers.sum()[df_numbers.columns]
+
         df_temp = df_string[['Description']].join(df_numbers)
         stacked_plot = df_temp.set_index('Description').T.plot(kind='bar', stacked=True, colormap='Paired')
         patches, labels = stacked_plot.get_legend_handles_labels()
         stacked_plot.legend(patches, labels, bbox_to_anchor=(1.5, 1.0))
-
 
         fig = stacked_plot.get_figure()
         fig.suptitle(recipe_list[itr])

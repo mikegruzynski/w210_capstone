@@ -83,10 +83,26 @@ class MicroNutrients(object):
 
 
     def convert_labels_to_df_columns(self, micro_nutritents_interest_list):
-
         new_micro_list = []
         for micro in micro_nutritents_interest_list:
-            new_micro_list.append(self.micronutrient_column_map_dict[micro]['map_key'])
-
+            try:
+                new_micro_list.append(self.micronutrient_column_map_dict[micro]['map_key'])
+            except:
+                new_micro_list.append(micro)
         return new_micro_list
 
+    def convert_labels_to_pretty_labels(self, micro_nutritents_interest_list):
+        new_micro_list = []
+        key_bool = True
+        for micro in micro_nutritents_interest_list:
+            for key in self.micronutrient_column_map_dict.keys():
+                if micro == self.micronutrient_column_map_dict[key]['map_key']:
+                    new_micro_list.append(key)
+                    key_bool = False
+
+            if key_bool == True:
+                new_micro_list.append(micro)
+
+            key_bool = True
+
+        return new_micro_list
