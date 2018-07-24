@@ -2,6 +2,9 @@ import seaborn as sns
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings('ignore')
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 class Plots(object):
     def __init__(self, df_list, rootprofile):
@@ -11,7 +14,7 @@ class Plots(object):
                            'pink', 'aqua', 'lawngreen', 'lemonchiffon', 'khaki',
                            'maroon', 'navy', 'darkgreen', 'y', 'darkgoldenrod']
 
-    def radar_plot_recipe(self, recipe_name):
+    def radar_plot_recipe(self, recipe_name, output_file_name):
         fig = plt.figure()
 
         ax_macro = fig.add_subplot(121, polar=True)
@@ -58,10 +61,10 @@ class Plots(object):
         fig.legend(handles=ax_micro.lines[::], labels=recipe_name)
         ax_macro.plot(angles_macro, np.asarray([1.0] * int(len(labels_macro) + 1)), '--', linewidth=2, color='black')
         ax_micro.plot(angles_micro, np.asarray([1.0] * int(len(labels_micro) + 1)), '--', linewidth=2, color='black')
-        fig.savefig('test_images/test_radar')
+        fig.savefig('test_images/{}'.format(output_file_name))
 
 
-    def bar_plot_recipe(self, name_list):
+    def bar_plot_recipe(self, name_list, output_file_name):
 
         df_new_list = []
         for df in self.df_list:
@@ -89,10 +92,10 @@ class Plots(object):
         ax.plot(df_master.index, [1.0]*len(df_master.index), color='black', linestyle='--', lw=2)
 
         fig = ax.get_figure()
-        fig.savefig('test_images/test_bargraph_recipe', bbox_inches='tight')
+        fig.savefig('test_images/{}'.format(output_file_name), bbox_inches='tight')
 
 
-    def stacked_barplot(self, itr, recipe_list):
+    def stacked_barplot(self, itr, recipe_list, output_file_name):
         df_temp = self.df_list[itr].copy()
 
         new_columns = self.rootprofile.init_macro.convert_labels_to_pretty_labels(df_temp.columns)
@@ -102,14 +105,13 @@ class Plots(object):
 
         df_string = df_temp[['NDB_NO', 'Description', 'Category', 'conversion_factor']]
         df_numbers = df_temp[self.rootprofile.macro_label_list + self.rootprofile.micro_label_list]
-
         df_numbers = df_numbers / df_numbers.sum()[df_numbers.columns]
+        df_temp = pd.concat([df_string[['Description']], df_numbers], axis=1)
 
-        df_temp = df_string[['Description']].join(df_numbers)
         stacked_plot = df_temp.set_index('Description').T.plot(kind='bar', stacked=True, colormap='Paired')
         patches, labels = stacked_plot.get_legend_handles_labels()
         stacked_plot.legend(patches, labels, bbox_to_anchor=(1.5, 1.0))
 
         fig = stacked_plot.get_figure()
         fig.suptitle(recipe_list[itr])
-        fig.savefig('test_images/test_stacked_barplot', bbox_inches='tight')
+        fig.savefig('test_images/{}'.format(output_file_name), bbox_inches='tight')

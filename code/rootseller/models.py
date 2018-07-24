@@ -305,8 +305,14 @@ class GA(object):
 
         print('***************')
         best_recipe_combo = meal_plan_population[print_best_index[0]]
+        print()
+        print("Algorithm meal plan:")
         print(best_recipe_combo)
+        print()
+        print("Algorithm meal plan nutrition:")
         print(self.recipe_population_fitness([best_recipe_combo]))
+        print()
+        print("User should have the following:")
         print(weekly_diet_amount)
         return
 
@@ -336,14 +342,19 @@ class GA(object):
         best_recipe_combo = recipe_population[print_best_index[0]]
         # print(best_recipe_combo)
         print()
+        print('Original Recipe:')
         print(pd.DataFrame(recipe[self.macro_labels].sum()).T)
         print()
+        print('Optimized Recipe:')
         print(self.recipe_population_fitness_individual([best_recipe_combo], recipe))
         print()
+        print('User should eat per meal:')
         print(daily_diet_amount)
 
         df_temp = pd.DataFrame({'original_conversion_factor': recipe['conversion_factor'],
                                 'new_conversion_factor': best_recipe_combo,
                                 'Description': recipe['Description']})
+        print()
+        print('Differnce in unoptimized and optimized ratios:')
         print(df_temp[['original_conversion_factor', 'new_conversion_factor', 'Description']])
 

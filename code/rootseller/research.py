@@ -7,6 +7,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 from rootseller import nutrition
 from rootseller import rootprofile
+import warnings
+warnings.filterwarnings('ignore')
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 
 class Research(object):
     def __init__(self, profile_init):
@@ -32,7 +36,7 @@ class Research(object):
             for i in range(len(tag_list)):
                 if tag_list[i] == 'np.nan':
                     tag_list[i] = ''
-            tag_list = filter(None, tag_list)
+            tag_list = list(filter(None, tag_list))
             try:
                 b = tag_list.index('np.nan')
                 del tag_list[b]
@@ -140,7 +144,6 @@ class Research(object):
                     normalized_food = temp_row[ii].get_values()[0]
                     normalized_food_next = self.nutrition_init.nutritional_database[self.nutrition_init.nutritional_database['NDB_NO'] == temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['NDB_NO'].get_values()[i]][ii].get_values()[0]
                     # print('\t\t', "{:40s}, {:10f}, {:10f}".format(ii, normalized_food, normalized_food_next))
-                print('\n')
 
         return tag_list
 
