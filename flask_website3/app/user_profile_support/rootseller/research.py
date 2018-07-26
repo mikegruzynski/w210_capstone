@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 from collections import Counter
-import networkx as nx
+# import networkx as nx
 from sklearn.decomposition import PCA
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler

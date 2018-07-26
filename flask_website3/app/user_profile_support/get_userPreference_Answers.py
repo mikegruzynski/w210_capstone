@@ -3,6 +3,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from app.user_profile_support.calculate_macro_nutrients import get_macro_label_list
 from app.user_profile_support.get_user_nutrients import get_micro_label_list
+from flask import session
 
 def get_userPreferences(user):
     # Returns the user preferences from the google Form
@@ -42,7 +43,6 @@ def get_userPreferences(user):
       'How Many Recipes Would You Like to Plan per Week?':'meals_per_week'}
 
     userPref_df.rename(columns=rename_dict, inplace=True)
-
     # Look for user if exists in user preferneces
     if any(userPref_df.username == user):
         user_prefs = userPref_df[userPref_df.username == user]
@@ -54,6 +54,7 @@ def get_userPreferences(user):
             filter_list = get_macro_label_list(user_prefs.user_macro_choices.values[0])
             filter_list = get_micro_label_list(user_prefs.user_macro_choices.values[0])
             user_prefs['filter_list'] = [filter_list]
+            # user_prefs['plan_exists'] = False
         return user_prefs
     else:
         # Send to the user new user_profile page to fill out preferneces
@@ -83,5 +84,6 @@ def get_user_ignore_responses(user_profile_data, user):
         for ignore in user_ignore_df.ignore_list.values:
             ignore_list = ignore_list + ignore.split(', ')
 
-    user_profile_data.ignore_list = ignore_list
-    return user_profile_data
+    session['ignore_list'] = pd.DataFrame({'recipe_ignore':ignore_list}).to_json()
+    # user_profile_data.ignore_list = ignore_list
+    return ignore_list

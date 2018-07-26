@@ -37,24 +37,23 @@
 			</nav>
 
 		<!-- Main -->
-			<div id="main">
-        <section id="banner">
-          <div class="inner">
-            <header>
-              <h1>Hello {{ user_data.firstname.values[0] }}!</h1>
-              <p>Your Shopping List</p>
-            </header>
-          </div>
-        </section>
-e
 				<section class="wrapper style1">
 					<div class="inner">
 						<!-- 2 Columns -->
 							<div class="flex flex-1">
 							<div class="col col1">
-								<h1>Coming Soon!</h1>
+								<h1>{{ user_data.firstname.values[0] }}'s Shopping List</h1>
 								<h1></h1>
-       <p>
+
+								<div style="float: left; width: 100%;">
+										<ul>
+											{% for ingredient in ingredient_list %}
+												<li> {{ ingredient }} </li>
+											{%endfor%}
+										</ul>
+       <p></p>
+				<!-- {{ ingredient_list }} -->
+
 			 <a href = "/user_profile" class="button">Back to User Profile</a>
 
 			</div>
