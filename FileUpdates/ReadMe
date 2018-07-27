@@ -4,4 +4,6 @@ route.py -> inclusion of the Session import and definition to keep user_data and
             and keeps recipes consistent
           
 recipe_recommendation -> dynamic html formatting
+
+routesv2July26 -> fixing recipes to session cookie and pop
                           
