@@ -2,6 +2,7 @@ from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import login
+from wtforms import Form, FloatField #, validators,
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -18,6 +19,56 @@ class User(db.Model, UserMixin):
 def __repr__(self):
         return '<User {}>'.format(self.username)
 
+# Model
+# TODO: Valdate ranges in filed (optional )
+class InputMacroNutrientsForm(Form):
+    calories = FloatField()
+    protein = FloatField()
+    fat = FloatField()
+    carbohydrate = FloatField()
+    fiber = FloatField()
+    cholesterol = FloatField()
+    saturated_fat = FloatField()
+    unsaturated_fat = FloatField()
+    sugar = FloatField()
+
+
+class InputMicroNutrientsForm(Form):
+    Betaine = FloatField()
+    Calcium = FloatField()
+    Choline = FloatField()
+    Copper = FloatField()
+    Fluoride = FloatField()
+    Folate = FloatField()
+    Folate_DFE = FloatField()
+    Folate_food = FloatField()
+    Folic_acid = FloatField()
+    Iron = FloatField()
+    Magnesium = FloatField()
+    Manganese = FloatField()
+    Niacin = FloatField()
+    Fluoride = FloatField()
+    Pantothenic_acid = FloatField()
+    Phosphorus = FloatField()
+    Potassium = FloatField()
+    Retinol = FloatField()
+    Riboflavin = FloatField()
+    Selenium = FloatField()
+    Sodium = FloatField()
+    Fluoride = FloatField()
+    Thiamin = FloatField()
+    Vitamin_A = FloatField()
+    Vitamin_B12 = FloatField()
+    Vitamin_B12_added = FloatField()
+    Vitamin_B6 = FloatField()
+    Vitamin_C = FloatField()
+    Vitamin_D = FloatField()
+    Vitamin_D2 = FloatField()
+    Vitamin_D3 = FloatField()
+    Vitamin_E = FloatField()
+    Vitamin_E_added = FloatField()
+    Vitamin_K = FloatField()
+    Zinc = FloatField()
 
 class UserPreference(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
