@@ -7,6 +7,7 @@ from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
 import numpy as np
+import matplotlib.pyplot as plt
 
 @app.route('/')
 @app.route('/index')
@@ -37,9 +38,13 @@ def login():
 @app.route('/logout',  methods=['GET', 'POST'])
 def logout():
     logout_user()
-    # TODO: populate all data saved during session
-    # userprofile, recipe plan, etc.
+    print(session.keys())
     session.pop('data', None)
+    session.pop('ignore_list', None)
+    session.pop('user_id', None)
+    session.pop('user_meal_plan', None)
+    session.pop('micros', None)
+    session.pop('macros', None)
     return redirect(url_for('index'))
 
 
@@ -66,7 +71,7 @@ def preference_survey():
 
 
 # Render User Profile page
-@app.route('/user_profile')
+@app.route('/user_profile', methods=['GET', 'POST'])
 # @login_required
 def user_profile():
     if current_user.is_authenticated:
@@ -92,21 +97,30 @@ def user_profile():
             # Check if Recipe Suggestions have been created for the user
             # If not, calclate and pass to profile to list
             if 'user_meal_plan' not in session.keys():
-                best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(user_profile_data, user)
+                best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(session, user)
 
             user_meal_plan = pd.read_json(session['user_meal_plan'])
-
             # Check to make sure recipes are not in the ignore list
             ignore_list = get_user_ignore_responses(user_profile_data, user)
             while any(np.intersect1d(ignore_list, user_meal_plan.recipe_id)):
-                best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(user_profile_data, user)
+                best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(session, user)
                 user_meal_plan = pd.read_json(session['user_meal_plan'])
 
-            # Render the Users Profile Page
-            return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros,micros=micros, user_meal_plan=user_meal_plan)
+            macros_form = InputMacroNutrientsForm(request.form)
+            micros_form = InputMicroNutrientsForm(request.form)
+
+            if request.method == 'POST':
+                macros, micros = process_nutrient_edit_form(macros_form.data, micros_form.data, macros, micros)
+                # Save micro and Macro edited list for later fram
+                session['macros'] = pd.DataFrame(macros).to_json()
+                session['micros'] = pd.DataFrame(micros, index=[0]).to_json()
+                # Render the Users Profile Page
+
+                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan, form1=macros_form, form2=micros_form)
+            else:
+                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan, form1=macros_form, form2=micros_form)
         else:
-            print("Data is NOT NOT NOT in keys *******")
-            # Render the New User SetUp page until they comlete prefernece
+            # Render the New User Landing page until they complete Preferneces Survey
             return render_template('userProfile_new.html', title="User Preferneces", user=user)
         return redirect(url_for('index'))
 
@@ -122,16 +136,24 @@ def recipe_recommendation():
         if user_profile_data is not False:
             # Get Recipe Reccomendations for the user
             if 'user_meal_plan' not in session.keys():
-                best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(user_profile_data, user)
-                user_meal_plan = pd.read_json(session['user_meal_plan'])
+                best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(session, user)
+
+            user_meal_plan = pd.read_json(session['user_meal_plan'])
             best_recipe_combo = user_meal_plan.recipe_id
 
             # Sanity Check the ignore list before returning Results. If a recipe is in ignore list run again
             ignore_list = get_user_ignore_responses(user_profile_data, user)
 
             while any(np.intersect1d(ignore_list, user_meal_plan.recipe_id)):
-                best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(user_profile_data, user)
+                best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(session, user)
                 user_meal_plan = pd.read_json(session['user_meal_plan'])
+
+            #### Here is where plot needs to be called and saved off for jpg
+            fig = plt.figure()
+            ax = plt.axes()
+            x = np.linspace(0, 10, 1000)
+            ax.plot(x, np.sin(x))
+            fig.savefig('app/static/images/plot.png')
 
             # Render the Users Profile Page
             return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan)
@@ -162,6 +184,13 @@ def subsitute_ingredients():
              user=user)
         return redirect(url_for('index'))
 
+
+# Force Rerun of Recipe Plan and Display on User Profile Page
+@app.route('/rerun_recipe_plan')
+def rerun_recipe_plan():
+    user = current_user.username
+    best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(session, user)
+    return redirect(url_for('user_profile'))
 
 @app.route('/edit_nutrients', methods=['GET', 'POST'])
 def edit_nutrients():
@@ -194,7 +223,7 @@ def reset_nutrient_goals():
 
     macros_form = InputMacroNutrientsForm(request.form)
     micros_form = InputMicroNutrientsForm(request.form)
-    return redirect(url_for('edit_nutrients'))
+    return redirect(url_for('user_profile'))
     # return render_template("edit_nutrients.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros)
 
 

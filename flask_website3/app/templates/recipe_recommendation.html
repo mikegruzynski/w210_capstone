@@ -63,14 +63,14 @@
 								<h5>Enter Recipes you do not want to make into the survey below to remove from list. We will replace it better recipe option!</h5>
 								<h5>Based on your user preferneces. We suggest the following Recipes:</h5>
 
-								<div style="float: left; width: 50%;">
+								<div style="float: left; width: 30%;">
 										<ul>
 											{% for id in user_meal_plan.recipe_id %}
 												<li> {{id+":"}} </li>
 											{%endfor%}
 										</ul>
 								</div>
-								<div style="float: right; width: 50%;">
+								<div style="float: right; width: 70%;">
 										<ul style="list-style: none;">
 											{% for name in user_meal_plan.recipe_name %}
 												<li> {{name}} </li>
@@ -78,12 +78,25 @@
 										</ul>
 								</div>
 
-									<a href = "/recipe_recommendation" class="button">Edit Recipe Plan</a>
+									<a href = "/recipe_recommendation" class="button">Re Run Recipe Plan</a>
 									<p></p>
 									<!-- <a href = "/subsitute_ingredients" class="button">Subsitute Ingredients in Meals </a> -->
 								</div>
 							</div>
 						</div>
+
+
+						<div style="float: left; width: 50%;">
+							<img src="{{ url_for('static', filename='images/plot.png') }}"/>
+						</div>
+
+						<div style="float: right; width: 50%;">
+							<img src="{{ url_for('static', filename='images/plot.png') }}"/>
+						</div>
+
+						<br>
+						<br>
+						<p></p>
 
 						<section class="wrapper">
 							<div class="inner">

@@ -18,7 +18,9 @@ def recipe_visuals(df_list, df, profile_init, name_list):
     visualizations.Plots(df_list, df, profile_init).bar_plot_recipe(name_list)
 
 
-def get_recipe_list(user_profile_data, user):
+def get_recipe_list(session, user):
+    user_profile_data = pd.read_json(session['data'])
+
     # Run Recipe Recomendation Alg
     profile_init = rootprofile.UserProfile(user_profile_data)
     recipe_init = recipes.Recipes(profile_init)
@@ -48,7 +50,6 @@ def get_recipe_list(user_profile_data, user):
     user_profile_data['plan_exists'] = True
     recipe_names = []
     for rec_idx in best_recipe_combo:
-        print(recipe_init.recipe_clean[rec_idx]['ingredients'])
         recipe_names.append(recipe_init.recipe_clean[rec_idx]['name'])
     # user_profile_data.recipe_names = recipe_names
     # user_profile_data['recipe_names'] = [recipe_names]
@@ -73,7 +74,7 @@ def get_shopping_list(best_recipe_combo, user_profile_data):
 
     return(ingredient_list)
 
-# TODO: 
+# TODO:
 def run_master_ingredient_sub(user_profile_data):
     profile_init = rootprofile.UserProfile(user_profile_data)
     recipe_init = recipes.Recipes(profile_init)
