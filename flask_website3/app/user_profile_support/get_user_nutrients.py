@@ -1,8 +1,9 @@
 import pandas as pd
 from app.user_profile_support.calculate_macro_nutrients import *
 
-def get_micro_nutrients(user_profile_data, user_micro_choices=False):
+def get_micro_nutrients(session, user_micro_choices=False):
     # Uses User Prefernces Dictionary to use Look up Table to return Micro Nutrients
+    user_profile_data = pd.read_json(session['data'])
     micros_df = pd.read_csv('app/static/csv_files/micros_csv.csv')
 
     if user_profile_data.is_pregnant_breastfeeding.values[0] == 'No':
@@ -35,10 +36,13 @@ def get_micro_nutrients(user_profile_data, user_micro_choices=False):
         print("Choosing only first row of data found in dictionary")
         user_micros_dict = ud[0].transpose().to_dict()[0]
 
+    # Save to Session Data
+    session['micros'] = pd.DataFrame(user_micros_dict, index=[0]).to_json()
     return user_micros_dict
 
-def get_macro_nutrients(user_profile_data):
-    macros_dict = calculate_macros(user_profile_data)
+def get_macro_nutrients(session):
+    macros_dict = calculate_macros(pd.read_json(session['data']))
+    session['macros'] = pd.DataFrame(macros_dict).to_json()
     return macros_dict
 
 # List User Specified Micros by name
@@ -114,3 +118,15 @@ def get_micro_label_list(user_micro_choices):
             micro_list = micro_list + ['folic acid']
 
     return(micro_list)
+
+
+def process_nutrient_edit_form(macros_form_data, micros_form_data, macros, micros):
+    for nutrient in macros_form_data.keys():
+        if macros_form_data.get(nutrient) is not None:
+            macros[nutrient] = macros_form_data.get(nutrient)
+
+    for nutrient in micros_form_data.keys():
+        if micros_form_data.get(nutrient) is not None:
+            micros[nutrient] = micros_form_data.get(nutrient)
+
+    return(macros, micros)

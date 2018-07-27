@@ -3,7 +3,8 @@ import pandas as pd
 def calculate_macros(user_profile_data):
     # user_profile_dict - contains the users information
     # return macors_dictionasry for user
-
+    print("HERE")
+    print(user_profile_data)
     height = int(user_profile_data.height_in.values[0])
     weight = int(user_profile_data.weight_lb.values[0])
     activity_level = user_profile_data.activity_level.values[0]
