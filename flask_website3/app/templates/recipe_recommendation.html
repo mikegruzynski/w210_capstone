@@ -77,8 +77,14 @@
 											{%endfor%}
 										</ul>
 								</div>
-
-									<a href = "/recipe_recommendation" class="button">Re Run Recipe Plan</a>
+								<h5>Want to ignore one of these recipes an dremove it from the possible recipe suggestions? </h5>
+								<p>Please list recipe ID's you would like to see removed (separate by commas).</p>
+								<div class="inner">
+									<form method=post action="">
+											{{ ignore_form.ignore_list }}
+								</div>
+									<p><input type=submit value="Ignore Recipes Listed"></p>
+									<a href = "/rerun_recipe_plan" class="button">Re-Do Recipe Plan</a>
 									<p></p>
 									<!-- <a href = "/subsitute_ingredients" class="button">Subsitute Ingredients in Meals </a> -->
 								</div>
@@ -98,17 +104,17 @@
 						<br>
 						<p></p>
 
-						<section class="wrapper">
+						<!-- <section class="wrapper">
 							<div class="inner">
 								<header class="align-center">
 									<h2>Find a Recipe you did not like and never want to see again?</h2>
 									<p>We are sorry! Please fill out the form below and we will make sure you never see it again!</p>
-									<!-- <p>Once submitted please visit your profile link from the menu</p> -->
+									<p>Once submitted please visit your profile link from the menu</p>
 								</header>
 															<iframe src="https://docs.google.com/forms/d/1NolLCQfXgA2k4iBniKsQAKNK62bvglqUDPAQc7pl0CA/viewform?embedded=true" width="1200"
 															 height="600" frameborder="0" marginheight="0" marginwidth="0" align="center">Loading...</iframe>
-													</div>
-						</section>
+							</div>
+						</section> -->
 
 
        <p>

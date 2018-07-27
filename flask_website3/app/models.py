@@ -2,7 +2,7 @@ from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import login
-from wtforms import Form, FloatField #, validators,
+from wtforms import Form, FloatField, StringField #, validators,
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -20,7 +20,7 @@ def __repr__(self):
         return '<User {}>'.format(self.username)
 
 # Model
-# TODO: Valdate ranges in filed (optional )
+# TODO: Valdate ranges in filed (optional)
 class InputMacroNutrientsForm(Form):
     calories = FloatField()
     protein = FloatField()
@@ -31,7 +31,6 @@ class InputMacroNutrientsForm(Form):
     saturated_fat = FloatField()
     unsaturated_fat = FloatField()
     sugar = FloatField()
-
 
 class InputMicroNutrientsForm(Form):
     Betaine = FloatField()
@@ -69,6 +68,9 @@ class InputMicroNutrientsForm(Form):
     Vitamin_E_added = FloatField()
     Vitamin_K = FloatField()
     Zinc = FloatField()
+
+class IgnoreRecipeForm(Form):
+    ignore_list = StringField()
 
 class UserPreference(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)

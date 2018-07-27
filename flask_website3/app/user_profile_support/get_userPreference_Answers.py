@@ -61,6 +61,26 @@ def get_userPreferences(user):
         return(False)
 
 
+def create_ignore_list_from_session_df(session):
+    if 'ignore_list' in session.keys():
+        existing_ignores = pd.read_json(session['ignore_list'])
+        ignore_list = []
+        for ignore in existing_ignores.recipe_ignore.values:
+            ignore_list = ignore_list + ignore.split(', ')
+    return ignore_list
+
+
+def process_ignore_form(session, ignore_form):
+    if 'ignore_list' in session.keys():
+        existing_ignore_list = create_ignore_list_from_session_df(session)
+    ignore_list1 = ignore_form.ignore_list.data.split('RECIPE_ ')
+    ignore_list = []
+    for recipe_id in ignore_list1:
+        ignore_list = ignore_list + recipe_id.split(', ')
+    ignore_list = existing_ignore_list + ignore_list
+    session['ignore_list'] = pd.DataFrame({'recipe_ignore':ignore_list}).to_json()
+
+
 def get_user_ignore_responses(user_profile_data, user):
     scope = ['https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive']

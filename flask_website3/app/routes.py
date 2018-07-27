@@ -2,12 +2,15 @@ from app import app, db
 from flask import render_template, flash, redirect, url_for, session, request
 from flask_login import current_user, login_user, logout_user
 from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
-from app.models import User, InputMacroNutrientsForm, InputMicroNutrientsForm
+from app.models import User, InputMacroNutrientsForm, InputMicroNutrientsForm, IgnoreRecipeForm
 from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 @app.route('/')
 @app.route('/index')
@@ -108,7 +111,6 @@ def user_profile():
 
             macros_form = InputMacroNutrientsForm(request.form)
             micros_form = InputMicroNutrientsForm(request.form)
-
             if request.method == 'POST':
                 macros, micros = process_nutrient_edit_form(macros_form.data, micros_form.data, macros, micros)
                 # Save micro and Macro edited list for later fram
@@ -126,7 +128,7 @@ def user_profile():
 
 
 # Links to page with recipe recommendations and ability to change out recipes
-@app.route('/recipe_recommendation')
+@app.route('/recipe_recommendation', methods=['GET', 'POST'])
 # @login_required
 def recipe_recommendation():
     if current_user.is_authenticated:
@@ -143,20 +145,30 @@ def recipe_recommendation():
 
             # Sanity Check the ignore list before returning Results. If a recipe is in ignore list run again
             ignore_list = get_user_ignore_responses(user_profile_data, user)
+            if 'ignore_list' in session.keys():
+                old_ignore_list = create_ignore_list_from_session_df(session)
+                ignore_list = ignore_list + old_ignore_list
+            session['ignore_list'] = pd.DataFrame({'recipe_ignore':ignore_list}).to_json()
 
             while any(np.intersect1d(ignore_list, user_meal_plan.recipe_id)):
                 best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(session, user)
                 user_meal_plan = pd.read_json(session['user_meal_plan'])
 
             #### Here is where plot needs to be called and saved off for jpg
-            fig = plt.figure()
-            ax = plt.axes()
-            x = np.linspace(0, 10, 1000)
-            ax.plot(x, np.sin(x))
-            fig.savefig('app/static/images/plot.png')
+            # fig = plt.figure()
+            # ax = plt.axes()
+            # x = np.linspace(0, 10, 1000)
+            # ax.plot(x, np.sin(x))
+            # fig.savefig('app/static/images/plot.png')
 
-            # Render the Users Profile Page
-            return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan)
+            ignore_form = IgnoreRecipeForm(request.form)
+            if request.method == 'POST':
+                process_ignore_form(session, ignore_form)
+                # Render the Users Profile Page
+                return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignore_form)
+            else:
+                print(request.method)
+                return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignore_form)
         else:
             # Render the New User SetUp page until they comlete prefernece
             return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros)
