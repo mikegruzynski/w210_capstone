@@ -4,6 +4,7 @@ import re
 import numpy as np
 import pandas as pd
 import json
+import time
 pd.set_option('display.height', 1000)
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
@@ -59,7 +60,8 @@ class GA(object):
                        "sugar", "protein", "Iron, Fe (mg)", "Magnesium, Mg (mg)", "Manganese, Mn (mg)",
                        "Thiamin (mg)",
                        "Vitamin D (D2 + D3) (microg)"]
-        self.macro_labels = ["calories", "carbohydrate", "fiber", "saturated_fat", "unsaturated_fat", "protein"]
+        # self.macro_labels = ["calories", "carbohydrate", "fiber", "saturated_fat", "unsaturated_fat", "protein"]
+        self.macro_labels = ["carbohydrate", "protein", "fiber", "sugar", "saturated_fat", "unsaturated_fat"]
 
     def find_nearest(self, input_array, value):
         input_array = np.asarray(input_array)
@@ -284,9 +286,13 @@ class GA(object):
             meal_plan_population.append(self.recipe_df_normalized['recipe_id'].sample(meals_per_week).tolist())
         meal_plan_population = np.asarray(meal_plan_population)
 
-        last_best = []
+        best_index_list = []
+        generation_list = []
+        best_estimates_list = []
+        time_list = []
         for generation in range(num_generations):
-            print("Generation : ", generation)
+            time_start = time.time()
+            # print("Generation : ", generation)
             fitness_recipe = self.recipe_population_fitness(meal_plan_population)
 
             index = self.recipe_select_mating_pool(weekly_diet_amount, fitness_recipe, amount_parents_mating)
@@ -299,22 +305,29 @@ class GA(object):
             if generation < num_generations - 1:
                 meal_plan_population = np.concatenate([recipe_parents, offspring_mutation])
 
+            time_list.append(time.time() - time_start)
             print_best = self.recipe_population_fitness(meal_plan_population)
             print_best_index, df_loss = self.print_recipe_select_mating_pool(weekly_diet_amount, print_best, amount_per_population)
-            print(print_best_index[:5])
+            # print(print_best_index[:10])
 
-        print('***************')
-        best_recipe_combo = meal_plan_population[print_best_index[0]]
-        print()
-        print("Algorithm meal plan:")
-        print(best_recipe_combo)
-        print()
-        print("Algorithm meal plan nutrition:")
-        print(self.recipe_population_fitness([best_recipe_combo]))
-        print()
-        print("User should have the following:")
-        print(weekly_diet_amount)
-        return
+            best_index_list.append(print_best_index[:10])
+            generation_list.append(generation)
+            best_estimates_list.append(print_best.loc[0, :])
+
+
+        # print('***************')
+        # best_recipe_combo = meal_plan_population[print_best_index[0]]
+        # print()
+        # print("Algorithm meal plan:")
+        # print(best_recipe_combo)
+        # print()
+        # print("Algorithm meal plan nutrition:")
+        # print(self.recipe_population_fitness([best_recipe_combo]))
+        # print()
+        # print("User should have the following:")
+        # print(weekly_diet_amount)
+
+        return best_index_list, generation_list, best_estimates_list, time_list
 
     def AMGA_individual_recipe(self, num_generations, recipe, amount_per_population, amount_parents_mating, daily_diet_amount):
 
