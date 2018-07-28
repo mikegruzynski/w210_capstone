@@ -71,46 +71,65 @@ def get_shopping_list(best_recipe_combo, user_profile_data):
         ingredient_list.remove('')
 
     # TODO: aggregate the ingredients to combine recipies and amounts
-
+    print(type(ingredient_list), ingredient_list)
     return(ingredient_list)
 
-# TODO:
-def run_master_ingredient_sub(user_profile_data):
-    profile_init = rootprofile.UserProfile(user_profile_data)
-    recipe_init = recipes.Recipes(profile_init)
-    research_init = research.Research(profile_init)
+# TODO: Edit single_ingredient_replacement
+# TODO: Remove Default call of recipe
+def single_ingredient_replacement(session, recipe_init, recipe_id='RECIPE_48743'):
+    print("***** SINGLE FOOD REPLACEMENT ******")
+    user_profile_data = session['data']
+    # Single food replacement based on macros
+    # recipe_id = 'RECIPE_48743'
+    # print(recipe_init.recipe_list_to_conversion_factor_list(recipe_id)[['Description', 'NDB_NO']])
 
-    # Run Subsitution option for Ingredients
-    recipe_itr = 0
-    df_list = []
-    df_summed_list = []
-    recipe_id_list = []
-    name_list = []
+    # TODO: User inputs an ingredient to replace
+    raw_input_return = input("Select items to replace:")
 
-    if user_profile_data.plan_exists == False:
-    # If no recipes exist for user create a meal plan
-        best_recipe_combo, weekly_diet_amount, user_profile_data, user_meal_plan = get_recipe_list(user_profile_data, recipe_init)
+    temp_recipe_dict = {}
+    temp_recipe_dict[recipe_id] = recipe_init.recipe_clean[recipe_id].copy()
 
-    for recipe in user_meal_plan.recipe_id:
-        temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe)
-        df_list.append(temp_recipe_df)
-        df_summed_list.append(temp_recipe_df.loc[:, profile_init.macro_list + profile_init.micro_list].sum().to_frame())
-        name_list.append(recipe_init.recipe_clean[recipe]['name'])
-        recipe_id_list.append(recipe)
-        recipe_itr += 1
+    if raw_input_return:
+        # 'Baked'
+        # 'Beef'
+        # 'Beverages'
+        # 'Breakfast_Cereals'
+        # 'Cereal_Grains_and_Pasta'
+        # 'Dairy_and_Egg'
+        # 'Fats_and_Oils'
+        # 'Finfish_and_Shellfish'
+        # 'Fruits_and_Fruit_Juices'
+        # 'Lamb_Veal_and_Game'
+        # 'Legumes_and_Legume'
+        # 'Nut_and_Seed'
+        # 'Pork'
+        # 'Poultry'
+        # 'Sausages_and_Luncheon_Meats'
+        # 'Soups_Sauces_and_Gravies'
+        # 'Spices_and_Herbs'
+        # 'Sweets'
+        # 'Vegetables_and_Vegetable'
 
-    # SMASH Files together for optimization mapp
-    df = pd.concat(df_summed_list, axis=1)
-    df = df.T.reset_index(drop=True)
-    se = pd.Series(name_list)
-    df['recipe_name'] = se.values
-    se2 = pd.Series(recipe_id_list)
-    df['recipe_id'] = se2.values
+        # tag_list = research_init.macro_space_distance_top_n(3, raw_input_return, ['Finfish_and_Shellfish'])
+        tag_list = research_init.macro_space_distance_top_n(3, raw_input_return, ['Finfish_and_Shellfish'])
+        new_recipe_dict = recipe_init.recipe_alternitive_create(raw_input_return, tag_list, temp_recipe_dict)
 
-    # Create Recipe Visuals for Display
-    recipe_visuals(df_list, df, profile_init, name_list)
+        temp = recipe_init.recipe_list_to_conversion_factor_list(recipe_id)
 
-    return df, df_list
+        df_list = []
+        name_list = []
+        for recipe in new_recipe_dict.keys():
+            temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe, dict=new_recipe_dict)
+            df_list.append(temp_recipe_df)
+            name_list.append(new_recipe_dict[recipe]['name'])
+
+        # visualizations.Plots(df_list, profile_init).bar_plot_recipe(name_list, 'test_replacement_barplot')
+        # visualizations.Plots(df_list, profile_init).radar_plot_recipe(name_list, 'test_replacement_radar_plot')
+
+        # TODO: Figure out what to return
+        # TODO: Replace the ingredients in the session data
+        # TODO: Edit the REcipe with the replacemnt ingredient
+        # return vlaues
 
 
 # Single food Subsitution

@@ -21,6 +21,7 @@ class UserProfile(object):
         self.macro_list = init_macro.convert_labels_to_df_columns(self.macro_label_list)
 
         # TODO:
+        print("\n***TODO ROOTPROFILE EDIT **** ")
         # Get user Specified Micro List From Prefernece Survey
         self.micro_label_list = ['iron', 'magnesium', 'manganese', 'thiamin', 'Vitamin D']
         # self.micro_label_list = get_micro_label_list(user_profile_data.user_micro_choices.values[0])

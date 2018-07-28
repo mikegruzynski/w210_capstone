@@ -5,24 +5,30 @@ from collections import Counter
 from sklearn.decomposition import PCA
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
-from app.user_profile_support.rootseller import nutrtion, rootprofile
+# from app.user_profile_support.rootseller import nutrtion
+from app.user_profile_support.rootseller import nutrition
+from app.user_profile_support.rootseller import rootprofile
+import warnings
+warnings.filterwarnings('ignore')
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 
 class Research(object):
     def __init__(self, profile_init):
         path = '/Users/mauracullen/Documents/UCB_MIDS/W210_Capstone/w210_capstone/data/'
         try:
-            with open(path+'recipe/recipe_clean_USE.json') as f:
+            with open(path + 'recipe/recipe_clean_USE.json') as f:
                 self.recipe_clean = json.load(f)
         except:
-            with open(path+'recipe/recipe_clean_USE.json') as f:
+            with open(path + 'recipe/recipe_clean_USE.json') as f:
                 self.recipe_clean = json.load(f)
 
         try:
-            self.df_pca = pd.read_csv(path+'nutrient/compiled/pca_nutrition_normalized_minmax_df.csv')
+            self.df_pca = pd.read_csv(path + 'nutrient/compiled/pca_nutrition_normalized_minmax_df.csv')
         except:
             self.df_pca = None
 
-        self.nutrtion_init = nutrtion.Nutrition()
+        self.nutrition_init = nutrition.Nutrition()
         self.profile_init = profile_init
 
     def make_social_network_dict(self):
@@ -32,7 +38,7 @@ class Research(object):
             for i in range(len(tag_list)):
                 if tag_list[i] == 'np.nan':
                     tag_list[i] = ''
-            tag_list = filter(None, tag_list)
+            tag_list = list(filter(None, tag_list))
             try:
                 b = tag_list.index('np.nan')
                 del tag_list[b]
@@ -58,10 +64,10 @@ class Research(object):
         label_dict = {}
         G = nx.Graph()
         for key in social_food_dict.keys():
-            label_dict[key] = self.nutrtion_init.NDB_NO_lookup(key, filter_list='Description').get_values()[0]
+            label_dict[key] = self.nutrition_init.NDB_NO_lookup(key, filter_list='Description').get_values()[0]
             for sub_key in social_food_dict[key].keys():
                 try:
-                    label_dict[sub_key] = self.nutrtion_init.NDB_NO_lookup(sub_key, filter_list='Description').get_values()[0]
+                    label_dict[sub_key] = self.nutrition_init.NDB_NO_lookup(sub_key, filter_list='Description').get_values()[0]
                 except:
                     print('ERROR', sub_key)
         for key in label_dict.keys():
@@ -100,23 +106,23 @@ class Research(object):
     def pca_space_transformation(self, filter_list):
         minmax_scaler = MinMaxScaler()
         pca_method_three = PCA(n_components=3)
-        pca_transform_3 = pca_method_three.fit_transform(minmax_scaler.fit_transform(self.nutrtion_init.nutritional_normalized_database[filter_list]))
+        pca_transform_3 = pca_method_three.fit_transform(minmax_scaler.fit_transform(self.nutrition_init.nutritional_normalized_database[filter_list]))
         df_pca = pd.DataFrame(pca_transform_3)
         df_pca.columns = ['PCA_1', 'PCA_2', 'PCA_3']
-        df_pca['Category'] = self.nutrtion_init.nutritional_normalized_database['Category']
-        df_pca['Description'] = self.nutrtion_init.nutritional_normalized_database['Description']
-        df_pca['NDB_NO'] = self.nutrtion_init.nutritional_normalized_database['NDB_NO']
+        df_pca['Category'] = self.nutrition_init.nutritional_normalized_database['Category']
+        df_pca['Description'] = self.nutrition_init.nutritional_normalized_database['Description']
+        df_pca['NDB_NO'] = self.nutrition_init.nutritional_normalized_database['NDB_NO']
 
-        df_pca.to_csv(path+'nutrient/compiled/pca_nutrition_normalized_minmax_df.csv')
+        df_pca.to_csv(path +'nutrient/compiled/pca_nutrition_normalized_minmax_df.csv')
 
         return df_pca
 
     def macro_space_distance_top_n(self, n_values, tag, food_category_list):
         minmax_scaler = MinMaxScaler()
-        food_to_replace = self.nutrtion_init.NDB_NO_lookup_normalized(tag, filter_list=['Description']).get_values()[0][0]
+        food_to_replace = self.nutrition_init.NDB_NO_lookup_normalized(tag, filter_list=['Description']).get_values()[0][0]
 
-        temp_row = self.nutrtion_init.NDB_NO_lookup_normalized(tag, filter_list=self.profile_init.macro_list)
-        temp_df = self.nutrtion_init.nutritional_normalized_database.copy()
+        temp_row = self.nutrition_init.NDB_NO_lookup_normalized(tag, filter_list=self.profile_init.macro_list)
+        temp_df = self.nutrition_init.nutritional_normalized_database.copy()
 
         if 'raw' in food_to_replace.lower():
             temp_df = temp_df[(temp_df['Description'].str.contains('raw'))].reset_index()
@@ -138,8 +144,7 @@ class Research(object):
                 print('\t', temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['distance'].get_values()[i], temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['Description'].get_values()[i])
                 for ii in self.profile_init.macro_list:
                     normalized_food = temp_row[ii].get_values()[0]
-                    normalized_food_next = self.nutrtion_init.nutritional_database[self.nutrtion_init.nutritional_database['NDB_NO'] == temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['NDB_NO'].get_values()[i]][ii].get_values()[0]
+                    normalized_food_next = self.nutrition_init.nutritional_database[self.nutrition_init.nutritional_database['NDB_NO'] == temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['NDB_NO'].get_values()[i]][ii].get_values()[0]
                     # print('\t\t', "{:40s}, {:10f}, {:10f}".format(ii, normalized_food, normalized_food_next))
-                print('\n')
 
         return tag_list

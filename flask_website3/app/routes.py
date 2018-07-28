@@ -7,8 +7,8 @@ from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
 import numpy as np
-import matplotlib
-matplotlib.use('Agg')
+# import matplotlib
+# matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 # import matplotlib.pyplot as plt
 
@@ -175,16 +175,17 @@ def recipe_recommendation():
         return redirect(url_for('index'))
 
 
-@app.route('/subsitute_ingredients')
-def subsitute_ingredients():
+# TODO: Make a form for user input
+@app.route('/single_ingredient_replacement')
+def single_ingredient_replacement():
     if current_user.is_authenticated:
         user = current_user.username
-        # Check if user has recipies
+        # Check if user has recipies (DO I NEED TO DO THIS?)
 
-        user_profile_data = pd.read_json(session['data'])
-        if user_profile_data is not False:
+        # user_profile_data = pd.read_json(session['data'])
+        if pd.read_json(session['data']) is not False:
             # Figure out interaction
-            df, df_list = run_master_ingredient_sub(user_profile_data)
+            df, df_list = single_ingredient_replacement(session)
 
             # TODO: get single replacement for ingredient in UI
             # Render the Users Profile Page
@@ -203,27 +204,6 @@ def rerun_recipe_plan():
     user = current_user.username
     best_recipe_combo, weekly_diet_amount, user_profile_data = get_recipe_list(session, user)
     return redirect(url_for('user_profile'))
-
-@app.route('/edit_nutrients', methods=['GET', 'POST'])
-def edit_nutrients():
-    if current_user.is_authenticated:
-        user = current_user.username
-        user_profile_data = pd.read_json(session['data'])
-        macros = pd.read_json(session['macros'])
-        micros = pd.read_json(session['micros'])
-
-    macros_form = InputMacroNutrientsForm(request.form)
-    micros_form = InputMicroNutrientsForm(request.form)
-    if request.method == 'POST':
-        macros, micros = process_nutrient_edit_form(macros_form.data, micros_form.data, macros, micros)
-
-        # Save micro and Macro edited list for later fram
-        session['macros'] = pd.DataFrame(macros).to_json()
-        session['micros'] = pd.DataFrame(micros, index=[0]).to_json()
-
-        return render_template("edit_nutrients.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros)
-    else:
-        return render_template("edit_nutrients.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros)
 
 
 # Reset Goals to Default
@@ -259,3 +239,25 @@ def shopping_list():
             return render_template('userProfile_existing.html', title="User Profile",
              user=user)
         return redirect(url_for('index'))
+
+
+# @app.route('/edit_nutrients', methods=['GET', 'POST'])
+# def edit_nutrients():
+#     if current_user.is_authenticated:
+#         user = current_user.username
+#         user_profile_data = pd.read_json(session['data'])
+#         macros = pd.read_json(session['macros'])
+#         micros = pd.read_json(session['micros'])
+#
+#     macros_form = InputMacroNutrientsForm(request.form)
+#     micros_form = InputMicroNutrientsForm(request.form)
+#     if request.method == 'POST':
+#         macros, micros = process_nutrient_edit_form(macros_form.data, micros_form.data, macros, micros)
+#
+#         # Save micro and Macro edited list for later fram
+#         session['macros'] = pd.DataFrame(macros).to_json()
+#         session['micros'] = pd.DataFrame(micros, index=[0]).to_json()
+#
+#         return render_template("edit_nutrients.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros)
+#     else:
+#         return render_template("edit_nutrients.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros)

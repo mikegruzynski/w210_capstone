@@ -35,6 +35,7 @@ class MicroNutrients(object):
         self.micro_df = pd.read_csv('app/static/csv_files/recommended_micro_nutrients.csv',
                                     index_col='micro_nutrient')
 
+
     def micro_daily_macro_estimation(self, user_profile_data):
 
         female_pregnant_filter = ["Age_14_to_18_female_pregnant", "Age_19_to_9999_female_pregnant"]
@@ -82,5 +83,22 @@ class MicroNutrients(object):
         new_micro_list = []
         for micro in micro_nutritents_interest_list:
             new_micro_list.append(self.micronutrient_column_map_dict[micro]['map_key'])
+
+        return new_micro_list
+
+
+    def convert_labels_to_pretty_labels(self, micro_nutritents_interest_list):
+        new_micro_list = []
+        key_bool = True
+        for micro in micro_nutritents_interest_list:
+            for key in self.micronutrient_column_map_dict.keys():
+                if micro == self.micronutrient_column_map_dict[key]['map_key']:
+                    new_micro_list.append(key)
+                    key_bool = False
+
+            if key_bool == True:
+                new_micro_list.append(micro)
+
+            key_bool = True
 
         return new_micro_list
