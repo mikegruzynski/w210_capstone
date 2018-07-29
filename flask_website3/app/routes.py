@@ -261,3 +261,7 @@ def shopping_list():
 #         return render_template("edit_nutrients.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros)
 #     else:
 #         return render_template("edit_nutrients.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros)
+
+@app.route('/food_network', methods=['GET', 'POST'])
+def food_network():
+    return render_template('data.html', title="Graph Test")
