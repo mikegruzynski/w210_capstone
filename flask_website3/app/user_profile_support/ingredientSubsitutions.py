@@ -76,9 +76,12 @@ def get_shopping_list(best_recipe_combo, user_profile_data):
 
 # TODO: Edit single_ingredient_replacement
 # TODO: Remove Default call of recipe
-def single_ingredient_replacement(session, recipe_init, recipe_id='RECIPE_48743'):
+def get_single_ingredient_replacement(session):
+    # recipe ID
+    recipe_id='RECIPE_48743'
     print("***** SINGLE FOOD REPLACEMENT ******")
     user_profile_data = session['data']
+    print(session.keys())
     # Single food replacement based on macros
     # recipe_id = 'RECIPE_48743'
     # print(recipe_init.recipe_list_to_conversion_factor_list(recipe_id)[['Description', 'NDB_NO']])

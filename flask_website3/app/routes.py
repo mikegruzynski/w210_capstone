@@ -181,11 +181,14 @@ def single_ingredient_replacement():
     if current_user.is_authenticated:
         user = current_user.username
         # Check if user has recipies (DO I NEED TO DO THIS?)
-
+        print("USER", user)
+        print(session['user_meal_plan'])
         # user_profile_data = pd.read_json(session['data'])
         if pd.read_json(session['data']) is not False:
             # Figure out interaction
-            df, df_list = single_ingredient_replacement(session)
+            print(session.keys())
+            # df, df_list =
+            get_single_ingredient_replacement(session)
 
             # TODO: get single replacement for ingredient in UI
             # Render the Users Profile Page
@@ -239,6 +242,7 @@ def shopping_list():
             return render_template('userProfile_existing.html', title="User Profile",
              user=user)
         return redirect(url_for('index'))
+
 
 
 # @app.route('/edit_nutrients', methods=['GET', 'POST'])

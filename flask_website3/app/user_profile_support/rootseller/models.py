@@ -334,7 +334,7 @@ class GA(object):
             best_index_list.append(print_best_index[:10])
             generation_list.append(generation)
             best_estimates_list.append(print_best.loc[0, :])
-        print("\nmeal_plan_population\n", meal_plan_population[0])
+
         best_recipe_combo = meal_plan_population[0]
         # print(best_recipe_combo)
         # print(self.recipe_population_fitness([meal_plan_population[print_best_index[0]]]))
@@ -342,11 +342,6 @@ class GA(object):
         # offspring_mutation = self.recipe_mutation([meal_plan_population[print_best_index[0]]], weekly_diet_amount, 10)
         # print offspring_mutation
         # print(weekly_diet_amount)
-        print("Return\n")
-        # print("time_list", time_list)
-        # print("best_estimates_list", best_estimates_list)
-        # print("generation_list", generation_list)
-        # print("best_index_list", best_index_list)
         # return best_index_list, generation_list, best_estimates_list, time_list
         return best_recipe_combo, weekly_diet_amount
 
