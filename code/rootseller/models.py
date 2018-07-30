@@ -292,7 +292,7 @@ class GA(object):
         time_list = []
         for generation in range(num_generations):
             time_start = time.time()
-            # print("Generation : ", generation)
+            print("Generation : ", generation)
             fitness_recipe = self.recipe_population_fitness(meal_plan_population)
 
             index = self.recipe_select_mating_pool(weekly_diet_amount, fitness_recipe, amount_parents_mating)
@@ -308,24 +308,24 @@ class GA(object):
             time_list.append(time.time() - time_start)
             print_best = self.recipe_population_fitness(meal_plan_population)
             print_best_index, df_loss = self.print_recipe_select_mating_pool(weekly_diet_amount, print_best, amount_per_population)
-            # print(print_best_index[:10])
+            print(print_best_index[:10])
 
             best_index_list.append(print_best_index[:10])
             generation_list.append(generation)
             best_estimates_list.append(print_best.loc[0, :])
 
 
-        # print('***************')
-        # best_recipe_combo = meal_plan_population[print_best_index[0]]
-        # print()
-        # print("Algorithm meal plan:")
-        # print(best_recipe_combo)
-        # print()
-        # print("Algorithm meal plan nutrition:")
-        # print(self.recipe_population_fitness([best_recipe_combo]))
-        # print()
-        # print("User should have the following:")
-        # print(weekly_diet_amount)
+        print('***************')
+        best_recipe_combo = meal_plan_population[print_best_index[0]]
+        print()
+        print("Algorithm meal plan:")
+        print(best_recipe_combo)
+        print()
+        print("Algorithm meal plan nutrition:")
+        print(self.recipe_population_fitness([best_recipe_combo]))
+        print()
+        print("User should have the following:")
+        print(weekly_diet_amount)
 
         return best_index_list, generation_list, best_estimates_list, time_list
 

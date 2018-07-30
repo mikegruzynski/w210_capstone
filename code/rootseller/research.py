@@ -137,13 +137,16 @@ class Research(object):
         tag_list = []
         for description in food_category_list:
             print(description)
-            for i in range(n_values):
-                tag_list.append(temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['NDB_NO'].get_values()[i])
-                print('\t', temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['distance'].get_values()[i], temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['Description'].get_values()[i])
-                for ii in self.profile_init.macro_list:
-                    normalized_food = temp_row[ii].get_values()[0]
-                    normalized_food_next = self.nutrition_init.nutritional_database[self.nutrition_init.nutritional_database['NDB_NO'] == temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['NDB_NO'].get_values()[i]][ii].get_values()[0]
-                    # print('\t\t', "{:40s}, {:10f}, {:10f}".format(ii, normalized_food, normalized_food_next))
 
+            end_bool = False
+            itr = 0
+            while end_bool == False:
+                if temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['distance'].get_values()[itr] != 0:
+                    tag_list.append(temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['NDB_NO'].get_values()[itr])
+                    print('\t', temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['distance'].get_values()[itr], temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['Description'].get_values()[itr])
+                if len(tag_list) == 3:
+                    end_bool = True
+
+                itr += 1
         return tag_list
 
