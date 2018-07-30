@@ -48,82 +48,26 @@
 							<div class="col col1">
 								<h2>Subsitute Ingredients</h2>
 								<h4>Recipe Options</h4>
-								<div class="dropdown">
-									<button onclick="myFunction()" class="dropbtn">Recipes</button>
-									<p></p>
-									<p></p>
-									<ul class="links">
-										<!-- TOOD: List correct recipies  -->
-										<li><a href="#"> {{ df.recipe_name.values[0] }}</a></li>
-										<li><a href="#"> {{ df.recipe_name.values[1] }}</a></li>
-										<li><a href="#">Link 3</a></li>
+								<h1></h1>
+								<div style="float: left; width: 70%;">
+									<ul>
+										{% for desc in df_ingredient_NDB.Description %}
+											<li> {{ desc }} </li>
+										{%endfor%}
 									</ul>
-									</div>
-								<!-- <ul class="links"> -->
-								 <!-- <li>Recipie Optoins </li> -->
-								 <!-- drop down list Recipe options to start subsitution -->
-                 <!-- Add recipies and the ingredient list -->
-                 <!-- Display the recipe ID, ingredients and the macros -->
-                 <!-- Add False Button for subsitition option (?) -->
-                 <!-- Disply the visualizations Mike creates   -->
-							 </ul>
 								</div>
-							</div>
-						</div>
-				</section>
+								<div style="float: left; width: 30%;">
+									<ul>
+										{% for NDB_NO in df_ingredient_NDB.NDB_NO %}
+											<li> {{ NDB_NO }} </li>
+										{%endfor%}
+										<form method=post action="">
+										{{form.ingredientSub}}
+										<input type=submit value="Replace Ingredient">
+									</form>
 
-
-        <section>
-					<div class="inner">
-	          <!-- <h4>{{ df.recipe_name.values }} </h4> -->
-						</div>
-						<h3>Possible Ingredient Subsitutions</h3>
-	          <!-- <p>{{ df_list }}</p> -->
-						<p></p>
-						{{df}}
-						<p></p>
-						<ul>
-						<li>{{ df.recipe_id.values[0] }}</li>
-					</ul>
-					</div>
-        </section>
-
-					<!-- Radar and Bar Plots - Add from Python Images -->
-						<section class="wrapper style1">
-						<div class="inner">
-							<!-- 2 Columns -->
-							<div class="flex flex-1">
-								<div class="col align-center">
-									<div class="image square fit">
-										<img src="{{ url_for('static', filename='images/recipes/test_radar.png') }}" alt="" />
-									</div>
-									<p>Radar Plot Image</p>
-
-						<div class="inner">
-							<!-- 2 Columns -->
-							<div class="flex flex-1">
-								<div class="col align-center">
-									<div class="image square fit">
-										<img src="{{ url_for('static', filename='images/recipes/test_bargraph_recipe.png') }}" alt="" />
-									</div>
-									<p>Bar Plot Image</p>
-								</div>
-						</div>
-
-						<div class="inner">
-							<!-- 2 Columns -->
-							<div class="flex flex-1">
-								<div class="col align-center">
-									<div class="image square fit">
-										<img src="{{ url_for('static', filename='images/recipes/stacked_plot.png') }}" alt="" />
-									</div>
-									<p>Bar Plot Image</p>
-								</div>
-						</div>
-
-						</section>
-
-       <p>
+									</ul>
+				       <p></p>
 
 			</div>
 	</body>

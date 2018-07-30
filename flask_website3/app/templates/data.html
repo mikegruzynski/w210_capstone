@@ -1,6 +1,10 @@
 <!-- [...] -->
+<html>
+<body>
 <div id="sigma-container"></div>
+<p>Hey </p>
 <script src="js/sigma.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <script src="{{ url_for('static', filename='js/sigma.js/build/plugins/sigma.parsers.gexf.min.js') }}"></script>
 <script>
   // Add a method to the graph model that returns an
@@ -11,6 +15,7 @@
         index = this.allNeighborsIndex[nodeId] || {};
 
     for (k in index)
+      print(k)
       neighbors[k] = this.nodesIndex[k];
 
     return neighbors;
@@ -79,4 +84,6 @@
     }
   );
 </script>
+</body>
+</html>
 <!-- [...] -->

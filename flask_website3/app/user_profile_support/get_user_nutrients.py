@@ -121,7 +121,6 @@ def get_micro_label_list(user_micro_choices):
 
 
 def process_nutrient_edit_form(macros_form_data, micros_form_data, macros, micros):
-    print("PROCESS DATA*** ")
     for nutrient in macros_form_data.keys():
         if macros_form_data.get(nutrient) is not None:
             macros[nutrient] = macros_form_data.get(nutrient)

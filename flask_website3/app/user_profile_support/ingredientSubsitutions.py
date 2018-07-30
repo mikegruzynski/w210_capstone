@@ -56,7 +56,28 @@ def get_recipe_list(session, user):
 
     user_meal_plan = pd.DataFrame(data={'recipe_id':best_recipe_combo, 'recipe_name':recipe_names})
     session['user_meal_plan'] = user_meal_plan.to_json()
-    return best_recipe_combo, weekly_diet_amount, user_profile_data
+    print(pd.read_json(session['user_meal_plan']))
+
+    df_ingredient_NDB = get_ingredient_NDB_number(session, best_recipe_combo)
+    # session['df_ingredient_NDB'] = df_ingredient_NDB.to_json()
+
+    return best_recipe_combo, weekly_diet_amount, user_profile_data, df_ingredient_NDB
+
+# Get ingredient List for Shopping list
+def get_recipe_details(best_recipe_combo, user_profile_data):
+    profile_init = rootprofile.UserProfile(user_profile_data)
+    recipe_init = recipes.Recipes(profile_init)
+    print("\n\n******get_recipe_details")
+    # get ingredients from the recipe list
+    recipe_details = []
+    i = 0
+    for rec_idx in best_recipe_combo:
+        recipe_details.append(recipe_init.recipe_clean[rec_idx])
+        # recipe_details = recipe_details.update(rec_idx=recipe_init.recipe_clean[rec_idx])
+
+    print(type(recipe_details), recipe_details)
+    return recipe_details
+
 
 # Get ingredient List for Shopping list
 def get_shopping_list(best_recipe_combo, user_profile_data):
@@ -65,6 +86,8 @@ def get_shopping_list(best_recipe_combo, user_profile_data):
     # get ingredients from the recipe list
     ingredient_list = []
     for rec_idx in best_recipe_combo:
+        print("\nrec_idx")
+        print(recipe_init.recipe_clean[rec_idx])
         ingredient_list = ingredient_list + recipe_init.recipe_clean[rec_idx]['ingredients']
 
     while '' in ingredient_list:
@@ -74,24 +97,46 @@ def get_shopping_list(best_recipe_combo, user_profile_data):
     print(type(ingredient_list), ingredient_list)
     return(ingredient_list)
 
+
+def get_ingredient_NDB_number(session, best_recipe_combo):
+    # Save ingredients to Session Data
+    profile_init = rootprofile.UserProfile(pd.read_json(session['data']))
+    recipe_init = recipes.Recipes(profile_init)
+    df_ingredient_NDB = pd.DataFrame()
+    for recipe_id in best_recipe_combo:
+        recipe_data = recipe_init.recipe_list_to_conversion_factor_list(recipe_id)[['Description', 'NDB_NO']]
+        df_ingredient_NDBi = pd.DataFrame(recipe_data)
+        df_ingredient_NDBi['recipe_id'] = recipe_id
+        if df_ingredient_NDB.empty:
+            df_ingredient_NDB = df_ingredient_NDBi
+        else:
+            df_ingredient_NDB = pd.concat([df_ingredient_NDB, df_ingredient_NDBi])
+
+    df_ingredient_NDB = df_ingredient_NDB.reset_index()
+    # print(df_ingredient_NDB.recipe_id.unique())
+
+    return(df_ingredient_NDB)
+
+
 # TODO: Edit single_ingredient_replacement
 # TODO: Remove Default call of recipe
-def get_single_ingredient_replacement(session):
-    # recipe ID
-    recipe_id='RECIPE_48743'
+def get_single_ingredient_replacement(session, raw_input_return, recipe_id='RECIPE_48743'):
     print("***** SINGLE FOOD REPLACEMENT ******")
-    user_profile_data = session['data']
-    print(session.keys())
+    profile_init = rootprofile.UserProfile(pd.read_json(session['data']))
+    recipe_init = recipes.Recipes(profile_init)
+    research_init = research.Research(profile_init)
+    ingredient_list = recipe_init.recipe_clean[recipe_id]['ingredients']
     # Single food replacement based on macros
     # recipe_id = 'RECIPE_48743'
     # print(recipe_init.recipe_list_to_conversion_factor_list(recipe_id)[['Description', 'NDB_NO']])
 
-    # TODO: User inputs an ingredient to replace
-    raw_input_return = input("Select items to replace:")
-
+    # raw_input_return = input("Select items to replace:")
+    # raw_input_return = "01116"
+    print("HERE")
+    print(raw_input_return)
     temp_recipe_dict = {}
     temp_recipe_dict[recipe_id] = recipe_init.recipe_clean[recipe_id].copy()
-
+    print("HERE**************************")
     if raw_input_return:
         # 'Baked'
         # 'Beef'
@@ -115,8 +160,9 @@ def get_single_ingredient_replacement(session):
 
         # tag_list = research_init.macro_space_distance_top_n(3, raw_input_return, ['Finfish_and_Shellfish'])
         tag_list = research_init.macro_space_distance_top_n(3, raw_input_return, ['Finfish_and_Shellfish'])
+        print("tag_list", tag_list)
         new_recipe_dict = recipe_init.recipe_alternitive_create(raw_input_return, tag_list, temp_recipe_dict)
-
+        print("new_recipe_dict", new_recipe_dict)
         temp = recipe_init.recipe_list_to_conversion_factor_list(recipe_id)
 
         df_list = []
@@ -128,11 +174,13 @@ def get_single_ingredient_replacement(session):
 
         # visualizations.Plots(df_list, profile_init).bar_plot_recipe(name_list, 'test_replacement_barplot')
         # visualizations.Plots(df_list, profile_init).radar_plot_recipe(name_list, 'test_replacement_radar_plot')
-
+        print("df_list", df_list)
+        print("\n")
+        print("df", df)
         # TODO: Figure out what to return
         # TODO: Replace the ingredients in the session data
         # TODO: Edit the REcipe with the replacemnt ingredient
-        # return vlaues
+    return ingredient_list # df, df_list
 
 
 # Single food Subsitution

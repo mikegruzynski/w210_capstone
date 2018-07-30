@@ -72,6 +72,9 @@ class InputMicroNutrientsForm(Form):
 class IgnoreRecipeForm(Form):
     ignore_list = StringField()
 
+class IngredientSubForm(Form):
+    ingredientSub = StringField()
+
 class UserPreference(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
