@@ -320,7 +320,6 @@ class Recipes(object):
         recipe_master_df['conversion_factor'] = se.values
         return recipe_master_df
 
-
     def recipe_alternitive_create(self, replace_tag, tag_list, new_recipe_dict):
 
         for key in new_recipe_dict.keys():
@@ -343,5 +342,27 @@ class Recipes(object):
             new_recipe_dict[new_dict_name]['NDB_NO_tags'] = temp_NDB_list
             new_recipe_dict[new_dict_name]['name'] = str(new_recipe_dict[orig_recipe_dict_names]['name']) + ' ALT_' + str(recipe_name_itr)
 
+        return new_recipe_dict
+
+
+    def recipe_alternitive_iter_create(self, replace_tag, tag_list, new_recipe_dict):
+        for key in new_recipe_dict.keys():
+            if '_ALT_' not in key:
+                orig_recipe_dict_names = key
+        name_itr = 1
+        for replacement_tags in tag_list:
+            temp_dict_name = "{}_ALT_{}".format(orig_recipe_dict_names, name_itr)
+            new_recipe_dict[temp_dict_name] = new_recipe_dict[orig_recipe_dict_names].copy()
+            original_NDB_list = new_recipe_dict[temp_dict_name]['NDB_NO_tags'][:]
+
+            replacement_iter = 0
+
+            for orig_to_replace in replace_tag:
+                index_to_replace = new_recipe_dict[temp_dict_name]['NDB_NO_tags'].index("\"{}\"".format(orig_to_replace.strip('"')))
+                original_NDB_list[index_to_replace] = replacement_tags[replacement_iter]
+                new_recipe_dict[temp_dict_name]['NDB_NO_tags'] = original_NDB_list
+                replacement_iter += 1
+
+            name_itr += 1
 
         return new_recipe_dict

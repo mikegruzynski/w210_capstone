@@ -49,26 +49,59 @@
 								<h2>Subsitute Ingredients</h2>
 								<h4>Recipe Options</h4>
 								<h1></h1>
-								<div style="float: left; width: 70%;">
-									<ul>
-										{% for desc in df_ingredient_NDB.Description %}
-											<li> {{ desc }} </li>
-										{%endfor%}
-									</ul>
-								</div>
 								<div style="float: left; width: 30%;">
 									<ul>
 										{% for NDB_NO in df_ingredient_NDB.NDB_NO %}
 											<li> {{ NDB_NO }} </li>
 										{%endfor%}
-										<form method=post action="">
-										{{form.ingredientSub}}
-										<input type=submit value="Replace Ingredient">
-									</form>
-
+								</ul>
+							</div>
+								<div style="float: left; width: 70%;">
+									<ul style="list-style: none;">
+										{% for desc in df_ingredient_NDB.Description %}
+											<li> {{ desc }} </li>
+										{%endfor%}
 									</ul>
-				       <p></p>
+								</div>
+							</div>
+							<p></p>
+							<div>
+							<form method=post action="">
+									Choose the NBD Number of Ingredient to Subsitute: {{form.ingredientSub}}
+									<p></p>
+									Choose a Type of Food to Replace With (list below): {{form.foodType}}
+									<p></p>
+									<input type=submit value="See Potential Replacment Ingredient">
+									<!-- </form> -->
 
+								<div style="float: left; width: 70%;">
+									<ul>
+										{% for choice in possible_choices %}
+											<li> {{ choice }} </li>
+										{%endfor%}
+									</ul>
+								</div>
+							</div>
+
+							<!-- <form method=post action=""> -->
+								<p></p>
+								<h4>Choose What you Would like to Replace the Ingredient With</h4>
+								<div style="float: left; width: 70%;">
+									<ol>
+										{% for choice in potential_switches %}
+											<li> {{ choice }} </li>
+										{%endfor%}
+									</ol>
+								Choose a Type of Food to Replace With (list below): {{form.replacemnetChoice}}
+								</div>
+							</div>
+							<p></p><p></p>
+							<input type=submit value="Replace Ingredient">
+							</form>
+
+								# Add Visuals here
+
+				       <p></p>
 			</div>
 	</body>
 </html>

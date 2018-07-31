@@ -69,11 +69,16 @@ class InputMicroNutrientsForm(Form):
     Vitamin_K = FloatField()
     Zinc = FloatField()
 
+class ChooseRecipeToSubIngredients(Form):
+    recipe_name = StringField()
+
 class IgnoreRecipeForm(Form):
     ignore_list = StringField()
 
 class IngredientSubForm(Form):
     ingredientSub = StringField()
+    foodType = StringField()
+    replacemnetChoice = StringField()
 
 class UserPreference(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)

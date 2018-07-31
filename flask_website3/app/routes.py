@@ -2,7 +2,7 @@ from app import app, db
 from flask import render_template, flash, redirect, url_for, session, request
 from flask_login import current_user, login_user, logout_user
 from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
-from app.models import User, InputMacroNutrientsForm, InputMicroNutrientsForm, IgnoreRecipeForm, IngredientSubForm
+from app.models import User, InputMacroNutrientsForm, InputMicroNutrientsForm, IgnoreRecipeForm, IngredientSubForm, ChooseRecipeToSubIngredients
 from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
@@ -48,6 +48,8 @@ def logout():
     session.pop('user_meal_plan', None)
     session.pop('micros', None)
     session.pop('macros', None)
+    session.pop('df_ingredient_NDB', None)
+
     return redirect(url_for('index'))
 
 
@@ -178,10 +180,12 @@ def recipe_recommendation():
         return redirect(url_for('index'))
 
 
-# TODO: Make a form for user input
-@app.route('/single_ingredient_replacement', methods=['GET', 'POST'])
-def single_ingredient_replacement():
-    # TODO: imporve UI into click to choose ingredient
+# TODO: ERROR HANDELING
+# TODO: visualizations
+# TODO: Drop Down List to Choose
+# TODO: Radio Buttons on List of Options
+@app.route('/single_ingredient_replacement/<recipe_id>', methods=['GET', 'POST'])
+def single_ingredient_replacement(recipe_id):
     if current_user.is_authenticated:
         user = current_user.username
         # Check if user has recipies (DO I NEED TO DO THIS?)
@@ -192,21 +196,81 @@ def single_ingredient_replacement():
             best_recipe_combo = user_meal_plan.recipe_id
 
             ingredientSubForm = IngredientSubForm(request.form)
-            recipe_id=best_recipe_combo[0]
-            df_ingredient_NDB = get_ingredient_NDB_number(session, best_recipe_combo)
-            df_ingredient_NDB = df_ingredient_NDB[df_ingredient_NDB.recipe_id == recipe_id]
+            recipe_id = "RECIPE_"+str(recipe_id)
+
+            if 'df_ingredient_NDB' not in session.keys():
+                df_ingredient_NDB = get_ingredient_NDB_number(session, best_recipe_combo)
+                session['df_ingredient_NDB'] = df_ingredient_NDB.to_json()
+            else:
+                df_ingredient_NDB = pd.read_json(session['df_ingredient_NDB'])
+
+            df_ingredient_NDBi = df_ingredient_NDB[df_ingredient_NDB.recipe_id == recipe_id]
+            # print(df_ingredient_NDB)
+            possible_food_choices = ['Baked', 'Beef', 'Beverages', 'Breakfast_Cereals'
+            'Cereal_Grains_and_Pasta', 'Dairy_and_Egg', 'Fats_and_Oils', 'Finfish_and_Shellfish',
+            'Fruits_and_Fruit_Juices', 'Lamb_Veal_and_Game', 'Legumes_and_Legume'
+            'Nut_and_Seed', 'Pork', 'Poultry', 'Sausages_and_Luncheon_Meats'
+            'Soups_Sauces_and_Gravies', 'Spices_and_Herbs', 'Sweets', 'Vegetables_and_Vegetable']
 
             if request.method == 'POST':
                 print("POST")
-                print(ingredientSubForm.ingredientSub.data)
-                df, df_list = get_single_ingredient_replacement(session, ingredientSubForm.ingredientSub.data,  recipe_id)
+                if len(ingredientSubForm.replacemnetChoice.data) == 0:
+                    switch_df, potential_switches = get_single_ingredient_replacement(session, ingredientSubForm, recipe_id)
+                    potential_switches = switch_df.potential_switches
+                    if 'switch_df_temp' in session.keys():
+                        session.pop('switch_df_temp')
+                    session['switch_df_temp'] = switch_df.to_json()
+                else:
+                    # switch_df = pd.read_json(session['switch_df_temp'])
+                    switch_df, potential_switches = get_single_ingredient_replacement(session, ingredientSubForm, recipe_id)
+                    potential_switches = switch_df.potential_switches
+                    # print(switch_df)
+                    user_profile_data = pd.read_json(session['data'])
+                    user_meal_plan = pd.read_json(session['user_meal_plan'])
+                    best_recipe_combo = user_meal_plan.recipe_id
+                    recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
+
+                    # print(recipe_details)
+                    rid = recipe_id.strip('RECIPE_')
+                    for itr, details in enumerate(recipe_details):
+                        if recipe_details[itr].get('id') == rid:
+                            recipe_itr = itr
+                            break
+
+                    new_NBD_tag = switch_df.tags[int(ingredientSubForm.replacemnetChoice.data)-1]
+                    new_ingredient = switch_df.potential_switches[int(ingredientSubForm.replacemnetChoice.data)-1]
+                    curr_recipe = recipe_details[recipe_itr]
+                    # Get Ingredients and tags of Current Recipe
+                    NDB_no_tags = curr_recipe.get('NDB_NO_tags')
+                    ingredients = curr_recipe.get('ingredients')
+                    # Update Values in current recipe to reflect change
+                    # for i, tag in enumerate(NDB_no_tags):
+                    for i, tag in enumerate(df_ingredient_NDBi.NDB_NO):
+                        if tag.strip('"') == ingredientSubForm.ingredientSub.data:
+                            NDB_no_tags.remove(tag)
+                            NDB_no_tags.append(new_NBD_tag)
+                            df_ingredient_NDBi.NDB_NO[i] = new_NBD_tag
+                            df_ingredient_NDBi.Description[i] = new_ingredient
+
+                    # curr_recipe["NDB_NO_tags"] = df_ingredient_NDBi.NDB_NO.values
+                    # curr_recipe["ingredients"] = df_ingredient_NDBi.Description.values
+
+                    # Replace With Updates: Save the Ingredient Updates to profileself.
+                    df_ingredient_NDB_mi = df_ingredient_NDB[df_ingredient_NDB.recipe_id != recipe_id]
+                    df_ingredient_NDB = pd.concat([df_ingredient_NDB, df_ingredient_NDBi])
+                    potential_switches = switch_df.potential_switches
+
+                    df_ingredient_NDB.reset_index(inplace=True)
+                    # Save df_ingredient_NDB to session
+                    session['df_ingredient_NDB'] = df_ingredient_NDB.to_json()
+
                 # Render the Users Profile Page
-                return render_template('subsitute_ingredients.html', form=ingredientSubForm, ingredient_list=ingredient_list)
+                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi, possible_choices=possible_food_choices, potential_switches=potential_switches)
 
                 # return render_template('subsitute_ingredients.html', user_data=pd.read_json(session['data']), df=df, df_list=df_list)
             else:
                 # Displays Ingredients User Can Choose to Replace
-                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDB)
+                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi, possible_choices=possible_food_choices, potential_switches=[])
                 # return render_template('subsitute_ingredients.html', user_data=pd.read_json(session['data']), df=df, df_list=df_list)
 
             # print(session.keys())
@@ -246,31 +310,55 @@ def reset_nutrient_goals():
     # return render_template("edit_nutrients.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros)
 
 
-@app.route('/display_recipe')
+@app.route('/display_recipe',  methods=['GET', 'POST'])
 def display_recipe():
     if current_user.is_authenticated:
         user = current_user.username
 
-        user_profile_data = pd.read_json(session['data'])
-        if user_profile_data is not False:
-            # Get Recipes, ingredients and instructions
-            # try:
+        recipeNameIdForm = ChooseRecipeToSubIngredients(request.form)
+        if request.method == 'POST':
+            print("POST")
+            print(recipeNameIdForm.recipe_name.data)
+
+            user_profile_data = pd.read_json(session['data'])
             user_meal_plan = pd.read_json(session['user_meal_plan'])
             best_recipe_combo = user_meal_plan.recipe_id
             recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
-            # except:
-            #     recipe_details = []
-            print("recipe Details")
-            print(len(recipe_details), type(recipe_details))
-            print(recipe_details[0].get('name'))
-            for pos in recipe_details:
-                print(pos)
-            return render_template('display_recipe.html', user_data=user_profile_data, recipe_details=recipe_details)
+
+            for itr, details in enumerate(recipe_details):
+                if recipe_details[itr].get('name') == recipeNameIdForm.recipe_name.data:
+                    recipe_id = recipe_details[itr].get('id')
+                    break
+            print(recipe_id)
+            # single_ingredient_replacement(recipe_id)
+
+            return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
+            # return render_template('display_recipe.html', user_data=user_profile_data, recipe_details=recipe_details, form=recipeNameIdForm)
         else:
-            # Render the New User SetUp page until they comlete prefernece
-            return render_template('userProfile_existing.html', title="User Profile",
-             user=user)
-        return redirect(url_for('index'))
+            user_profile_data = pd.read_json(session['data'])
+            if user_profile_data is not False:
+                # Get Recipes, ingredients and instructions
+                # try:
+                user_meal_plan = pd.read_json(session['user_meal_plan'])
+                best_recipe_combo = user_meal_plan.recipe_id
+                recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
+                # except:
+                #     recipe_details = []
+                print("recipe Details")
+                print(len(recipe_details), type(recipe_details))
+                print(recipe_details[0].get('name'))
+                print(recipe_details[0].get('id'))
+                # for pos in recipe_details:
+                #     print(pos)
+
+
+
+            return render_template('display_recipe.html', user_data=user_profile_data, recipe_details=recipe_details, form=recipeNameIdForm)
+    else:
+        # Render the New User SetUp page until they comlete prefernece
+        return render_template('userProfile_existing.html', title="User Profile",
+         user=user)
+    return redirect(url_for('index'))
 
 
 

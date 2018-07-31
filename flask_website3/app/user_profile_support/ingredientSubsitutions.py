@@ -11,6 +11,7 @@ from app.user_profile_support.rootseller import visualizations
 from app.user_profile_support.get_userPreference_Answers import get_user_ignore_responses
 import pandas as pd
 import numpy as np
+import itertools
 
 def recipe_visuals(df_list, df, profile_init, name_list):
     visualizations.Plots(df_list, df, profile_init).radar_plot_recipe(name_list)
@@ -56,7 +57,6 @@ def get_recipe_list(session, user):
 
     user_meal_plan = pd.DataFrame(data={'recipe_id':best_recipe_combo, 'recipe_name':recipe_names})
     session['user_meal_plan'] = user_meal_plan.to_json()
-    print(pd.read_json(session['user_meal_plan']))
 
     df_ingredient_NDB = get_ingredient_NDB_number(session, best_recipe_combo)
     # session['df_ingredient_NDB'] = df_ingredient_NDB.to_json()
@@ -67,7 +67,6 @@ def get_recipe_list(session, user):
 def get_recipe_details(best_recipe_combo, user_profile_data):
     profile_init = rootprofile.UserProfile(user_profile_data)
     recipe_init = recipes.Recipes(profile_init)
-    print("\n\n******get_recipe_details")
     # get ingredients from the recipe list
     recipe_details = []
     i = 0
@@ -75,7 +74,7 @@ def get_recipe_details(best_recipe_combo, user_profile_data):
         recipe_details.append(recipe_init.recipe_clean[rec_idx])
         # recipe_details = recipe_details.update(rec_idx=recipe_init.recipe_clean[rec_idx])
 
-    print(type(recipe_details), recipe_details)
+    # print(type(recipe_details), recipe_details)
     return recipe_details
 
 
@@ -86,14 +85,13 @@ def get_shopping_list(best_recipe_combo, user_profile_data):
     # get ingredients from the recipe list
     ingredient_list = []
     for rec_idx in best_recipe_combo:
-        print("\nrec_idx")
-        print(recipe_init.recipe_clean[rec_idx])
         ingredient_list = ingredient_list + recipe_init.recipe_clean[rec_idx]['ingredients']
 
     while '' in ingredient_list:
         ingredient_list.remove('')
 
     # TODO: aggregate the ingredients to combine recipies and amounts
+    print("***TODO: aggregate the ingredients to combine recipies and amounts")
     print(type(ingredient_list), ingredient_list)
     return(ingredient_list)
 
@@ -119,8 +117,8 @@ def get_ingredient_NDB_number(session, best_recipe_combo):
 
 
 # TODO: Edit single_ingredient_replacement
-# TODO: Remove Default call of recipe
-def get_single_ingredient_replacement(session, raw_input_return, recipe_id='RECIPE_48743'):
+# TODO: Remove Default call of recipe - will come from users choice of recipe to edit
+def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
     print("***** SINGLE FOOD REPLACEMENT ******")
     profile_init = rootprofile.UserProfile(pd.read_json(session['data']))
     recipe_init = recipes.Recipes(profile_init)
@@ -132,57 +130,42 @@ def get_single_ingredient_replacement(session, raw_input_return, recipe_id='RECI
 
     # raw_input_return = input("Select items to replace:")
     # raw_input_return = "01116"
-    print("HERE")
-    print(raw_input_return)
     temp_recipe_dict = {}
     temp_recipe_dict[recipe_id] = recipe_init.recipe_clean[recipe_id].copy()
-    print("HERE**************************")
-    if raw_input_return:
-        # 'Baked'
-        # 'Beef'
-        # 'Beverages'
-        # 'Breakfast_Cereals'
-        # 'Cereal_Grains_and_Pasta'
-        # 'Dairy_and_Egg'
-        # 'Fats_and_Oils'
-        # 'Finfish_and_Shellfish'
-        # 'Fruits_and_Fruit_Juices'
-        # 'Lamb_Veal_and_Game'
-        # 'Legumes_and_Legume'
-        # 'Nut_and_Seed'
-        # 'Pork'
-        # 'Poultry'
-        # 'Sausages_and_Luncheon_Meats'
-        # 'Soups_Sauces_and_Gravies'
-        # 'Spices_and_Herbs'
-        # 'Sweets'
-        # 'Vegetables_and_Vegetable'
+    if len(ingredientSubForm.ingredientSub.data) > 0:
+        print("Running the Sub")
+        # replacement_key_dict = {1:  'Baked',
+        #                         2:  'Beef',
+        #                         3:  'Beverages',
+        #                         4:  'Breakfast_Cereals',
+        #                         5:  'Cereal_Grains_and_Pasta',
+        #                         6:  'Dairy_and_Egg',
+        #                         7:  'Fats_and_Oils',
+        #                         8:  'Finfish_and_Shellfish',
+        #                         9:  'Fruits_and_Fruit_Juices',
+        #                         10: 'Lamb_Veal_and_Game',
+        #                         11: 'Legumes_and_Legume',
+        #                         12: 'Nut_and_Seed',
+        #                         13: 'Pork',
+        #                         14: 'Poultry',
+        #                         15: 'Sausages_and_Luncheon_Meats',
+        #                         16: 'Soups_Sauces_and_Gravies',
+        #                         17: 'Spices_and_Herbs',
+        #                         18: 'Sweets',
+        #                         19: 'Vegetables_and_Vegetable'}
 
-        # tag_list = research_init.macro_space_distance_top_n(3, raw_input_return, ['Finfish_and_Shellfish'])
-        tag_list = research_init.macro_space_distance_top_n(3, raw_input_return, ['Finfish_and_Shellfish'])
-        print("tag_list", tag_list)
-        new_recipe_dict = recipe_init.recipe_alternitive_create(raw_input_return, tag_list, temp_recipe_dict)
-        print("new_recipe_dict", new_recipe_dict)
-        temp = recipe_init.recipe_list_to_conversion_factor_list(recipe_id)
-
-        df_list = []
-        name_list = []
-        for recipe in new_recipe_dict.keys():
-            temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe, dict=new_recipe_dict)
-            df_list.append(temp_recipe_df)
-            name_list.append(new_recipe_dict[recipe]['name'])
-
-        # visualizations.Plots(df_list, profile_init).bar_plot_recipe(name_list, 'test_replacement_barplot')
-        # visualizations.Plots(df_list, profile_init).radar_plot_recipe(name_list, 'test_replacement_radar_plot')
-        print("df_list", df_list)
-        print("\n")
-        print("df", df)
-        # TODO: Figure out what to return
-        # TODO: Replace the ingredients in the session data
-        # TODO: Edit the REcipe with the replacemnt ingredient
-    return ingredient_list # df, df_list
-
-
-# Single food Subsitution
-# def single_food_subsitution():
-# TODO
+        # split_raw_return = raw_input_return.split(",")
+        # "05097":8,"44005":7
+        # TODO: improve to allow user to input multiple replacements
+        # master_tag_list = []
+        # replace_list = []
+        # for replacement_ndb_tag in range(len(ingredientSubForm.ingredientSub.data)):
+        # replacement_ndb_tag = replacement.split(":")[0].lstrip(" ")
+        # replacement_category_key = int(replacement.split(":")[-1].strip("'").strip('"'))
+        replacement_ndb_tag = ingredientSubForm.ingredientSub.data
+        replacement_category_key = ingredientSubForm.foodType.data
+        # Taglist = suggested replacemnt food indicies
+        tag_list, potential_switches = research_init.macro_space_distance_top_n(3, replacement_ndb_tag, [replacement_category_key])
+        switch_df = pd.DataFrame(data={'tags':tag_list, "potential_switches":potential_switches})
+        print(switch_df)
+        return switch_df, potential_switches
