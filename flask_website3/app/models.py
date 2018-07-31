@@ -2,7 +2,7 @@ from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import login
-from wtforms import Form, FloatField, StringField #, validators,
+from wtforms import Form, FloatField, StringField, SelectField, RadioField #, validators,
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -77,8 +77,16 @@ class IgnoreRecipeForm(Form):
 
 class IngredientSubForm(Form):
     ingredientSub = StringField()
-    foodType = StringField()
-    replacemnetChoice = StringField()
+    # foodType = StringField()
+    foodType = SelectField('type', choices=[('1','Baked'), ('2','Beef'),
+    ('3','Beverages'), ('4','Breakfast_Cereals'), ('5','Cereal_Grains_and_Pasta'),
+    ('6','Dairy_and_Egg'), ('7','Fats_and_Oils'), ('8','Finfish_and_Shellfish'),
+    ('9','Fruits_and_Fruit_Juices'), ('10','Lamb_Veal_and_Game'), ('11','Legumes_and_Legume'),
+    ('12','Nut_and_Seed'), ('13','Pork'), ('14','Poultry'), ('15','Sausages_and_Luncheon_Meats'),
+    ('16','Soups_Sauces_and_Gravies'), ('17','Spices_and_Herbs'),
+    ('18','Sweets'), ('19','Vegetables_and_Vegetable')])
+    # replacemnetChoice = StringField()
+    replacemnetChoice = RadioField('', choices=[('1','1'), ('2','2'), ('3','3')])
 
 class UserPreference(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)

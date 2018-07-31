@@ -2,7 +2,7 @@ import seaborn as sns
 import numpy as np
 import pandas as pd
 import matplotlib
-matplotlib.use('TkAgg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings('ignore')
@@ -24,6 +24,7 @@ class Plots(object):
         itr = 0
         legend_list = []
         for df in self.df_list:
+            print("RADAR PLOT")
             labels_micro = np.array(self.rootprofile.micro_label_list)
             data_micro = df.loc[:, self.rootprofile.micro_list].sum()
             data_micro = data_micro[self.rootprofile.profile_micro_filtered_df.columns] / self.rootprofile.profile_micro_filtered_df
@@ -36,6 +37,7 @@ class Plots(object):
             labels_macro = np.array(self.rootprofile.macro_label_list)
             data_macro = df.loc[:, self.rootprofile.macro_list]
 
+            print(self.rootprofile.init_macro)
             new_columns = self.rootprofile.init_macro.convert_labels_to_pretty_labels(data_macro.columns)
             data_macro.columns = new_columns
             data_macro = self.rootprofile.init_macro.add_unsaturated_fat_columns(data_macro)

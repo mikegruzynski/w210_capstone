@@ -75,19 +75,10 @@
 							<div class="col col1">
 								<h2>My Recipe Plan</h2>
 								<p>Based on your user preferneces. We suggest the following Recipes:
-									<div style="float: left; width: 30%;">
-											<ul>
-												{% for id in user_meal_plan.recipe_id %}
-													<li> {{id+":"}} </li>
-												{%endfor%}
-											</ul>
-									</div>
-									<div style="float: right; width: 70%;">
-											<ul style="list-style: none;">
-												{% for name in user_meal_plan.recipe_name %}
-													<li> {{name}} </li>
-												{%endfor%}
-											</ul>
+									<div style="float: left; width: 100%;">
+										{% block content %}
+											{{user_meal_plan | safe}}
+										{% endblock %}
 									</div>
 									<!-- <a href = "/subsitute_ingredients" class="button">Subsitute Ingredients in Meals </a> -->
 								</div>
@@ -99,6 +90,9 @@
 							<a href = "/shopping_list" class="button">See My Shopping List</a>
 
 							<p></p>
+							<a href = "/food_network" class="button">See Network Graph of Food</a>
+							<a href = "/pantry_recipe" class="button">Recipe Based on Current Pantry</a>
+
 						</div>
 
 

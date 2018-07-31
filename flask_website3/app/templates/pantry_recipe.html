@@ -31,8 +31,6 @@
 					<li><a href="/login">Login</a></li>
 					{% else %}
 					<li><a href="/user_profile">User Profile</a></li>
-					<li><a href="/recipe_recommendation">Edit Recipes Plan</li>
-					<li><a href="/shopping_list">Shopping List</a></li>
 					<li><a href="/logout">Logout</a></li>
 					{% endif %}
 				</ul>
@@ -44,43 +42,24 @@
 						<!-- 2 Columns -->
 							<div class="flex flex-1">
 							<div class="col col1">
-								<h1>{{ user_data.firstname.values[0] }}'s Recipe Plan</h1>
-								<h1></h1>
-									<ul>
-										{% for recipe in recipe_details %}
-												<li> {{ recipe.get('name') }} </li>
-										{%endfor%}
-									</ul>
+								<h1>Pantry Recipe</h1>
+								<h2>Coming Soon!</h2>
+								<h6>We are working very hard to make sure your recipe suggetsions is close to perfect! We will be updating soon so check back in!</h6>
+
+								<div style="float: left; width: 100%;">
+									<h5>Not sure what to cook? Don't want to go to the store?</h4>
+									<h5>No Problem! Tell us what you have in stock at home and we will suggest a recipe to cook tonight!</h5>
+       <p></p>
+			 					<h3>Here is an example of what is to come! </h3>
+
+								# TODO: Add example
+   <p></p>
+					 <a href = "/user_profile" class="button">Back to User Profile</a>
+
 								</div>
 							</div>
-
-							<h4>Want to Subsitute an Ingredient in any of these Recipes?</h4>
-							<h5>We can do that for you. Enter the Name of the Recipe you would like to start with</h5>
-							<form method=post action="">
-									{{form.recipe_name}}
-									<p></p> <p></p>
-									<input type=submit value="Subsitute Ingredients in this Recipe">
-							</form>
-								<p></p><p></p><p></p><p></p>
-								<div style="float: left; width: 100%;">
-											{% for recipe in recipe_details %}
-												<h4>  {{ recipe.get('name') }}</h4>
-												<ul>
-													{% for ingredient in recipe.get('ingredients') %}
-														<li> {{ ingredient }} </li>
-													{%endfor%}
-												</ul>
-												{% for instruction in recipe.get('instructions') %}
-													{{ instruction }}
-												{%endfor%}
-
-												<p></p><p></p>
-											{%endfor%}
-       <p></p>
-				<!-- {{ ingredient_list }} -->
-
-			 <a href = "/user_profile" class="button">Back to User Profile</a>
-
-			</div>
+							</div>
+					</div>
+				</section>
 	</body>
 </html>

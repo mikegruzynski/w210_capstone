@@ -112,20 +112,19 @@ def user_profile():
                 best_recipe_combo, weekly_diet_amount, user_profile_data, df_ingredient_NDB = get_recipe_list(session, user)
                 user_meal_plan = pd.read_json(session['user_meal_plan'])
 
-            print("HERE")
-            print(user_meal_plan)
             macros_form = InputMacroNutrientsForm(request.form)
             micros_form = InputMicroNutrientsForm(request.form)
+            print(type(user_meal_plan))
+            print(user_meal_plan)
             if request.method == 'POST':
                 macros, micros = process_nutrient_edit_form(macros_form.data, micros_form.data, macros, micros)
                 # Save micro and Macro edited list for later fram
                 session['macros'] = pd.DataFrame(macros).to_json()
                 session['micros'] = pd.DataFrame(micros, index=[0]).to_json()
                 # Render the Users Profile Page
-                print(user_meal_plan)
-                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan, form1=macros_form, form2=micros_form)
+                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.to_html(), form1=macros_form, form2=micros_form)
             else:
-                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan, form1=macros_form, form2=micros_form)
+                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.to_html(), form1=macros_form, form2=micros_form)
         else:
             # Render the New User Landing page until they complete Preferneces Survey
             return render_template('userProfile_new.html', title="User Preferneces", user=user)
@@ -182,7 +181,6 @@ def recipe_recommendation():
 
 # TODO: ERROR HANDELING
 # TODO: visualizations
-# TODO: Drop Down List to Choose
 # TODO: Radio Buttons on List of Options
 @app.route('/single_ingredient_replacement/<recipe_id>', methods=['GET', 'POST'])
 def single_ingredient_replacement(recipe_id):
@@ -206,20 +204,18 @@ def single_ingredient_replacement(recipe_id):
 
             df_ingredient_NDBi = df_ingredient_NDB[df_ingredient_NDB.recipe_id == recipe_id]
             # print(df_ingredient_NDB)
-            possible_food_choices = ['Baked', 'Beef', 'Beverages', 'Breakfast_Cereals'
-            'Cereal_Grains_and_Pasta', 'Dairy_and_Egg', 'Fats_and_Oils', 'Finfish_and_Shellfish',
-            'Fruits_and_Fruit_Juices', 'Lamb_Veal_and_Game', 'Legumes_and_Legume'
-            'Nut_and_Seed', 'Pork', 'Poultry', 'Sausages_and_Luncheon_Meats'
-            'Soups_Sauces_and_Gravies', 'Spices_and_Herbs', 'Sweets', 'Vegetables_and_Vegetable']
 
             if request.method == 'POST':
-                print("POST")
-                if len(ingredientSubForm.replacemnetChoice.data) == 0:
+                if ingredientSubForm.replacemnetChoice.data == 'None':
+                    # try:
                     switch_df, potential_switches = get_single_ingredient_replacement(session, ingredientSubForm, recipe_id)
                     potential_switches = switch_df.potential_switches
                     if 'switch_df_temp' in session.keys():
                         session.pop('switch_df_temp')
                     session['switch_df_temp'] = switch_df.to_json()
+                    # except:
+                    #     potential_switches = None
+                    display_bottom = True
                 else:
                     # switch_df = pd.read_json(session['switch_df_temp'])
                     switch_df, potential_switches = get_single_ingredient_replacement(session, ingredientSubForm, recipe_id)
@@ -263,14 +259,14 @@ def single_ingredient_replacement(recipe_id):
                     df_ingredient_NDB.reset_index(inplace=True)
                     # Save df_ingredient_NDB to session
                     session['df_ingredient_NDB'] = df_ingredient_NDB.to_json()
-
+                    display_bottom = False
                 # Render the Users Profile Page
-                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi, possible_choices=possible_food_choices, potential_switches=potential_switches)
+                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi, potential_switches=potential_switches, display_bottom=display_bottom)
 
                 # return render_template('subsitute_ingredients.html', user_data=pd.read_json(session['data']), df=df, df_list=df_list)
             else:
                 # Displays Ingredients User Can Choose to Replace
-                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi, possible_choices=possible_food_choices, potential_switches=[])
+                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi, potential_switches=[])
                 # return render_template('subsitute_ingredients.html', user_data=pd.read_json(session['data']), df=df, df_list=df_list)
 
             # print(session.keys())
@@ -361,7 +357,6 @@ def display_recipe():
     return redirect(url_for('index'))
 
 
-
 @app.route('/shopping_list')
 def shopping_list():
     if current_user.is_authenticated:
@@ -409,3 +404,8 @@ def shopping_list():
 @app.route('/food_network', methods=['GET', 'POST'])
 def food_network():
     return render_template('data.html', title="Graph Test")
+
+
+@app.route('/pantry_recipe') #  methods=['GET', 'POST']
+def pantry_recipe():
+    return render_template('pantry_recipe.html')

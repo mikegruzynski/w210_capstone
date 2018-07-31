@@ -134,25 +134,26 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
     temp_recipe_dict[recipe_id] = recipe_init.recipe_clean[recipe_id].copy()
     if len(ingredientSubForm.ingredientSub.data) > 0:
         print("Running the Sub")
-        # replacement_key_dict = {1:  'Baked',
-        #                         2:  'Beef',
-        #                         3:  'Beverages',
-        #                         4:  'Breakfast_Cereals',
-        #                         5:  'Cereal_Grains_and_Pasta',
-        #                         6:  'Dairy_and_Egg',
-        #                         7:  'Fats_and_Oils',
-        #                         8:  'Finfish_and_Shellfish',
-        #                         9:  'Fruits_and_Fruit_Juices',
-        #                         10: 'Lamb_Veal_and_Game',
-        #                         11: 'Legumes_and_Legume',
-        #                         12: 'Nut_and_Seed',
-        #                         13: 'Pork',
-        #                         14: 'Poultry',
-        #                         15: 'Sausages_and_Luncheon_Meats',
-        #                         16: 'Soups_Sauces_and_Gravies',
-        #                         17: 'Spices_and_Herbs',
-        #                         18: 'Sweets',
-        #                         19: 'Vegetables_and_Vegetable'}
+        replacement_key_dict = {1:  'Baked',
+                                2:  'Beef',
+                                3:  'Beverages',
+                                4:  'Breakfast_Cereals',
+                                5:  'Cereal_Grains_and_Pasta',
+                                6:  'Dairy_and_Egg',
+                                7:  'Fats_and_Oils',
+                                8:  'Finfish_and_Shellfish',
+                                9:  'Fruits_and_Fruit_Juices',
+                                10: 'Lamb_Veal_and_Game',
+                                11: 'Legumes_and_Legume',
+                                12: 'Nut_and_Seed',
+                                13: 'Pork',
+                                14: 'Poultry',
+                                15: 'Sausages_and_Luncheon_Meats',
+                                16: 'Soups_Sauces_and_Gravies',
+                                17: 'Spices_and_Herbs',
+                                18: 'Sweets',
+                                19: 'Vegetables_and_Vegetable'}
+
 
         # split_raw_return = raw_input_return.split(",")
         # "05097":8,"44005":7
@@ -164,8 +165,40 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
         # replacement_category_key = int(replacement.split(":")[-1].strip("'").strip('"'))
         replacement_ndb_tag = ingredientSubForm.ingredientSub.data
         replacement_category_key = ingredientSubForm.foodType.data
+
         # Taglist = suggested replacemnt food indicies
-        tag_list, potential_switches = research_init.macro_space_distance_top_n(3, replacement_ndb_tag, [replacement_category_key])
+        tag_list, potential_switches = research_init.macro_space_distance_top_n(3, replacement_ndb_tag, [replacement_key_dict[int(replacement_category_key)]])
         switch_df = pd.DataFrame(data={'tags':tag_list, "potential_switches":potential_switches})
-        print(switch_df)
+
+        # DO following process to get visuals
+        # Split User input into the item to replace and type, format: ['"44005":7']
+        # master_tag_list = []
+        # replace_list = []
+        # new_recipe_dict = recipe_init.recipe_alternitive_create(replacement_ndb_tag, tag_list, temp_recipe_dict)
+        # replace_list.append(replacement_ndb_tag)
+        # master_tag_list.append(tag_list)
+
+        # # Create an iterable list. Change Masetr tage list from:
+        # # master_tag_list =  [['"04042"', '"04618"', '"04545"']] to
+        # # iterable_list =  [('"04042"',), ('"04618"',), ('"04545"',)]
+        # iterable_list = list(itertools.product(*master_tag_list))
+        # new_recipe_dict = recipe_init.recipe_alternitive_iter_create(replace_list, iterable_list, temp_recipe_dict)
+        #
+        # print("\n\nCreated iterable list ")
+        # print("new_recipe_dict", new_recipe_dict, "iterable_list", iterable_list)
+        # temp = recipe_init.recipe_list_to_conversion_factor_list(recipe_id)
+        # df_list = []
+        # name_list = []
+        # for recipe in new_recipe_dict.keys():
+        #     temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe, dict=new_recipe_dict)
+        #     df_list.append(temp_recipe_df)
+        #     name_list.append(new_recipe_dict[recipe]['name'])
+        # print('*____ Visuals ___*')
+        # print("df_list", df_list)
+        # print("profile_init", profile_init)
+        # print('name_list', name_list)
+        # # visualizations.Plots(df_list, profile_init).bar_plot_recipe(name_list, 'test_replacement_barplot')
+        # print("visual 1")
+        # # visualizations.Plots(df_list, profile_init).radar_plot_recipe(name_list, 'test_replacement_radar_plot')
+        # print("visual 2")
         return switch_df, potential_switches
