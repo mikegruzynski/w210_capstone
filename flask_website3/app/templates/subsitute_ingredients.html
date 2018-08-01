@@ -82,12 +82,16 @@
 										{{ form.replacemnetChoice() }}
 									</ol>
 									<p></p>
-								Choose a Type of Food to Replace With (list below):
-								<p><input type=submit value="Replace Ingredient"></p>
-										<h3>See how the Ingredent change will effect your nutriet goals</h3>
-										<p>Note this image is a placeholder. Will be updated</p>
-										<img src="{{ url_for('static', filename='images/test_replacement_radar_plot.png') }}" alt="" />
-							      <p></p>
+									{% if display_switch %}
+										Choose a Type of Food to Replace With (list below):
+											<p><input type=submit value="Replace Ingredient"></p>
+												<h3>See how the Ingredent change will effect your nutriet goals</h3>
+												<p>Note this image is a placeholder. Will be updated</p>
+												<img src="{{ url_for('static', filename='images/test_replacement_radar_plot.png') }}" alt="" />
+									      <p></p>
+									{% else %}
+										<h5>We are sorry, We could not find a good replacment matching your request. Pleasse try again.</h5>
+									{% endif %}
 								</div>
 								{% endif %}
 							</div>

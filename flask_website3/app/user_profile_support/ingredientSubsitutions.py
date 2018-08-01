@@ -169,7 +169,7 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
         replacement_category_key = ingredientSubForm.foodType.data
 
         # Taglist = suggested replacemnt food indicies
-        tag_list, potential_switches = research_init.macro_space_distance_top_n(3, replacement_ndb_tag, [replacement_key_dict[int(replacement_category_key)]])
+        tag_list, potential_switches = research_init.macro_space_distance_top_n(4, replacement_ndb_tag, [replacement_key_dict[int(replacement_category_key)]])
         switch_df = pd.DataFrame(data={'tags':tag_list, "potential_switches":potential_switches})
 
         # DO following process to get visuals

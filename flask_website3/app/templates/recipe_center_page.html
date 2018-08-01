@@ -65,6 +65,14 @@
 					<div class="flex flex-1">
 					<div class="col col1">
 					<h1>Recipe Details</h1>
+					<h4>Want to Subsitute an Ingredient in any of these Recipes?</h4>
+					<h5>We can do that for you. Enter the Name of the Recipe you would like to start with</h5>
+						<form method=post action="">
+								{{form.recipe_name}}
+								<p></p> <p></p>
+								<input type=submit value="Find Ingredient Subsitutions For This Recipe">
+						</form>
+							<p></p><p></p><p></p><p></p>
 						<div style="float: left; width: 100%;">
 							{% for recipe in recipe_details %}
 							<p></p><p></p>
