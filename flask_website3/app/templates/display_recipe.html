@@ -1,0 +1,86 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<!-- <title>Generic - Urban by TEMPLATED</title> -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project</a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+					<li><a href="/user_profile">User Profile</a></li>
+					<li><a href="/recipe_recommendation">Edit Recipes Plan</li>
+					<li><a href="/shopping_list">Shopping List</a></li>
+					<li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Main -->
+				<section class="wrapper style1">
+					<div class="inner">
+						<!-- 2 Columns -->
+							<div class="flex flex-1">
+							<div class="col col1">
+								<h1>{{ user_data.firstname.values[0] }}'s Recipe Plan</h1>
+								<h1></h1>
+									<ul>
+										{% for recipe in recipe_details %}
+												<li> {{ recipe.get('name') }} </li>
+										{%endfor%}
+									</ul>
+								</div>
+							</div>
+
+							<h4>Want to Subsitute an Ingredient in any of these Recipes?</h4>
+							<h5>We can do that for you. Enter the Name of the Recipe you would like to start with</h5>
+							<form method=post action="">
+									{{form.recipe_name}}
+									<p></p> <p></p>
+									<input type=submit value="Subsitute Ingredients in this Recipe">
+							</form>
+								<p></p><p></p><p></p><p></p>
+								<div style="float: left; width: 100%;">
+											{% for recipe in recipe_details %}
+												<h4>  {{ recipe.get('name') }}</h4>
+												<ul>
+													{% for ingredient in recipe.get('ingredients') %}
+														<li> {{ ingredient }} </li>
+													{%endfor%}
+												</ul>
+												{% for instruction in recipe.get('instructions') %}
+													{{ instruction }}
+												{%endfor%}
+
+												<p></p><p></p>
+											{%endfor%}
+       <p></p>
+				<!-- {{ ingredient_list }} -->
+
+			 <a href = "/user_profile" class="button">Back to User Profile</a>
+
+			</div>
+	</body>
+</html>

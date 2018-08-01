@@ -1,8 +1,49 @@
 <!-- [...] -->
 <html>
-<body>
+	<head>
+		<!-- <title>Generic - Urban by TEMPLATED</title> -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project</a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+					<li><a href="/user_profile">User Profile</a></li>
+					<li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+      
 <div id="sigma-container"></div>
-<p>Hey </p>
+<section class="wrapper style1">
+  <div class="inner">
+    <h1>Network of Food</h1>
+    <h2>Coming Soon!</h2>
+    <h5>Check back soon for an interactive graph of how all the foods we eat link together!</h5>
+    <a href = "/user_profile" class="button">Back to User Profile</a>
+  </div>
+</section>
+
 <script src="js/sigma.js"></script>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <script src="{{ url_for('static', filename='js/sigma.js/build/plugins/sigma.parsers.gexf.min.js') }}"></script>

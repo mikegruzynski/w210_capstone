@@ -30,8 +30,8 @@ class Models(object):
 
 
     def transform_data_for_tokenizer(self, recipe_item):
-        print("************************************")
-        print(recipe_item)
+        # print("************************************")
+        # print(recipe_item)
         original = recipe_item.lower()
         original = re.sub(r'/s*(/d+|[./+*-])', '', original)
         original_split = original.split(" ")
@@ -55,6 +55,7 @@ class Models(object):
 class GA(object):
     def __init__(self):
         # TODO - Remove dependency on static files
+        print("**TODO: GA: Remove the user df csv dependency")
         code_path = 'app/static/csv_files/GA_help'
         self.recipe_df = pd.read_csv(code_path+'/test_GA.csv', encoding="cp1252")
         self.recipe_df_normalized = pd.read_csv(code_path+'/test_GA_normalized.csv', encoding="cp1252")
@@ -187,7 +188,6 @@ class GA(object):
 
 
     def recipe_population_fitness_individual(self, recipe_population, recipe):
-        print("recipe_population_fitness_individual")
         recipe = recipe.copy()
         fitness_list = []
         for subject in range(len(recipe_population)):
@@ -198,7 +198,6 @@ class GA(object):
 
 
     def recipe_select_mating_pool_individual(self, user_df, fitness, num_parents):
-        print("recipe_select_mating_pool_individual")
         df_loss = np.abs((fitness.values - user_df.values) / user_df.values)
         numpy_average_loss = np.average(df_loss, axis=1)
 
@@ -212,7 +211,6 @@ class GA(object):
 
 
     def recipe_crossover_individual(self, parents, offspring_size):
-        print("recipe_crossover_individual")
         crossover_point = np.uint8(offspring_size[1] / 2)
 
         offspring_list = []
@@ -231,7 +229,6 @@ class GA(object):
 
 
     def recipe_mutation_individual(self, offspring_crossover, user_df, amount_mutations, recipe):
-        print("recipe_mutation_individual")
         # Mutation changes a single gene in each offspring randomly.
         recipe = recipe.copy()
         for sub_population in offspring_crossover:
@@ -299,7 +296,6 @@ class GA(object):
 
 
     def AMGA(self, num_generations, meals_per_week, amount_per_population, amount_parents_mating, weekly_diet_amount, ignore_list):
-        print("AMGA")
         meal_plan_population = []
         for unit in range(amount_per_population):
             meal_plan_population.append(self.recipe_df_normalized['recipe_id'].sample(meals_per_week).tolist())

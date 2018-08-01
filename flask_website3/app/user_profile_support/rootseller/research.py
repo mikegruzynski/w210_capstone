@@ -5,7 +5,6 @@ from collections import Counter
 from sklearn.decomposition import PCA
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
-# from app.user_profile_support.rootseller import nutrtion
 from app.user_profile_support.rootseller import nutrition
 from app.user_profile_support.rootseller import rootprofile
 import warnings
@@ -120,7 +119,6 @@ class Research(object):
     def macro_space_distance_top_n(self, n_values, tag, food_category_list):
         minmax_scaler = MinMaxScaler()
         food_to_replace = self.nutrition_init.NDB_NO_lookup_normalized(tag, filter_list=['Description']).get_values()[0][0]
-
         temp_row = self.nutrition_init.NDB_NO_lookup_normalized(tag, filter_list=self.profile_init.macro_list)
         temp_df = self.nutrition_init.nutritional_normalized_database.copy()
 
@@ -137,14 +135,18 @@ class Research(object):
         temp_df['distance'] = se2.values
 
         tag_list = []
+        potential_switches = []
+        print(food_category_list)
         for description in food_category_list:
-            print(description)
+            print("description", description)
             for i in range(n_values):
                 tag_list.append(temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['NDB_NO'].get_values()[i])
+                print(temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['Description'].get_values()[i])
+                potential_switches.append(temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['Description'].get_values()[i])
                 print('\t', temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['distance'].get_values()[i], temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['Description'].get_values()[i])
                 for ii in self.profile_init.macro_list:
                     normalized_food = temp_row[ii].get_values()[0]
                     normalized_food_next = self.nutrition_init.nutritional_database[self.nutrition_init.nutritional_database['NDB_NO'] == temp_df[temp_df['Category'] == description].sort_values(by=['distance'], ascending=True)['NDB_NO'].get_values()[i]][ii].get_values()[0]
                     # print('\t\t', "{:40s}, {:10f}, {:10f}".format(ii, normalized_food, normalized_food_next))
-
-        return tag_list
+        print("potential_switches", potential_switches)
+        return tag_list, potential_switches

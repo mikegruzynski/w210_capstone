@@ -1,0 +1,83 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<!-- <title>Generic - Urban by TEMPLATED</title> -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project</a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+					<li><a href="/user_profile">User Profile</a></li>
+					<li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Main -->
+				<section class="wrapper style1">
+					<div class="inner">
+						<!-- 2 Columns -->
+							<div class="flex flex-1">
+							<div class="col col1">
+								<h1>Pantry Recipe</h1>
+								<h2>Coming Soon!</h2>
+								<h6>We are working very hard to make sure your recipe suggetsions is close to perfect! We will be updating soon so check back in!</h6>
+
+								<div style="float: left; width: 100%;">
+									<h5>Not sure what to cook? Don't want to go to the store?</h4>
+									<h5>No Problem! Tell us what you have in stock at home and we will suggest a recipe to cook tonight!</h5>
+       <p></p>
+			 					<h3>Here is an example of what is to come! </h3>
+								<div style="float: left; width: 100%;">
+								You tell us that you have the following ingredients in your pantry:
+									<ul {list-style-type: disc; -webkit-columns: 2;
+										-moz-columns: 2;
+										columns: 2;
+										list-style-position: inside; }>
+										{% for ingredient in ingredient_list %}
+											<li> {{ ingredient }} </li>
+										{%endfor%}
+									</ul>
+								</div>
+							</div>
+								We will suggest you make:
+								<ul>
+								{% for name in recipe_name_suggestion_list %}
+									<li> {{ name }} </li>
+								{%endfor%}
+							</ul>
+								<img src="{{ url_for('static', filename='images/test_barplot.png') }}" alt="" />
+								<img src="{{ url_for('static', filename='images/test_radar_plot.png') }}" alt="" />
+							</div>
+							</div>
+						</section>
+						<section class="wrapper style1">
+								 <a href = "/user_profile" class="button">Back to User Profile</a>
+						</section>
+					</div>
+				</section>
+	</body>
+</html>
