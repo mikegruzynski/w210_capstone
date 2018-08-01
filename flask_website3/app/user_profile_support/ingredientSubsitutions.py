@@ -65,6 +65,8 @@ def get_recipe_list(session, user):
 
 # Get ingredient List for Shopping list
 def get_recipe_details(best_recipe_combo, user_profile_data):
+    print("Shopping List")
+    print(best_recipe_combo)
     profile_init = rootprofile.UserProfile(user_profile_data)
     recipe_init = recipes.Recipes(profile_init)
     # get ingredients from the recipe list

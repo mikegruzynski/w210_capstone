@@ -49,11 +49,9 @@
 
 				<section class="wrapper style1">
 					<div class="inner">
-						<!-- 2 Columns -->
 							<div class="flex flex-1">
 							<div class="col col1">
 								<h2>User Profile Information</h2>
-								<ul class="links">
 								 <li>Gender: {{user_data.gender.values[0]}}</li>
 								 <li>Age: {{user_data.age.values[0]	}}</li>
 								 <li>Height (Inches): {{user_data.height_in.values[0]}} </li>
@@ -76,9 +74,11 @@
 								<h2>My Recipe Plan</h2>
 								<p>Based on your user preferneces. We suggest the following Recipes:
 									<div style="float: left; width: 100%;">
-										{% block content %}
-											{{user_meal_plan | safe}}
-										{% endblock %}
+										<ul>
+										{% for meal in user_meal_plan %}
+											<li>{{ meal[0] }}: {{meal[1]}}</li>
+										{%endfor%}
+									</ul>
 									</div>
 									<!-- <a href = "/subsitute_ingredients" class="button">Subsitute Ingredients in Meals </a> -->
 								</div>
@@ -90,6 +90,7 @@
 							<a href = "/shopping_list" class="button">See My Shopping List</a>
 
 							<p></p>
+							<h4>Features Coming Soon!</h4>
 							<a href = "/food_network" class="button">See Network Graph of Food</a>
 							<a href = "/pantry_recipe" class="button">Recipe Based on Current Pantry</a>
 

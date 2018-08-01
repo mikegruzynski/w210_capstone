@@ -114,17 +114,16 @@ def user_profile():
 
             macros_form = InputMacroNutrientsForm(request.form)
             micros_form = InputMicroNutrientsForm(request.form)
-            print(type(user_meal_plan))
-            print(user_meal_plan)
+
             if request.method == 'POST':
                 macros, micros = process_nutrient_edit_form(macros_form.data, micros_form.data, macros, micros)
                 # Save micro and Macro edited list for later fram
                 session['macros'] = pd.DataFrame(macros).to_json()
                 session['micros'] = pd.DataFrame(micros, index=[0]).to_json()
                 # Render the Users Profile Page
-                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.to_html(), form1=macros_form, form2=micros_form)
+                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.values, form1=macros_form, form2=micros_form)
             else:
-                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.to_html(), form1=macros_form, form2=micros_form)
+                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.values, form1=macros_form, form2=micros_form)
         else:
             # Render the New User Landing page until they complete Preferneces Survey
             return render_template('userProfile_new.html', title="User Preferneces", user=user)
@@ -204,6 +203,9 @@ def single_ingredient_replacement(recipe_id):
 
             df_ingredient_NDBi = df_ingredient_NDB[df_ingredient_NDB.recipe_id == recipe_id]
             # print(df_ingredient_NDB)
+            print(df_ingredient_NDBi)
+            print(type(df_ingredient_NDBi))
+            print(df_ingredient_NDBi.values)
 
             if request.method == 'POST':
                 if ingredientSubForm.replacemnetChoice.data == 'None':
@@ -261,12 +263,12 @@ def single_ingredient_replacement(recipe_id):
                     session['df_ingredient_NDB'] = df_ingredient_NDB.to_json()
                     display_bottom = False
                 # Render the Users Profile Page
-                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi, potential_switches=potential_switches, display_bottom=display_bottom)
+                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi[['NDB_NO', 'Description']].values, potential_switches=potential_switches, display_bottom=display_bottom)
 
                 # return render_template('subsitute_ingredients.html', user_data=pd.read_json(session['data']), df=df, df_list=df_list)
             else:
                 # Displays Ingredients User Can Choose to Replace
-                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi, potential_switches=[])
+                return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi[['NDB_NO', 'Description']].values, potential_switches=[])
                 # return render_template('subsitute_ingredients.html', user_data=pd.read_json(session['data']), df=df, df_list=df_list)
 
             # print(session.keys())
@@ -327,7 +329,6 @@ def display_recipe():
                     break
             print(recipe_id)
             # single_ingredient_replacement(recipe_id)
-
             return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
             # return render_template('display_recipe.html', user_data=user_profile_data, recipe_details=recipe_details, form=recipeNameIdForm)
         else:
@@ -408,4 +409,19 @@ def food_network():
 
 @app.route('/pantry_recipe') #  methods=['GET', 'POST']
 def pantry_recipe():
-    return render_template('pantry_recipe.html')
+    # TODO: Integrate real code
+    ingredient_list = ingredient_list = ['12 large egg', '12 oz mayonnaise', '12 oz BBQ Sauce', '24 oz mustard', '6 skinless chicken breast',
+                   '12 salmon burgers', '12 pita', '2 zucchini', '4 onions', '1 pound mushrooms',
+                   '12 cups lettuce', '24 beer', '1 whole duck', '4 oranges', '2 potatoes', '2 red peppers',
+                   '4 pounds white rice', '48 oz peanut butter', '6 sausage', '4 pounds ham', '1 cauliflower',
+                   '6 sticks butter', '12 cups sugar', '12 brown sugar', 'water', '1 whole lemon', '0.25 cup lemon juice',
+                   '10 whole apples', '1 tomato', '0.25 cup Lime juice', '1 bottle rum', '12 egg whites', '1 whole garlic']
+    recipe_id_suggestion_list = ['RECIPE_48743', 'RECIPE_9117', 'RECIPE_78461']
+
+    recipe_details = get_recipe_details(recipe_id_suggestion_list, pd.read_json(session['data']))
+
+    recipe_name_suggestion_list = []
+    for itr, details in enumerate(recipe_details):
+        recipe_name_suggestion_list.append(recipe_details[itr].get('name'))
+
+    return render_template('pantry_recipe.html', ingredient_list=ingredient_list, recipe_name_suggestion_list=recipe_name_suggestion_list)

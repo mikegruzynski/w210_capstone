@@ -51,14 +51,32 @@
 									<h5>No Problem! Tell us what you have in stock at home and we will suggest a recipe to cook tonight!</h5>
        <p></p>
 			 					<h3>Here is an example of what is to come! </h3>
-
-								# TODO: Add example
-   <p></p>
-					 <a href = "/user_profile" class="button">Back to User Profile</a>
-
+								<div style="float: left; width: 100%;">
+								You tell us that you have the following ingredients in your pantry:
+									<ul {list-style-type: disc; -webkit-columns: 2;
+										-moz-columns: 2;
+										columns: 2;
+										list-style-position: inside; }>
+										{% for ingredient in ingredient_list %}
+											<li> {{ ingredient }} </li>
+										{%endfor%}
+									</ul>
 								</div>
 							</div>
+								We will suggest you make:
+								<ul>
+								{% for name in recipe_name_suggestion_list %}
+									<li> {{ name }} </li>
+								{%endfor%}
+							</ul>
+								<img src="{{ url_for('static', filename='images/test_barplot.png') }}" alt="" />
+								<img src="{{ url_for('static', filename='images/test_radar_plot.png') }}" alt="" />
 							</div>
+							</div>
+						</section>
+						<section class="wrapper style1">
+								 <a href = "/user_profile" class="button">Back to User Profile</a>
+						</section>
 					</div>
 				</section>
 	</body>

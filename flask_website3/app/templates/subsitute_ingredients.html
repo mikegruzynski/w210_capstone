@@ -50,20 +50,13 @@
 								<h4>Recipe</h4>
 								<h5>Ingredient Options</h5>
 								<h1></h1>
-								<div style="float: left; width: 30%;">
+								<div style="float: left; width: 100%;">
 									<ul>
-										{% for NDB_NO in df_ingredient_NDB.NDB_NO %}
-											<li> {{ NDB_NO }} </li>
+										{% for ingredient in df_ingredient_NDB %}
+											<li> {{ ingredient[0] }}, {{ ingredient[1]}} </li>
 										{%endfor%}
 								  </ul>
 							  </div>
-								<div style="float: left; width: 70%;">
-									<ul style="list-style: none;">
-										{% for desc in df_ingredient_NDB.Description %}
-											<li> {{ desc }} </li>
-										{%endfor%}
-									</ul>
-								</div>
 							</div>
 							</div>
 							<p></p>
@@ -88,18 +81,20 @@
 										{%endfor%}
 										{{ form.replacemnetChoice() }}
 									</ol>
+									<p></p>
 								Choose a Type of Food to Replace With (list below):
-
+								<p><input type=submit value="Replace Ingredient"></p>
+										<h3>See how the Ingredent change will effect your nutriet goals</h3>
+										<p>Note this image is a placeholder. Will be updated</p>
+										<img src="{{ url_for('static', filename='images/test_replacement_radar_plot.png') }}" alt="" />
+							      <p></p>
 								</div>
-								<input type=submit value="Replace Ingredient">
 								{% endif %}
 							</div>
 							<p></p><p></p>
 							</form>
 
-								# Add Visuals here
 
-				       <p></p>
 			</div>
 	</body>
 </html>
