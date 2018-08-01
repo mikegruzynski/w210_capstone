@@ -6,6 +6,7 @@ from app.models import User, InputMacroNutrientsForm, InputMicroNutrientsForm, I
 from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
+from app.user_profile_support.get_recipe_center_data import *
 import numpy as np
 # import matplotlib
 # matplotlib.use('Agg')
@@ -112,8 +113,8 @@ def user_profile():
                 best_recipe_combo, weekly_diet_amount, user_profile_data, df_ingredient_NDB = get_recipe_list(session, user)
                 user_meal_plan = pd.read_json(session['user_meal_plan'])
 
-            macros_form = InputMacroNutrientsForm(request.form)
-            micros_form = InputMicroNutrientsForm(request.form)
+            # macros_form = InputMacroNutrientsForm(request.form)
+            # micros_form = InputMicroNutrientsForm(request.form)
 
             if request.method == 'POST':
                 macros, micros = process_nutrient_edit_form(macros_form.data, micros_form.data, macros, micros)
@@ -121,13 +122,90 @@ def user_profile():
                 session['macros'] = pd.DataFrame(macros).to_json()
                 session['micros'] = pd.DataFrame(micros, index=[0]).to_json()
                 # Render the Users Profile Page
-                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.values, form1=macros_form, form2=micros_form)
+                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.values)
             else:
-                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.values, form1=macros_form, form2=micros_form)
+                return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.values)
         else:
             # Render the New User Landing page until they complete Preferneces Survey
             return render_template('userProfile_new.html', title="User Preferneces", user=user)
         return redirect(url_for('index'))
+
+
+## Recipe Center ----------------------------------------------
+# Routes and infromation refering to recipes and meal plans
+@app.route('/recipe_center') # , methods=['GET', 'POST']
+def recipe_center():
+    if current_user.is_authenticated:
+        user = current_user.username
+
+        # Get List of Names for user recipes
+
+        # Get Recipes Details with Name, Ingredients, Instructions
+        user_profile_data = pd.read_json(session['data'])
+        user_meal_plan = pd.read_json(session['user_meal_plan'])
+        best_recipe_combo = user_meal_plan.recipe_id
+        recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
+        print("recipe_details", recipe_details)
+
+        user_profile_data = pd.read_json(session['data'])
+
+        if user_profile_data is not False:
+            user_meal_plan = return_user_meal_plan(session, user_profile_data, user)
+        print("user_meal_plan", user_meal_plan)
+
+        return render_template('recipe_center_page.html',user_data=user_profile_data, recipe_details=recipe_details, user_meal_plan=user_meal_plan)
+    else:
+        # Render the New User SetUp page until they comlete prefernece
+        return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.values, form1=macros_form, form2=micros_form)
+    return redirect(url_for('index'))
+
+
+@app.route('/display_recipe',  methods=['GET', 'POST'])
+def display_recipe():
+    if current_user.is_authenticated:
+        user = current_user.username
+
+        recipeNameIdForm = ChooseRecipeToSubIngredients(request.form)
+        if request.method == 'POST':
+            print("POST")
+            print(recipeNameIdForm.recipe_name.data)
+
+            user_profile_data = pd.read_json(session['data'])
+            user_meal_plan = pd.read_json(session['user_meal_plan'])
+            best_recipe_combo = user_meal_plan.recipe_id
+            recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
+
+            for itr, details in enumerate(recipe_details):
+                if recipe_details[itr].get('name') == recipeNameIdForm.recipe_name.data:
+                    recipe_id = recipe_details[itr].get('id')
+                    break
+            print(recipe_id)
+            # single_ingredient_replacement(recipe_id)
+            return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
+            # return render_template('display_recipe.html', user_data=user_profile_data, recipe_details=recipe_details, form=recipeNameIdForm)
+        else:
+            user_profile_data = pd.read_json(session['data'])
+            if user_profile_data is not False:
+                # Get Recipes, ingredients and instructions
+                # try:
+                user_meal_plan = pd.read_json(session['user_meal_plan'])
+                best_recipe_combo = user_meal_plan.recipe_id
+                recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
+                # except:
+                #     recipe_details = []
+                # print("recipe Details")
+                # print(len(recipe_details), type(recipe_details))
+                # print(recipe_details[0].get('name'))
+                # print(recipe_details[0].get('id'))
+                # for pos in recipe_details:
+                #     print(pos)
+
+            return render_template('display_recipe.html', user_data=user_profile_data, recipe_details=recipe_details, form=recipeNameIdForm)
+    else:
+        # Render the New User SetUp page until they comlete prefernece
+        return render_template('userProfile_existing.html', title="User Profile",
+         user=user)
+    return redirect(url_for('index'))
 
 
 # Links to page with recipe recommendations and ability to change out recipes
@@ -139,24 +217,7 @@ def recipe_recommendation():
 
         user_profile_data = pd.read_json(session['data'])
         if user_profile_data is not False:
-            # Get Recipe Reccomendations for the user
-            if 'user_meal_plan' not in session.keys():
-                best_recipe_combo, weekly_diet_amount, user_profile_data, df_ingredient_NDB = get_recipe_list(session, user)
-
-            user_meal_plan = pd.read_json(session['user_meal_plan'])
-            best_recipe_combo = user_meal_plan.recipe_id
-
-            # Sanity Check the ignore list before returning Results. If a recipe is in ignore list run again
-            ignore_list = get_user_ignore_responses(user_profile_data, user)
-            if 'ignore_list' in session.keys():
-                old_ignore_list = create_ignore_list_from_session_df(session)
-                ignore_list = ignore_list + old_ignore_list
-            session['ignore_list'] = pd.DataFrame({'recipe_ignore':ignore_list}).to_json()
-
-            while any(np.intersect1d(ignore_list, user_meal_plan.recipe_id)):
-                best_recipe_combo, weekly_diet_amount, user_profile_data, df_ingredient_NDB = get_recipe_list(session, user)
-                user_meal_plan = pd.read_json(session['user_meal_plan'])
-
+            user_meal_plan = return_user_meal_plan(session, user_profile_data)
             #### Here is where plot needs to be called and saved off for jpg
             # fig = plt.figure()
             # ax = plt.axes()
@@ -180,7 +241,6 @@ def recipe_recommendation():
 
 # TODO: ERROR HANDELING
 # TODO: visualizations
-# TODO: Radio Buttons on List of Options
 @app.route('/single_ingredient_replacement/<recipe_id>', methods=['GET', 'POST'])
 def single_ingredient_replacement(recipe_id):
     if current_user.is_authenticated:
@@ -294,6 +354,36 @@ def rerun_recipe_plan():
     # session['df_ingredient_NDB'] = df_ingredient_NDB.to_json()
     return redirect(url_for('user_profile'))
 
+## Nutrition Center ----------------------------------------------
+# Routes and infromation about to Nutrition goals
+@app.route('/nutrition_center', methods=['GET', 'POST'])
+def nutrition_center():
+    if current_user.is_authenticated:
+        user = current_user.username
+        user_profile_data = pd.read_json(session['data'])
+        macros = pd.read_json(session['macros'])
+        micros = pd.read_json(session['micros'])
+
+    macros_form = InputMacroNutrientsForm(request.form)
+    micros_form = InputMicroNutrientsForm(request.form)
+    if request.method == 'POST':
+        macros, micros = process_nutrient_edit_form(macros_form.data, micros_form.data, macros, micros)
+
+        # Save micro and Macro edited list for later fram
+        session['macros'] = pd.DataFrame(macros).to_json()
+        session['micros'] = pd.DataFrame(micros, index=[0]).to_json()
+
+        return render_template("nutrition_center.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros, user_data=user_profile_data)
+    else:
+        return render_template("nutrition_center.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros, user_data=user_profile_data)
+
+
+# TODO: sub out placeholder when complete
+# Placholder for about page
+@app.route('/about_nutrition')
+def about_nutrition():
+    return render_template('about_nutrition.html')
+
 
 # Reset Goals to Default
 @app.route('/reset_nutrient_goals')
@@ -306,56 +396,6 @@ def reset_nutrient_goals():
     micros_form = InputMicroNutrientsForm(request.form)
     return redirect(url_for('user_profile'))
     # return render_template("edit_nutrients.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros)
-
-
-@app.route('/display_recipe',  methods=['GET', 'POST'])
-def display_recipe():
-    if current_user.is_authenticated:
-        user = current_user.username
-
-        recipeNameIdForm = ChooseRecipeToSubIngredients(request.form)
-        if request.method == 'POST':
-            print("POST")
-            print(recipeNameIdForm.recipe_name.data)
-
-            user_profile_data = pd.read_json(session['data'])
-            user_meal_plan = pd.read_json(session['user_meal_plan'])
-            best_recipe_combo = user_meal_plan.recipe_id
-            recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
-
-            for itr, details in enumerate(recipe_details):
-                if recipe_details[itr].get('name') == recipeNameIdForm.recipe_name.data:
-                    recipe_id = recipe_details[itr].get('id')
-                    break
-            print(recipe_id)
-            # single_ingredient_replacement(recipe_id)
-            return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
-            # return render_template('display_recipe.html', user_data=user_profile_data, recipe_details=recipe_details, form=recipeNameIdForm)
-        else:
-            user_profile_data = pd.read_json(session['data'])
-            if user_profile_data is not False:
-                # Get Recipes, ingredients and instructions
-                # try:
-                user_meal_plan = pd.read_json(session['user_meal_plan'])
-                best_recipe_combo = user_meal_plan.recipe_id
-                recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
-                # except:
-                #     recipe_details = []
-                print("recipe Details")
-                print(len(recipe_details), type(recipe_details))
-                print(recipe_details[0].get('name'))
-                print(recipe_details[0].get('id'))
-                # for pos in recipe_details:
-                #     print(pos)
-
-
-
-            return render_template('display_recipe.html', user_data=user_profile_data, recipe_details=recipe_details, form=recipeNameIdForm)
-    else:
-        # Render the New User SetUp page until they comlete prefernece
-        return render_template('userProfile_existing.html', title="User Profile",
-         user=user)
-    return redirect(url_for('index'))
 
 
 @app.route('/shopping_list')
@@ -380,28 +420,7 @@ def shopping_list():
         return redirect(url_for('index'))
 
 
-
-# @app.route('/edit_nutrients', methods=['GET', 'POST'])
-# def edit_nutrients():
-#     if current_user.is_authenticated:
-#         user = current_user.username
-#         user_profile_data = pd.read_json(session['data'])
-#         macros = pd.read_json(session['macros'])
-#         micros = pd.read_json(session['micros'])
-#
-#     macros_form = InputMacroNutrientsForm(request.form)
-#     micros_form = InputMicroNutrientsForm(request.form)
-#     if request.method == 'POST':
-#         macros, micros = process_nutrient_edit_form(macros_form.data, micros_form.data, macros, micros)
-#
-#         # Save micro and Macro edited list for later fram
-#         session['macros'] = pd.DataFrame(macros).to_json()
-#         session['micros'] = pd.DataFrame(micros, index=[0]).to_json()
-#
-#         return render_template("edit_nutrients.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros)
-#     else:
-#         return render_template("edit_nutrients.html", form1=macros_form, form2=micros_form, macros=macros, micros=micros)
-
+## Other Features
 @app.route('/food_network', methods=['GET', 'POST'])
 def food_network():
     return render_template('data.html', title="Graph Test")

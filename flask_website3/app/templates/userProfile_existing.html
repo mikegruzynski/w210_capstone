@@ -43,12 +43,22 @@
             <header>
               <h1>Hello {{ user_data.firstname.values[0] }}!</h1>
               <p>Welcome Back to Root Cellar!</p>
-            </header>
-          </div>
-        </section>
+
+
+				<a href = "/recipe_center" class="button">My Recipe Center</a>
+				<a href = "/recipe_center" class="button">My Nutrition Center</a>
+				<h3></h3>
+				<a href = "/food_network" class="button">See Network Graph of Food</a>
+				<a href = "/pantry_recipe" class="button">Recipe Based on Current Pantry</a>
+				<h4>Features Coming Soon!</h4>
+
+			</header>
+		</div>
+	</section>
 
 				<section class="wrapper style1">
 					<div class="inner">
+						<h1>Profile Home</h1>
 							<div class="flex flex-1">
 							<div class="col col1">
 								<h2>User Profile Information</h2>
@@ -67,7 +77,6 @@
 				<p></p>
 				<p></p>
 					<div class="inner">
-						<form method=post action="">
 						<!-- 2 Columns -->
 							<div class="flex flex-1">
 							<div class="col col1">
@@ -76,23 +85,23 @@
 									<div style="float: left; width: 100%;">
 										<ul>
 										{% for meal in user_meal_plan %}
-											<li>{{ meal[0] }}: {{meal[1]}}</li>
+											<li>{{meal[1]}}</li>
 										{%endfor%}
 									</ul>
 									</div>
-									<!-- <a href = "/subsitute_ingredients" class="button">Subsitute Ingredients in Meals </a> -->
+									<a href = "/recipe_center" class="button">My Recipe Center</a>
 								</div>
 							</div>
-							<a href = "/recipe_recommendation" class="button">Choose a Recipe to Ignore</a>
+							<!-- <a href = "/recipe_recommendation" class="button">Choose a Recipe to Ignore</a>
 							<a href = "/rerun_recipe_plan" class="button">New Meal Plan</a>
 							<p></p>
 							<a href = "/display_recipe" class="button">See My Recipes</a>
-							<a href = "/shopping_list" class="button">See My Shopping List</a>
+							<a href = "/shopping_list" class="button">See My Shopping List</a> -->
 
 							<p></p>
-							<h4>Features Coming Soon!</h4>
+							<!-- <h4>Features Coming Soon!</h4>
 							<a href = "/food_network" class="button">See Network Graph of Food</a>
-							<a href = "/pantry_recipe" class="button">Recipe Based on Current Pantry</a>
+							<a href = "/pantry_recipe" class="button">Recipe Based on Current Pantry</a> -->
 
 						</div>
 
@@ -117,69 +126,54 @@
 				<!-- <section class="wrapper style1"> -->
 					<p></p>
 					<div class="inner">
-						<!-- 2 Columns -->
 							<div class="flex flex-5">
 							<div class="col col1">
 								<p></p><p></p>
 								<h2>Nutrient Goals</h2>
-								<h4>Macro Nutrients</h4>
-
-								<h5>Want to change the goals from the defualt calculations? Simply enter your new goal and Update!</h5>
+								<a href = "/nutrition_center" class="button">My Nutrition Center</a>
+								<h3>Macro Nutrients</h3>
+								<h5>Want to change the goals from the defualt calculations? Visit the Nutrition Center to Edit taregts</h5>
 									<!-- <p>Note: Updating Target Nurient Values will update the Recipe Plan</p> -->
 									<p></p><p></p>
+									<h6><a href = "/about_nutrition">Click to Learn More About Nutrition</a></h6>
 									<table style="width:100%">
 									 <thead>
 											<tr>
 										    <th><h4>Nutrient</h4></th>
 										    <th align="center"><h4>Goal</h4</th>
-												<th align="center"><h4>Edit Goal</h4></th>
 												<th><h4>Nutrient</h4></th>
 										    <th align="center"><h4>Goal</h4</th>
-												<th align="center"><h4>Edit Goal</h4></th>
+												<th><h4>Nutrient</h4></th>
+												<th align="center"><h4>Goal</h4</th>
 										  </tr>
 										</thead>
 										<tbody>
 										  <tr>
 										    <td>calories</td>
 										    <td>{{ macros.calories[0] }}</td>
-												<td>{{ form1.calories }}</td>
 												<td>Carbohydrates</td>
 												<td>{{ macros.carbohydrate[0] }}</td>
-												<td>{{ form1.carbohydrate }}</td>
-										  </tr>
-										  <tr>
 										    <td>Protein</td>
 										    <td>{{ macros.protein[0] }}</td>
-												<td>{{ form1.protein }}</td>
+											</tr>
+											<tr>
 												<td>Fat</td>
 												<td>{{ macros.fat[0] }}</td>
-												<td>{{ form1.fat }}</td>
-										  </tr>
-											<tr>
 												<td>Cholesterol</td>
 												<td>{{ macros.cholesterol[0] }}</td>
-												<td>{{ form1.cholesterol }}</td>
 												<td>Saturated Fat</td>
 												<td>{{ macros.saturated_fat[0] }}</td>
-												<td>{{ form1.saturated_fat }}</td>
 											</tr>
 											<tr>
 												<td>Unsaturated Fat</td>
 												<td>{{ macros.unsaturated_fat[0] }}</td>
-												<td>{{ form1.unsaturated_fat }}</td>
 												<td>Sugar</td>
 												<td>{{ macros.sugar[0] }}</td>
-												<td>{{ form1.sugar }}</td>
-											</tr>
-											<tr>
 												<td>Fiber</td>
 												<td>{{ macros.fiber[0] }}</td>
-												<td>{{ form1.fiber }}</td>
 											</tr>
 										</tbody>
 										</table>
-										<p><input type=submit value="Update Goals">
-										<a href = "/reset_nutrient_goals" class="button">Reset Goals to Default</a></p>
 										<p></p><p></p><p></p>
 
 										<h4>Micro Nutrients </h4>
@@ -190,155 +184,108 @@
 													<tr>
 														<th>Nutrient</th>
 														<th align="center">Goal</th>
-														<th align="center">Edit Goal</th>
 														<th>Nutrient</th>
 														<th align="center">Goal</th>
-														<th align="center">Edit Goal</th>
+														<th>Nutrient</th>
+														<th align="center">Goal</th>
 													</tr>
 												</thead>
 													<tbody>
 													<tr>
 														<td>Calcium</td>
 														<td>{{micros.Calcium[0]}} mg</td>
-														<td>{{form2.Calcium}}</td>
 														<td>Iron</td>
 														<td>{{micros.Iron[0]}} mg</td>
-														<td>{{form2.Iron}}</td>
-													</tr>
-													<tr>
 														<td>Magnesium</td>
 														<td>{{micros.Magnesium[0]}} mg</td>
-														<td>{{form2.Magnesium}}</td>
-														<th>Phosphorus</th>
-														<th>{{micros.Phosphorus[0]}} mg</th>
-														<td>{{form2.Phosphorus}}</td>
 													</tr>
 													<tr>
+														<th>Phosphorus</th>
+														<th>{{micros.Phosphorus[0]}} mg</th>
 														<td>Potassium</td>
 														<td>{{micros.Potassium[0]}} mg</td>
-														<td>{{form2.Potassium}}</td>
 														<td>Sodium</td>
 														<td>{{micros.Sodium[0]}} mg</td>
-														<td>{{form2.Sodium}}</td>
 													</tr>
 													<tr>
 														<td>Zinc </td>
 														<td>{{micros.Zinc[0]}} mg</td>
-														<td>{{form2.Zinc}}</td>
 														<th>Copper </th>
 														<th>{{micros.Copper[0]}} mg</th>
-														<td>{{form2.Copper}}</td>
-													</tr>
-													<tr>
 														<td>Manganese</td>
 														<td>{{micros.Manganese[0]}} mg</td>
-														<td>{{form2.Manganese}}</td>
-														<td>Selenium</td>
-														<td>{{micros.Selenium[0]}} microg</td>
-														<td>{{form2.Selenium}}</td>
 													</tr>
 													<tr>
+														<td>Selenium</td>
+														<td>{{micros.Selenium[0]}} microg</td>
 														<td>Fluoride </td>
 														<td>{{micros.Fluoride[0]}} microg</td>
-														<td>{{form2.Fluoride}}</td>
 														<th>Vitamin C, total ascorbic acid</th>
 														<th>{{micros.Vitamin_C[0]}} mg</th>
-														<td>{{form2.Vitamin_C}}</td>
 													</tr>
 													<tr>
 														<td>Thiamin</td>
 														<td>{{micros.Thiamin[0]}} mg</td>
-														<td>{{form2.Thiamin}}</td>
 														<td>Riboflavin</td>
 														<td>{{micros.Riboflavin[0]}} mg</td>
-														<td>{{form2.Riboflavin}}</td>
-													</tr>
-													<tr>
 														<td>Niacin</td>
 														<td>{{micros.Niacin[0]}} mg</td>
-														<td>{{form2.Niacin}}</td>
-														<td>Pantothenic Acid</td>
-														<td>{{micros.Pantothenic_acid[0]}} mg</td>
-														<td>{{form2.Pantothenic_acid}}</td>
 													</tr>
 													<tr>
+														<td>Pantothenic Acid</td>
+														<td>{{micros.Pantothenic_acid[0]}} mg</td>
 														<td>Vitamin B-6 </td>
 														<td>{{micros.Vitamin_B6[0]}} mg</td>
-														<td>{{form2.Vitamin_B6}}</td>
 														<td>Folate, total </td>
 														<td>{{micros.Folate[0]}} microg</td>
-														<td>{{form2.Folate}}</td>
 													</tr>
-
 													<tr>
 														<td>Folic acid </td>
 														<td>{{micros.Folic_acid[0]}} microg</td>
-														<td>{{form2.Folic_acid}}</td>
 														<td>Folate, food </td>
 														<td>{{micros.Folate_food[0]}} microg</td>
-														<td>{{form2.Folate_food}}</td>
-													</tr>
-													<tr>
 														<td>Folate, DFE </td>
 														<td>{{micros.Folate_DFE[0]}} microg</td>
-														<td>{{form2.Folate_DFE}}</td>
-														<td>Choline, total</td>
-														<td>{{micros.Choline[0]}} mg</td>
-														<td>{{form2.Choline}}</td>
 													</tr>
 													<tr>
+														<td>Choline, total</td>
+														<td>{{micros.Choline[0]}} mg</td>
 														<td>Betaine </td>
 														<td>{{micros.Betaine[0]}} mg</td>
-														<td>{{form2.Betaine}}</td>
 														<td>Vitamin B-12 </td>
 														<td>{{micros.Vitamin_B12[0]}} microg</td>
-														<td>{{form2.Vitamin_B12}}</td>
 													</tr>
 													<tr>
 														<td>Vitamin B-12, added</td>
 														<td>{{micros.Vitamin_B12_added[0]}} microg</td>
-														<td>{{form2.Vitamin_B12_added}}</td>
 														<td>Vitamin A, RAE </td>
 														<td>{{micros.Vitamin_A[0]}} microg</td>
-														<td>{{form2.Vitamin_A}}</td>
-													</tr>
-													<tr>
 														<td>Vitamin K (phylloquinone)</td>
 														<td>{{micros.Vitamin_K[0]}} microg</td>
-														<td>{{form2.Vitamin_K}}</td>
+													</tr>
+													<tr>
 														<td>Vitamin E (alpha-tocopherol)</td>
 														<td>{{micros.Vitamin_E[0]}} mg</td>
-														<td>{{form2.Vitamin_E}}</td>
-													</tr>
-
-													<tr>
 														<td>Vitamin E, added</td>
 														<td>{{micros.Vitamin_E_added[0]}} mg</td>
-														<td>{{form2.Vitamin_E_added}}</td>
 														<td>Vitamin D (D2 + D3)</td>
 														<td>{{micros.Vitamin_D[0]}} microg</td>
-														<td>{{form2.Vitamin_D}}</td>
 													</tr>
 													<tr>
 														<td>Vitamin D2 </td>
 														<td>{{micros.Vitamin_D2[0]}} microg </td>
-														<td>{{form2.Vitamin_D2}}</td>
 														<td>Vitamin D3 </td>
 														<td>{{micros.Vitamin_D3[0]}} microg </td>
-														<td>{{form2.Vitamin_D3}}</td>
-													</tr>
-													<tr>
 														<td>Retinol </td>
 														<td>{{micros.Retinol[0]}} microg</td>
-														<td>{{form2.Retinol}}</td>
+													</tr>
+													<tr>
 														<td>Vitamin E </td>
 														<td>{{micros.Vitamin_E[0]}} mg</td>
-														<td>{{form2.Vitamin_E}}</td>
 													</tr>
 													</tbody>
 												</table>
-												<p><input type=submit value="Update Goals"></p>
-												<a href = "/reset_nutrient_goals" class="button">Reset Goals to Default</a></p>
+												<h3><a href = "/about_nutrition">Learn More About Nutrition</a></h3>
 								</div>
 							</div>
 						</div>

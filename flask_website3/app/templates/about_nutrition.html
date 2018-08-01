@@ -1,0 +1,58 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About Nutrition Elements </a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+					<li><a href="/user_profile">User Profile</a></li>
+					<li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Main -->
+			<div id="main">
+
+				<!-- Section -->
+					<section class="wrapper">
+						<div class="inner">
+							<header class="align-center">
+								<h1>About the Nutrient Elements</h1>
+								<h4>Coming Soon!</h4>
+                <a href = "/user_profile" class="button">Back to User Profile</a>
+							</header>
+							<div class="flex flex-2">
+								<div class="col col2">
+                  <p>Placeholder Page</p>
+    						</div>
+            	</div>
+      			</div>
+					</section>
+      </div>
+	</body>
+</html>

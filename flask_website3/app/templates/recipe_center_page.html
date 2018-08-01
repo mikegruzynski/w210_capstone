@@ -1,0 +1,93 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<!-- <title>Generic - Urban by TEMPLATED</title> -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project</a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+					<li><a href="/user_profile">User Profile</a></li>
+					<li><a href="/recipe_recommendation">Edit Recipes Plan</li>
+					<li><a href="/shopping_list">Shopping List</a></li>
+					<li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Main -->
+				<section class="wrapper style1">
+					<div class="inner">
+							<div class="flex flex-1">
+							<div class="col col1">
+								<h1>{{ user_data.firstname.values[0] }}'s Recipe Center</h1>
+								<h1></h1>
+									<ul>
+										{% for recipe in recipe_details %}
+												<li> {{ recipe.get('name') }} </li>
+										{%endfor%}
+									</ul>
+								</div>
+							</div>
+					</div>
+
+				<div class="inner">
+					<h3>Recipe Center Options</h3>
+					<a href = "/rerun_recipe_plan" class="button">Generate New Meal Plan</a>
+					<a href = "/recipe_recommendation" class="button">Ignore Recipes</a>
+					<!-- <a href = "/display_recipe" class="button">See My Recipes</a> -->
+					<a href = "/shopping_list" class="button">See My Shopping List</a>
+				</div>
+				<div class="inner">
+					<div class="flex flex-1">
+					<div class="col col1">
+					<h1>Recipe Details</h1>
+						<div style="float: left; width: 100%;">
+							{% for recipe in recipe_details %}
+							<p></p><p></p>
+								<h4>  {{ recipe.get('name') }}</h4>
+								<ul>
+									{% for ingredient in recipe.get('ingredients') %}
+										<li> {{ ingredient }} </li>
+									{%endfor%}
+								</ul>
+								{% for instruction in recipe.get('instructions') %}
+									{{ instruction }}
+								{%endfor%}
+
+								<p></p><p></p>
+							{%endfor%}
+						</div>
+					</div>
+					</div>
+				</div>
+       <p></p>
+				<!-- {{ ingredient_list }} -->
+			<div class="inner">
+			 <a href = "/user_profile" class="button">Back to User Profile</a>
+		 </div>
+	</body>
+</html>
