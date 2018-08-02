@@ -65,8 +65,6 @@ def get_recipe_list(session, user):
 
 # Get ingredient List for Shopping list
 def get_recipe_details(best_recipe_combo, user_profile_data):
-    print("Shopping List")
-    print(best_recipe_combo)
     profile_init = rootprofile.UserProfile(user_profile_data)
     recipe_init = recipes.Recipes(profile_init)
     # get ingredients from the recipe list
@@ -76,7 +74,6 @@ def get_recipe_details(best_recipe_combo, user_profile_data):
         recipe_details.append(recipe_init.recipe_clean[rec_idx])
         # recipe_details = recipe_details.update(rec_idx=recipe_init.recipe_clean[rec_idx])
 
-    # print(type(recipe_details), recipe_details)
     return recipe_details
 
 
@@ -94,11 +91,12 @@ def get_shopping_list(best_recipe_combo, user_profile_data):
 
     # TODO: aggregate the ingredients to combine recipies and amounts
     print("***TODO: aggregate the ingredients to combine recipies and amounts")
-    print(type(ingredient_list), ingredient_list)
+    # print(type(ingredient_list), ingredient_list)
     return(ingredient_list)
 
 
 def get_ingredient_NDB_number(session, best_recipe_combo):
+    # Returns Ingredits in recipes to dataframe
     # Save ingredients to Session Data
     profile_init = rootprofile.UserProfile(pd.read_json(session['data']))
     recipe_init = recipes.Recipes(profile_init)
@@ -118,24 +116,19 @@ def get_ingredient_NDB_number(session, best_recipe_combo):
     return(df_ingredient_NDB)
 
 
-# TODO: Edit single_ingredient_replacement
-# TODO: Remove Default call of recipe - will come from users choice of recipe to edit
+# Replaces 1 ingredient in a recipe as user chooses
 def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
-    print("***** SINGLE FOOD REPLACEMENT ******")
+    # Single food replacement based on macros
+
+    # Get intial information on user
     profile_init = rootprofile.UserProfile(pd.read_json(session['data']))
     recipe_init = recipes.Recipes(profile_init)
     research_init = research.Research(profile_init)
     ingredient_list = recipe_init.recipe_clean[recipe_id]['ingredients']
-    # Single food replacement based on macros
-    # recipe_id = 'RECIPE_48743'
-    # print(recipe_init.recipe_list_to_conversion_factor_list(recipe_id)[['Description', 'NDB_NO']])
 
-    # raw_input_return = input("Select items to replace:")
-    # raw_input_return = "01116"
-    temp_recipe_dict = {}
-    temp_recipe_dict[recipe_id] = recipe_init.recipe_clean[recipe_id].copy()
+    # temp_recipe_dict = {}
+    # temp_recipe_dict[recipe_id] = recipe_init.recipe_clean[recipe_id].copy()
     if len(ingredientSubForm.ingredientSub.data) > 0:
-        print("Running the Sub")
         replacement_key_dict = {1:  'Baked',
                                 2:  'Beef',
                                 3:  'Beverages',
@@ -170,7 +163,13 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
 
         # Taglist = suggested replacemnt food indicies
         tag_list, potential_switches = research_init.macro_space_distance_top_n(4, replacement_ndb_tag, [replacement_key_dict[int(replacement_category_key)]])
-        switch_df = pd.DataFrame(data={'tags':tag_list, "potential_switches":potential_switches})
+
+        # Verify one of top three option is not the same as input
+        for i, tag in enumerate(tag_list):
+            if tag.strip('"') == replacement_ndb_tag:
+                tag_list.remove(tag)
+                potential_switches.remove(potential_switches[i])
+        switch_df = pd.DataFrame(data={'tags':tag_list[:3], "potential_switches":potential_switches[:3]})
 
         # DO following process to get visuals
         # Split User input into the item to replace and type, format: ['"44005":7']
@@ -203,4 +202,49 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
         # print("visual 1")
         # # visualizations.Plots(df_list, profile_init).radar_plot_recipe(name_list, 'test_replacement_radar_plot')
         # print("visual 2")
-        return switch_df, potential_switches
+        return switch_df, potential_switches[:3]
+
+
+# Switch the ingrediet out for the user selected ingredient
+# For Single Ingredient Subsitution
+def switch_out_ingredient(session, recipe_id, ingredientSubForm, switch_df, df_ingredient_NDB, df_ingredient_NDBi):
+    # Get User information details
+    user_meal_plan = pd.read_json(session['user_meal_plan'])
+    best_recipe_combo = user_meal_plan.recipe_id
+    recipe_details = get_recipe_details(best_recipe_combo, pd.read_json(session['data']))
+
+    # Finds Recipe Details for recipe we are interested iin
+    rid = recipe_id.strip('RECIPE_')
+    for itr, details in enumerate(recipe_details):
+        if recipe_details[itr].get('id') == rid:
+            recipe_itr = itr
+            break
+
+    # Save new tag and ingredient information as varibales
+    new_NBD_tag = switch_df.tags[int(ingredientSubForm.replacemnetChoice.data)-1]
+    new_ingredient = switch_df.potential_switches[int(ingredientSubForm.replacemnetChoice.data)-1]
+    curr_recipe = recipe_details[recipe_itr]
+
+    # Get Ingredients and tags of Current Recipe
+    NDB_no_tags = curr_recipe.get('NDB_NO_tags')
+    ingredients = curr_recipe.get('ingredients')
+
+    # Update Values in current recipe to reflect change
+    # for i, tag in enumerate(NDB_no_tags):
+    for i, tag in enumerate(df_ingredient_NDBi.NDB_NO):
+        if tag.strip('"') == ingredientSubForm.ingredientSub.data:
+            NDB_no_tags.remove(tag)
+            NDB_no_tags.append(new_NBD_tag)
+            index_val = df_ingredient_NDBi.NDB_NO.index[i]
+            df_ingredient_NDBi.NDB_NO[index_val] = new_NBD_tag
+            df_ingredient_NDBi.Description[index_val] = new_ingredient
+
+    # curr_recipe["NDB_NO_tags"] = df_ingredient_NDBi.NDB_NO.values
+    # curr_recipe["ingredients"] = df_ingredient_NDBi.Description.values
+
+    # Replace With Updates: Save the Ingredient Updates to profileself.
+    df_ingredient_NDB_mi = df_ingredient_NDB[df_ingredient_NDB.recipe_id != recipe_id]
+    df_ingredient_NDB = pd.concat([df_ingredient_NDB_mi, df_ingredient_NDBi])
+    df_ingredient_NDB.reset_index(inplace=True)
+
+    return df_ingredient_NDB, df_ingredient_NDBi

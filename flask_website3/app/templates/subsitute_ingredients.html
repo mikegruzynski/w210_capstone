@@ -3,6 +3,7 @@
 <!-- TODO: Update this page -->
 
 <html>
+	<title>RootCellar: Ingredient Subsitution</title>
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -82,7 +83,6 @@
 										{{ form.replacemnetChoice() }}
 									</ol>
 									<p></p>
-									{% if display_switch %}
 										Choose a Type of Food to Replace With (list below):
 											<p><input type=submit value="Replace Ingredient"></p>
 												<h3>See how the Ingredent change will effect your nutriet goals</h3>
@@ -90,10 +90,9 @@
 												<img src="{{ url_for('static', filename='images/test_replacement_radar_plot.png') }}" alt="" />
 									      <p></p>
 									{% else %}
-										<h5>We are sorry, We could not find a good replacment matching your request. Pleasse try again.</h5>
+										<h5>{{ msg_print }}</h5>
 									{% endif %}
 								</div>
-								{% endif %}
 							</div>
 							<p></p><p></p>
 							</form>

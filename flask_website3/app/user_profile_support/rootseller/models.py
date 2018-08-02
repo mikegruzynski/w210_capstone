@@ -38,13 +38,13 @@ class Models(object):
 
         units_of_food_recipe_list = []
         for key in self.recipe_init.food_unit_standard_dictionary:
-            print(key)
+            # print(key)
             for sub_key in self.recipe_init.food_unit_standard_dictionary[key]:
                 units_of_food_recipe_list.append(sub_key)
 
         keep_list = []
         for i in original_split:
-            print(i)
+            # print(i)
             if i not in self.recipe_init.food_size and i not in units_of_food_recipe_list:
                 keep_list.append(i)
 
@@ -362,7 +362,7 @@ class GA(object):
 
             print_best = self.recipe_population_fitness_individual(recipe_population, recipe)
             print_best_index, df_loss = self.print_recipe_select_mating_pool_individual(daily_diet_amount, print_best, amount_per_population)
-            print(print_best_index[:5])
+            # print(print_best_index[:5])
 
         print('***************')
         best_recipe_combo = recipe_population[print_best_index[0]]

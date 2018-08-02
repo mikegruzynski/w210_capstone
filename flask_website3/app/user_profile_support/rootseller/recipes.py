@@ -271,9 +271,7 @@ class Recipes(object):
             itr = 0
             df_list = []
             conversion_factor_list = []
-            print(temp_dict)
             while itr < len(temp_dict[recipe_id]['ingredients']):
-                print(itr)
                 try:
                     if temp_dict[recipe_id]['ingredients'][itr] and temp_dict[recipe_id]['NDB_NO_tags'][itr] != 'np.nan' and temp_dict[recipe_id]['NDB_NO_tags'][itr] != '':
                         food_unit_dict = self.extact_unit_from_recipe(temp_dict[recipe_id]['ingredients'][itr])

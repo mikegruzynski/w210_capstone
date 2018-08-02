@@ -2,6 +2,7 @@
 <!DOCTYPE HTML>
 
 <html>
+	<title>RootCellar: User Profile Home</title>
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -43,22 +44,21 @@
             <header>
               <h1>Hello {{ user_data.firstname.values[0] }}!</h1>
               <p>Welcome Back to Root Cellar!</p>
-
-
-				<a href = "/recipe_center" class="button">My Recipe Center</a>
-				<a href = "/recipe_center" class="button">My Nutrition Center</a>
-				<h3></h3>
-				<a href = "/food_network" class="button">See Network Graph of Food</a>
-				<a href = "/pantry_recipe" class="button">Recipe Based on Current Pantry</a>
-				<h4>Features Coming Soon!</h4>
-
+							<a href = "#ProfileHome" class="button">Profile Home</a>
+							<p></p>
+							<a href = "/recipe_center" class="button">My Recipe Center</a>
+							<a href = "/recipe_center" class="button">My Nutrition Center</a>
+							<h3></h3>
+							<h5><font color="lightgray">More Features Coming Soon!</font>	</h5>
+							<a href = "/food_network" class="button">See Network Graph of Food</a>
+							<a href = "/pantry_recipe" class="button">Recipe Based on Current Pantry</a>
 			</header>
 		</div>
 	</section>
 
 				<section class="wrapper style1">
 					<div class="inner">
-						<h1>Profile Home</h1>
+						<h1 id="ProfileHome">Profile Home</h1>
 							<div class="flex flex-1">
 							<div class="col col1">
 								<h2>User Profile Information</h2>
