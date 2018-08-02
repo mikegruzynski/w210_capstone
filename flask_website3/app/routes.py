@@ -142,31 +142,6 @@ def recipe_center():
         user_meal_plan = pd.read_json(session['user_meal_plan'])
         best_recipe_combo = user_meal_plan.recipe_id
         recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
-
-        # Allow User to Choose to Replace an ingredient in recipe
-        # Route to the single replacement html
-        # recipeNameIdForm = ChooseRecipeToSubIngredients(request.form)
-        # if request.method == 'POST':
-        #     user_profile_data = pd.read_json(session['data'])
-        #     user_meal_plan = pd.read_json(session['user_meal_plan'])
-        #     best_recipe_combo = user_meal_plan.recipe_id
-        #     recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
-        #     print(recipe_details[itr].get('name'))
-        #
-        #     for itr, details in enumerate(recipe_details):
-        #         if recipe_details[itr].get('name') == recipeNameIdForm.recipe_name.data:
-        #             recipe_id = recipe_details[itr].get('id')
-        #             break
-        #         print(recipe_id)
-        #
-        #     print(recipeNameIdForm.recipe_name.data)
-        #     print("POST ")
-        #     print(recipe_id)
-        #     # single_ingredient_replacement(recipe_id)
-        #     # reurn redirect(url_for('single_ingredient_replacement'),recipe_id=recipe_id)
-
-        # print("recipe_details", recipe_details)
-
         user_profile_data = pd.read_json(session['data'])
 
         if user_profile_data is not False:
@@ -198,7 +173,7 @@ def display_recipe():
                 if recipe_details[itr].get('name') == recipeNameIdForm.recipe_name.data:
                     recipe_id = recipe_details[itr].get('id')
                     break
-
+            print(recipe_id)
             # single_ingredient_replacement(recipe_id)
             return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
             # return render_template('display_recipe.html', user_data=user_profile_data, recipe_details=recipe_details, form=recipeNameIdForm)
@@ -245,14 +220,34 @@ def recipe_recommendation():
             # ax.plot(x, np.sin(x))
             # fig.savefig('app/static/images/plot.png')
 
+            # Form and route to ignore Recipes from list
             ignore_form = IgnoreRecipeForm(request.form)
+            # Form for Ingredient Swap Page
+            recipeNameIdForm = ChooseRecipeToSubIngredients(request.form)
             if request.method == 'POST':
-                process_ignore_form(session, ignore_form)
-                # Render the Users Profile Page
-                return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignore_form)
+                # Ingredient Replacment Request
+                if recipeNameIdForm.recipe_name.data is not '':
+                    best_recipe_combo = user_meal_plan.recipe_id
+                    recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
+
+                    recipe_id = recipeNameIdForm.recipe_name.data
+                    for itr, details in enumerate(recipe_details):
+                        if recipe_details[itr].get('name') == recipeNameIdForm.recipe_name.data:
+                            recipe_id = recipe_details[itr].get('id')
+                            break
+
+                    # single_ingredient_replacement(recipe_id)
+                    return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
+                else:
+                    # Ignore ingredient request
+                    print("**TODO: Add user feedback taht ignore list was edited")
+                    # TODO: return indictaion that recipes were added to ignore and to click to regenrate plans
+                    # TODO: TODO clear input box after submit
+                    process_ignore_form(session, ignore_form)
+                    # Render the Users Profile Page
+                    return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignore_form, form2=recipeNameIdForm)
             else:
-                print(request.method)
-                return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignore_form)
+                return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignore_form, form2=recipeNameIdForm)
         else:
             # Render the New User SetUp page until they comlete prefernece
             return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros)
@@ -262,6 +257,7 @@ def recipe_recommendation():
 # TODO: visualizations
 @app.route('/single_ingredient_replacement/<recipe_id>', methods=['GET', 'POST'])
 def single_ingredient_replacement(recipe_id):
+    print("TODO: Add None option for user to change nothing with the suggested ingredients")
     if current_user.is_authenticated:
         user = current_user.username
         if pd.read_json(session['data']) is not False:
