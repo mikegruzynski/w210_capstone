@@ -221,8 +221,8 @@ def switch_out_ingredient(session, recipe_id, ingredientSubForm, switch_df, df_i
             break
 
     # Save new tag and ingredient information as varibales
-    new_NBD_tag = switch_df.tags[int(ingredientSubForm.replacemnetChoice.data)-1]
-    new_ingredient = switch_df.potential_switches[int(ingredientSubForm.replacemnetChoice.data)-1]
+    new_NBD_tag = switch_df.tags[int(ingredientSubForm.replacementChoice.data)-1]
+    new_ingredient = switch_df.potential_switches[int(ingredientSubForm.replacementChoice.data)-1]
     curr_recipe = recipe_details[recipe_itr]
 
     # Get Ingredients and tags of Current Recipe
@@ -245,6 +245,10 @@ def switch_out_ingredient(session, recipe_id, ingredientSubForm, switch_df, df_i
     # Replace With Updates: Save the Ingredient Updates to profileself.
     df_ingredient_NDB_mi = df_ingredient_NDB[df_ingredient_NDB.recipe_id != recipe_id]
     df_ingredient_NDB = pd.concat([df_ingredient_NDB_mi, df_ingredient_NDBi])
+    if 'level_0' in df_ingredient_NDB.columns:
+        df_ingredient_NDB.drop(columns=['level_0'], inplace=True)
     df_ingredient_NDB.reset_index(inplace=True)
+    if 'level_0' in df_ingredient_NDB.columns:
+        df_ingredient_NDB.drop(columns=['level_0'], inplace=True)
 
     return df_ingredient_NDB, df_ingredient_NDBi

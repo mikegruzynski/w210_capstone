@@ -14,16 +14,15 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 class Research(object):
     def __init__(self, profile_init):
-        path = '/Users/mauracullen/Documents/UCB_MIDS/W210_Capstone/w210_capstone/data/'
+        path = 'app/static/csv_files/'
         try:
-            with open(path + 'recipe/recipe_clean_USE.json') as f:
+            with open(path + 'recipe_clean_USE.json') as f:
                 self.recipe_clean = json.load(f)
         except:
-            with open(path + 'recipe/recipe_clean_USE.json') as f:
+            with open(path + 'recipe_clean_USE.json') as f:
                 self.recipe_clean = json.load(f)
-
         try:
-            self.df_pca = pd.read_csv(path + 'nutrient/compiled/pca_nutrition_normalized_minmax_df.csv')
+            self.df_pca = pd.read_csv(path+'nutrient/compiled/pca_nutrition_normalized_minmax_df.csv')
         except:
             self.df_pca = None
 

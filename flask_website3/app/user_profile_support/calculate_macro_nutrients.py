@@ -88,7 +88,7 @@ def get_macro_label_list(user_macro_choices):
             macro_list = all_list
             continue
         elif macro == 'None':
-            macro_list = None
+            macro_list = all_list
             continue
         elif macro == 'Protiens':
             macro_list = macro_list + ['protein']

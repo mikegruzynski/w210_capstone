@@ -1,8 +1,4 @@
 import pandas as pd
-# pd.set_option('display.height', 1000)
-# pd.set_option('display.max_rows', 500)
-# pd.set_option('display.max_columns', 500)
-# pd.set_option('display.width', 1000)
 
 class Macronutrients(object):
     def __init__(self, user_df):
