@@ -86,7 +86,7 @@ class IngredientSubForm(Form):
     ('16','Soups_Sauces_and_Gravies'), ('17','Spices_and_Herbs'),
     ('18','Sweets'), ('19','Vegetables_and_Vegetable')])
     # replacemnetChoice = StringField()
-    replacemnetChoice = RadioField('', choices=[('1','1'), ('2','2'), ('3','3')])
+    replacementChoice = RadioField('', choices=[('1', '1'), ('2','2'), ('3','3'), ('DNR', 'Do Not Replace')])
 
 class UserPreference(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)

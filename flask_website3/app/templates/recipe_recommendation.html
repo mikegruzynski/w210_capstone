@@ -78,6 +78,7 @@
 											{%endfor%}
 										</ul>
 								</div>
+								<h4><font color = "blue">{{update_text}}</font></h4>
 								<h5>Want to ignore one of these recipes an dremove it from the possible recipe suggestions? </h5>
 								<p>Please list recipe ID's you would like to see removed (separate by commas).</p>
 								<div class="inner">
@@ -96,7 +97,7 @@
 									<h5>Copy and Paste the Recipe Name and we will help suggest a replacement</h5>
 									<div class="inner">
 										<form method=post action="">
-												<p>{{ form2.recipe_name }}</p>
+												<p>{{ form2.recipe_name }} </p>
 										<p><input type=submit value="Subsitute Ingredients in this Recipe"></p>
 									</form>
 									</div>

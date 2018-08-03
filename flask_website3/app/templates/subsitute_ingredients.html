@@ -75,15 +75,23 @@
 								<p></p>
 								{% if display_bottom == True %}
 								<h4>Choose What you Would like to Replace the Ingredient With</h4>
-								<div style="float: left; width: 70%;">
+								<div style="float: left; width: 100%;">
 									<ol>
 										{% for choice in potential_switches %}
-										<p> <li>  {{ choice }}</li></p>
+										<li>  {{ choice }}</li>
 										{%endfor%}
-										{{ form.replacemnetChoice() }}
 									</ol>
+									{{form.replacementChoice()}}
+								</div>
+								{% for subfield in form.replacementChoice() %}
+								<div>
+										<tr>
+								        <td>{{ Hey }}</td>
+								        <td>{{ subfield.label }}</td>
+								    </tr>
+								</div>
+								{% endfor %}
 									<p></p>
-										Choose a Type of Food to Replace With (list below):
 											<p><input type=submit value="Replace Ingredient"></p>
 												<h3>See how the Ingredent change will effect your nutriet goals</h3>
 												<p>Note this image is a placeholder. Will be updated</p>
@@ -92,17 +100,15 @@
 									{% else %}
 										<h5>{{ msg_print }}</h5>
 									{% endif %}
-									
-								<section class="wrapper style1">
-										 <a href = "/user_profile" class="button">Back to User Profile</a>
-								</section>
-								</div>
-							</div>
-
+							<section class="wrapper style1">
+									 <a href = "/user_profile" class="button">Back to User Profile</a>
+							</section>
 							<p></p><p></p>
 							</form>
 
 
+						</div>
+					</div>
 			</div>
 	</body>
 </html>
