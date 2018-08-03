@@ -429,6 +429,7 @@ def pantry_recipe():
         msg = ''
         has_suggestions=False
         recipe_name_suggestion_list = []
+        remove_item = False
 
         # Get user profile data from session
         user_profile_data = pd.read_json(session['data'])
@@ -450,6 +451,7 @@ def pantry_recipe():
 
         # Get User Forms
         createPantryForm1 = createPantryForm(request.form)
+        removePantryItemsForm1 = removePantryItemsForm(request.form)
 
         # User add pantry data
         if request.method == 'POST':
@@ -461,8 +463,6 @@ def pantry_recipe():
                 pantry_exists=False
             pantry_items_list = pantry_items_list+[createPantryForm1.pantryItemList.data]
 
-            # TODO: Add option to remove item or pantry option
-
             # separate list of items into individual list items
             pantry_items_list_sep = []
             for item in pantry_items_list:
@@ -473,35 +473,51 @@ def pantry_recipe():
             while '' in pantry_items_list:
                 pantry_items_list.remove('')
             pantry_items_list = list(set(pantry_items_list))
+            print(type(pantry_items_list))
+            # Remove Items From Pantry
+            remove_list = []
+            print(removePantryItemsForm1.removePantryItems.data)
+            if len([removePantryItemsForm1.removePantryItems.data])>0:
+                for item in [removePantryItemsForm1.removePantryItems.data]:
+                    remove_list = remove_list+(item.split(", "))
+                    msg = 'Removed Item From Pantry'
+                remove_item = True
 
             # Save Pantry Updates
-            session['pantry_items_list'] = pantry_items_list
+            pantry_items_list = list(pantry_items_list)
+            try:
+                session['pantry_items_list'] = pantry_items_list
+            except:
+                print("*** ERRROR Saving Pantry list")
 
         # Get Recipes
-        if len(pantry_items_list) > 0:
-            pantry_exists=True
-            # Run pantry suggestion code here
-            try:
-                recipe_id_suggestion_list = get_pantry_suggetsions(user_profile_data, pantry_items_list, 5)
+        if remove_item is False:
+            if len(pantry_items_list) > 0:
+                pantry_exists=True
+                # Run pantry suggestion code here
+                try:
+                    recipe_id_suggestion_list = get_pantry_suggetsions(user_profile_data, pantry_items_list, 5)
 
-                # Process suggestions from input
-                recipe_details = get_recipe_details(recipe_id_suggestion_list, pd.read_json(session['data']))
-                recipe_name_suggestion_list = []
-                for itr, details in enumerate(recipe_details):
-                    recipe_name_suggestion_list.append(recipe_details[itr].get('name'))
-                has_suggestions = True
-                msg = ''
-                session['pantry_recipe_ids'] = recipe_name_suggestion_list
-            except:
-                has_suggestions = False
-                msg = 'We are sorry we did not find a recipe for your pantry. Update pantry and try again'
+                    # Process suggestions from input
+                    recipe_details = get_recipe_details(recipe_id_suggestion_list, pd.read_json(session['data']))
+                    recipe_name_suggestion_list = []
+                    for itr, details in enumerate(recipe_details):
+                        recipe_name_suggestion_list.append(recipe_details[itr].get('name'))
+                    has_suggestions = True
+                    msg = ''
+                    session['pantry_recipe_ids'] = recipe_name_suggestion_list
+                except:
+                    has_suggestions = False
+                    msg = 'We are sorry we did not find a recipe for your pantry. Update pantry and try again'
 
+            else:
+                pantry_exists=False
         else:
-            pantry_exists=False
+            pantry_exists=True
 
         # print(len(pantry_items_list), recipe_name_suggestion_list)
         print(pantry_items_list, recipe_name_suggestion_list,pantry_exists, has_suggestions,msg)
-        return render_template('pantry_recipe.html', pantry_items_list=pantry_items_list, recipe_name_suggestion_list=recipe_name_suggestion_list, form1=createPantryForm1, pantry_exists=pantry_exists, has_suggestions=has_suggestions, msg=msg)
+        return render_template('pantry_recipe.html', pantry_items_list=pantry_items_list, recipe_name_suggestion_list=recipe_name_suggestion_list, form1=createPantryForm1, form2=removePantryItemsForm1, pantry_exists=pantry_exists, has_suggestions=has_suggestions, msg=msg)
     else:
         return redirect(url_for('index'))
 

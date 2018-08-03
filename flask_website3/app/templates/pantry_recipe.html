@@ -105,7 +105,13 @@
 												<li> {{item}} </li>
 											{%endfor%}
 										</ul>
+										<form method=post action="">
+											<h4>To Remove Items prom pantry, list them below.</h4>
+											<p>{{ form2.removePantryItems(autocomplete="off") }} </p>
+											<p><input type=submit value="Remove Item(s) From Pantry"></p>
+										</form>
 								</div>
+
 							<!-- </div> -->
 						{% endif %}
 				</section>
