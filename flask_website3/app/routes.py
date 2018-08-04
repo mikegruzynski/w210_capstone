@@ -214,6 +214,7 @@ def recipe_recommendation():
         if user_profile_data is not False:
             user_meal_plan = return_user_meal_plan(session, user_profile_data, user)
             update_text = ''
+            
             #### Here is where plot needs to be called and saved off for jpg
             # fig = plt.figure()
             # ax = plt.axes()

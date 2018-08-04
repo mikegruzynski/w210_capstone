@@ -55,81 +55,82 @@
 		<div id="main">
 
 		<!-- Section -->
-			<section class="wrapper style1">
-				<div class="inner">
-					<!-- 2 Columns -->
-						<div class="flex flex-2">
-							<div class="col col1">
-								<div class="image round fit">
-									<a class="link"><img src="{{ url_for('static', filename='images/produce.jpg') }}" alt="" /></a>
-								</div>
-							</div>
-						<div class="col col2">
-							<h3>About Root Cellar</h3>
-								<p>Our goal is to make nutional at home meal planneing easy while reducing waste by using everything you purchase in your pantry</p>
-								<p>You tell us your food prefernces, dietary restictions and what you already have in the house and we will sugget a meal or meals that will work for you and tell you what ingredients you need to shop for </p>
-								<a href = "/about" class="button">Learn More</a>
+		<section class="wrapper style1">
+			<div class="inner">
+				<!-- 2 Columns -->
+					<div class="flex flex-2">
+						<div class="col col1">
+							<div class="image round fit">
+								<a class="link"><img src="{{ url_for('static', filename='images/produce.jpg') }}" alt="" /></a>
 							</div>
 						</div>
-					</div>
-				</section>
-
-		<!-- Section -->
-			<section class="wrapper style2">
-					<div class="inner">
-						<div class="flex flex-2">
-							<div class="col col2">
-								<h3>How does it work?!</h3>
-								<p>We will ask you to fill out preferneces survery and we will use thoughfully collected and powerful algorithms to suggest meals. We can even give recomendtaions for meals to have with leftover ingredients or items to swap out for things you do not like! </p>
-								<!-- Link to the part of about page with alg details -->
-								<a href = "/about" class="button">Get the Details</a>
-							</div>
-							<div class="col col1 first">
-								<div class="image round fit">
-									<a class="link"><img src="{{ url_for('static', filename='images/meal.jpg') }}" alt="" /></a>
-								</div>
-							</div>
+					<div class="col col2">
+						<h3>About Root Cellar</h3>
+							<p>Our goal is to make nutional, at-home meal planning easy while reducing waste by providing a detailed yet succint pantry.</p>
+							<p>You tell us your food preferences, dietary restictions, and general health habits, and we will sugget a meal or meals that will work for you!  Click here to learn more about the project.</p>
+							<a href = "/about" class="button">Learn More</a>
 						</div>
-					</div>
-				</section>
-
-
-			<!-- Section -->
-			<section class="wrapper style1">
-				<div class="inner">
-				<header class="align-center">
-					<!-- <h2>Example</h2> -->
-					<!-- <p>1. Give preferences</p>
-					<p>2. Tell us what you have</p>
-					<p>3. We will help you create the perfect healthy meal plans and make you're shopping list!</p> -->
-				</header>
-				<div class="flex flex-3">
-					<div class="col align-center">
-						<div class="image round fit">
-							<img src="{{ url_for('static', filename='images/shopping_bag.jpg') }}" alt="" />
-						</div>
-						<p>We promise to make the survey and boring preferneces part as easy as possible. We will Ask for a simple survey about your personal preferneces</p>
-						<!-- <a href = "https://goo.gl/forms/4vlsZmaRuwUcCiam2" class="button">Fill Out A Survey</a> -->
-					</div>
-					<div class="col align-center">
-						<div class="image round fit">
-							<img src="{{ url_for('static', filename='images/meal2.jpg') }}" alt="" />
-						</div>
-						<p>Although we want to suggest meals which are healthy and nutionally balanced, our real focus is taste.</p>
-						<!-- See for yourself! -->
-						<!-- <a class="button">What We Have Cooking</a> -->
-					</div>
-					<div class="col align-center">
-						<div class="image round fit">
-							<img src="{{ url_for('static', filename='images/dashboard.jpg') }}" alt="" />
-						</div>
-						<p>We will take your input and give you an easy to understand dashboard of nutrients, meals and shopping suggetsions!</p>
-						<!-- <a href ="/user_profile" class="button">See Sample User Profile</a> -->
 					</div>
 				</div>
+			</section>
+
+			<!-- Section -->
+				<section class="wrapper style2">
+						<div class="inner">
+							<div class="flex flex-2">
+								<div class="col col2">
+									<h3>How does it work?!</h3>
+									<p>With your input and our initial database of recipes and nutritional information, we leverage a series of models to not only classify recipes but also
+										provide the recommendations and recipe substitions. Click here to learn more about the model development and what runs behind the scenes! </p>
+									<!-- Link to the part of about page with alg details -->
+									<a href = "/about" class="button">Get the Details</a>
+								</div>
+								<div class="col col1 first">
+									<div class="image round fit">
+										<a class="link"><img src="{{ url_for('static', filename='images/meal.jpg') }}" alt="" /></a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+
+					<!-- Section -->
+					<section class="wrapper style1">
+						<div class="inner">
+						<header class="align-center">
+							<!-- <h2>Example</h2> -->
+							<!-- <p>1. Give preferences</p>
+							<p>2. Tell us what you have</p>
+							<p>3. We will help you create the perfect healthy meal plans and make you're shopping list!</p> -->
+						</header>
+						<div class="flex flex-3">
+							<div class="col align-center">
+								<div class="image round fit">
+									<img src="{{ url_for('static', filename='images/shopping_bag.jpg') }}" alt="" />
+								</div>
+								<p>We promise to make the survey and boring preferneces part as easy as possible. We will Ask for a simple survey about your personal preferneces</p>
+								<!-- <a href = "https://goo.gl/forms/4vlsZmaRuwUcCiam2" class="button">Fill Out A Survey</a> -->
+							</div>
+							<div class="col align-center">
+								<div class="image round fit">
+									<img src="{{ url_for('static', filename='images/meal2.jpg') }}" alt="" />
+								</div>
+								<p>Although we want to suggest meals which are healthy and nutionally balanced, our real focus is taste.</p>
+								<!-- See for yourself! -->
+								<!-- <a class="button">What We Have Cooking</a> -->
+							</div>
+							<div class="col align-center">
+								<div class="image round fit">
+									<img src="{{ url_for('static', filename='images/dashboard.jpg') }}" alt="" />
+								</div>
+								<p>We will take your input and give you an easy to understand dashboard of nutrients, meals and shopping suggetsions!</p>
+								<!-- <a href ="/user_profile" class="button">See Sample User Profile</a> -->
+							</div>
+						</div>
+					</div>
+				</section>
 			</div>
-		</section>
-	</div>
+
 
 
 	<!-- Footer -->

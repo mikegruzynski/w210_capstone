@@ -79,16 +79,30 @@
 										</ul>
 								</div>
 								<h4><font color = "blue">{{update_text}}</font></h4>
-								<h5>Want to ignore one of these recipes an dremove it from the possible recipe suggestions? </h5>
+								<h5>Want to ignore one of these recipes and remove it from the possible recipe suggestions? </h5>
 								<p>Please list recipe ID's you would like to see removed (separate by commas).</p>
 								<div class="inner">
 									<form method=post action="">
 											{{ ignore_form.ignore_list }}
 								</div>
 									<p><input type=submit value="Ignore Recipes Listed"></p>
-									<a href = "/rerun_recipe_plan" class="button">Re-Do Recipe Plan</a>
+									<a href = "/rerun_recipe_plan" class="button">Create a New Recipe Plan</a>
 									<a href = "/recipe_center" class="button">See My Recipes</a>
 									<!-- <a href = "/display_recipe" class="button">See My Recipes</a> -->
+
+
+									<div style="float: left; width: 50%;">
+										<img src="{{ url_for('static', filename='images/plot.png') }}"/>
+									</div>
+
+									<div style="float: right; width: 50%;">
+										<img src="{{ url_for('static', filename='images/plot.png') }}"/>
+									</div>
+
+									<br>
+									<br>
+									<p></p>
+
 								</form>
 									<p></p>
 									<h4></h4>
@@ -105,19 +119,6 @@
 								</div>
 							</div>
 						</div>
-
-
-						<div style="float: left; width: 50%;">
-							<img src="{{ url_for('static', filename='images/plot.png') }}"/>
-						</div>
-
-						<div style="float: right; width: 50%;">
-							<img src="{{ url_for('static', filename='images/plot.png') }}"/>
-						</div>
-
-						<br>
-						<br>
-						<p></p>
 
 						<!-- <section class="wrapper">
 							<div class="inner">
