@@ -8,7 +8,7 @@ from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
 from app.user_profile_support.get_recipe_center_data import *
-from app.user_profile_support.run_pantry_suggestion import get_pantry_suggetsions
+
 import numpy as np
 # import matplotlib
 # matplotlib.use('Agg')
@@ -289,7 +289,6 @@ def recipe_recommendation():
             return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros)
         return redirect(url_for('index'))
 
-
 # TODO: visualizations
 @app.route('/single_ingredient_replacement/<recipe_id>', methods=['GET', 'POST'])
 def single_ingredient_replacement(recipe_id):
@@ -302,6 +301,7 @@ def single_ingredient_replacement(recipe_id):
             best_recipe_combo = user_meal_plan.recipe_id
 
             # Get input Form from models for html
+            choices = ['one','two', 'three']
             ingredientSubForm = IngredientSubForm(request.form)
             recipe_id_exp = "RECIPE_"+str(recipe_id) # Recipe User is choosing to Edit
 

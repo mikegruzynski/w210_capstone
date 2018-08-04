@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from app import app, db
 from app.user_profile_support.rootseller import rootprofile, recipes, models
 
 # Run the Pantry Suggetion code
@@ -11,7 +12,6 @@ def get_pantry_suggetsions(user_profile_data, ingredient_list, num_suggested_rec
     profile_init = rootprofile.UserProfile(user_profile_data)
     recipe_init = recipes.Recipes(profile_init)
     model_init = models.Models(recipe_init)
-
 
     ## Virtual Pantry to recipe suggestion
     # ingredient_list = ['12 large egg', '12 oz mayonnaise', '12 oz BBQ Sauce', '24 oz mustard', '6 skinless chicken breast',

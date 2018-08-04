@@ -1,8 +1,9 @@
-from app import db
+from app import app, db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import login
 from wtforms import Form, FloatField, StringField, SelectField, RadioField #, validators,
+from app.user_profile_support.ingredientSubsitutions import get_potential_switch_choices
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -76,6 +77,8 @@ class IgnoreRecipeForm(Form):
     ignore_list = StringField()
 
 class IngredientSubForm(Form):
+    choices = get_potential_switch_choices()
+    print(choices)
     ingredientSub = StringField()
     # foodType = StringField()
     foodType = SelectField('type', choices=[('1','Baked'), ('2','Beef'),
@@ -86,7 +89,7 @@ class IngredientSubForm(Form):
     ('16','Soups_Sauces_and_Gravies'), ('17','Spices_and_Herbs'),
     ('18','Sweets'), ('19','Vegetables_and_Vegetable')])
     # replacemnetChoice = StringField()
-    choices = ['a thing', 'aNOTHER THING thing', 'last']
+    # choices = ['Subsitute 1', 'Subsitute 2', 'Subsitute 3']
     replacementChoice = RadioField('', choices=[('1', choices[0]), ('2',choices[1]), ('3',choices[2]), ('DNR', 'Do Not Replace')])
 
 class UserPreference(db.Model, UserMixin):
