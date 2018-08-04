@@ -46,7 +46,7 @@
 						<!-- 2 Columns -->
 							<div class="flex flex-1">
 							<div class="col col1">
-								<h1>{{ user_data.firstname.values[0] }}'s Recipe Plan</h1>
+								<h1>Pantry Recipe Suggetsions</h1>
 								<h1></h1>
 									<ul>
 										{% for recipe in recipe_details %}
@@ -55,14 +55,7 @@
 									</ul>
 								</div>
 							</div>
-
-							<h4>Want to Subsitute an Ingredient in any of these Recipes?</h4>
-							<h5>We can do that for you. Enter the Name of the Recipe you would like to start with</h5>
-							<form method=post action="">
-									{{form.recipe_name}}
-									<p></p> <p></p>
-									<input type=submit value="Subsitute Ingredients in this Recipe">
-							</form>
+              <a href = "/pantry_recipe" class="button">Back to Pantry</a>
 								<p></p><p></p><p></p><p></p>
 								<div style="float: left; width: 100%;">
 											{% for recipe in recipe_details %}
@@ -80,8 +73,8 @@
 											{%endfor%}
        <p></p>
 				<!-- {{ ingredient_list }} -->
-
-			 <a href = "/user_profile" class="button">Back to User Profile</a>
+        <a href = "/recipe_center" class="button">Back to Recipe Center</a>
+  			 <a href = "/user_profile" class="button">Back to User Profile</a>
 
 			</div>
 	</body>

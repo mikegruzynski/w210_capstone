@@ -84,17 +84,50 @@
 												<li>  <a href = "https://ndb.nal.usda.gov/ndb/nutrients/index"> https://ndb.nal.usda.gov/ndb/nutrients/index </a> </li>
 											</ul>
 											<li> Recipes </li>
+											<ul>
+												<li> <a> Insert Anjali's Link </a></li>
+											</ul>
 										</ul>
 
 										<li><strong>Algorthims and elements of Data Science Used</strong></li>
-											<p>Insert here about optimization and classification algorithm</p>
+										
+										<ul style="list-style-type:circle">
+												<li> Data ETL </li>
+												<ul>
+													<li> Recipes have fuzzy language for recipes.  Lack of consistency in measurements, ingredients, etc. make linkage
+														to nutritional database hard if the recipe format was not standard.
+													</li>
+												</ul>
+												<li> Principal Component Analysis (PCA)</li> 
+													<ul>
+														<li> Helps understand the different nutritional space categories of food i.e beef vs chicken vs legumes vs fruits, etc., 
+															based on nuritional features.
+														</li>
+													</ul>
+												<li> Neural Net - CBOW</li> 
+													<ul>
+														<li> Used for ingredient linkage to data.gov nutrition database.</li>
+														<li> We attempted to use linear and nonlinear machine learning alorithms 
+																(logistic regression, random forests, SVM, gradient boost) to link an ingredient item to the database
+																ingredient list sentence was very non linear (i.e. asparagus washed in water, chicken with skin on, skinless boneless chicken…) 
+																and all machine learning algorithms were getting an accuracy around ~80%.			
+														</li>
+														<li> CBOW neural net helped push accuracy of predicting recipes to 95 percent </li>
+														<li> When recipe fails tag in CBOW-NN it fails softer than linear models and stays within a similar category.</li>
+													</ul>												
+												<li> Archive-based Micro Genetic Algorithm (AMGA) </li> 
+													<ul>
+														<li> For multi-objective optimization (i.e. optimize loss function of important macro and micronutrients).  </li>
+														<li> Input of the user is how many meals a week do you want the algorithm to feed you.</li>
+														<li> After recipe filter is applied (removes recent recipes and food items you don't like) it will go through and optimize loss function of combination of recipes that make up your meal plan. </li>
+														<li> Genetic algorithm was used because it was a discrete mathematical space with many different combinations of recipes.  </li>
+													</ul>	
+										</ul>
 
-										<li>User Feedback</li>
-
+										<li><strong>User Feedback</strong></li>
+										
+										<ul style="list-style-type:circle">
 											<p>Insert here about Mechanical Turk etc.</p>
-
-										<li>Food Waste info (?) - Drive home the problem we are trying to solve</li>
-									</ul>
 
 								</div>
 								<div class="col col1 first">
@@ -103,13 +136,17 @@
 									</div>
 								</div>
 							</div>
-							<p>We hope this impact project impacts:</p>
+							<p><strong> Hope this impact project impacts:</strong></p>
 							<ul>
-								<li>Enable consumers to efficiently find recipes and create meals that maximize nutrients and taste preferences based on items in their pantry</li>
-								<li>Reduce food waste by building a meal plan that optimizes utilization of ingredients in their pantry and supplements with e-grocery cart</li>
-								<li>Aid education and research as a tool to study how different diets and individual food plans alter when changing macro nutrients and quantities</li>
-								<li>Assist restaurants, caterers, and other industry players as a tool to create seasonal menus</li>
-								<li>Enable Health Care Practictioners to monitor patients nutrient intake and suggest potential options to redirect patients</li>
+								<li>Why pay a broker for recipe suggsestions that don't fit in your nutritional space?  Services like Blue Apron and Hello Fresh
+									produce lower quality items and recipes that are not optimized for individual needs.  Root Cellar automatically chooses a meal plan and aggregated
+									food list so you don't have to think about what to buy and how much of it.
+								</li>
+								<li> Enable consumers to efficiently find recipes and create meals that maximize nutrients and taste preferences based on survey information.</li>
+								<li>Reduce food waste by building a meal plan that optimizes utilization of ingredients in their pantry and supplements with e-grocery cart.</li>
+								<li>Aid education and research as a tool to study how different diets and individual food plans alter when changing macro nutrients and quantities.</li>
+								<li>Assist restaurants, caterers, and other industry players as a tool to create seasonal menus.</li>
+								<li>Enable Health Care Practictioners to monitor patients nutrient intake and suggest potential options to redirect patients.</li>
 							</ul>
 						</div>
 					</section>
