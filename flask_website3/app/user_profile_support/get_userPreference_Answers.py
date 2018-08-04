@@ -34,7 +34,7 @@ def get_userPreferences(user):
       'First Name': 'firstname',
       'Last Name': 'lastname',
       'Are you Pregnant or Breastfeeding ': 'is_pregnant_breastfeeding',
-      'What is youxr current / aspired diet type? (Pick the one that most applies to you)': 'diet',
+      'What is your current / aspired diet type? (Pick the one that most applies to you)': 'diet',
       'What is your gender?': 'gender',
       'What is your height (in inches)?': 'height_in',
       'What is your weight (in lbs)?': 'weight_lb',

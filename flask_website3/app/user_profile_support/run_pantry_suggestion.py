@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from app import app, db
 from app.user_profile_support.rootseller import rootprofile, recipes, models
 
 # Run the Pantry Suggetion code

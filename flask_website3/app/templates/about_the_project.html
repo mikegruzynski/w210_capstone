@@ -64,33 +64,35 @@
 										<ul style="list-style-type:circle">
 											<li> Macronutrients </li>
 											<ul>
-												<li> <a href="https://mybodymykitchen.com"> https://mybodymykitchen.com </a> </li>
-												<li> <a href="https://www.healthline.com"> https://www.healthline.com </a> </li>
-												<li> <a href="https://www.livestrong.com"> https://www.livestrong.com </a> </li>
-												<li> <a href="http://healthyeating.sfgate.com"> http://healthyeating.sfgate.com</a> </li>
-												<li> <a href="https://www.today.com"> https://www.today.com </a> </li>
-												<li> <a href="https://bmi-calories.com"> https://bmi-calories.com </a> </li>
+												<li> <a href="https://mybodymykitchen.com"><font color='blue'> <u>https://mybodymykitchen.com </u></font> </a> </li>
+												<li> <a href="https://www.healthline.com"> <font color='blue'> <u>https://www.healthline.com </u></font></a> </li>
+												<li> <a href="https://www.livestrong.com"><font color='blue'> <u>https://www.livestrong.com </u></font></a> </li>
+												<li> <a href="http://healthyeating.sfgate.com"> <font color='blue'> <u>http://healthyeating.sfgate.com </u></font></a> </li>
+												<li> <a href="https://www.today.com"> <font color='blue'> <u> https://www.today.com </u></font></a> </li>
+												<li> <a href="https://bmi-calories.com"><font color='blue'> <u> https://bmi-calories.com </u></font></a> </li>
 											</ul>
 											<li> Micronutrients </li>
 											<ul>
-												<li> <a href = "https://medlineplus.gov"> https://medlineplus.gov </a> </li>
-												<li> <a href="https://www.webmd.com"> https://www.webmd.com </a> </li>
-												<li> <a href="https://draxe.com"> https://draxe.com </a> </li>
-												<li> <a href="https://www.ncbi.nlm.nih.gov"> https://www.ncbi.nlm.nih.gov </a> </li>
-												<li> <a href = "http://eschooltoday.com"> http://eschooltoday.com </a> </li>
+												<li> <a href = "https://medlineplus.gov"> <font color='blue'> <u> https://medlineplus.gov </u></font></a> </li>
+												<li> <a href="https://www.webmd.com"> <font color='blue'> <u>  https://www.webmd.com </u></font></a> </li>
+												<li> <a href="https://draxe.com"><font color='blue'> <u> https://draxe.com </u></font></a> </li>
+												<li> <a href="https://www.ncbi.nlm.nih.gov"> <font color='blue'> <u> https://www.ncbi.nlm.nih.gov </u></font> </a> </li>
+												<li> <a href = "http://eschooltoday.com"> <font color='blue'> <u> http://eschooltoday.com </u></font></a> </li>
 											</ul>
 											<li> Nutritional Database </li>
 											<ul>
-												<li>  <a href = "https://ndb.nal.usda.gov/ndb/nutrients/index"> https://ndb.nal.usda.gov/ndb/nutrients/index </a> </li>
+												<li>  <a href = "https://ndb.nal.usda.gov/ndb/nutrients/index"><font color='blue'> <u>  https://ndb.nal.usda.gov/ndb/nutrients/index </u></font></a> </li>
 											</ul>
 											<li> Recipes </li>
 											<ul>
-												<li> <a> Insert Anjali's Link </a></li>
+												<li> <a href = "https://github.com/tabatkins/recipe-db"> <font color='blue'> <u> https://github.com/tabatkins/recipe-db </u></font> </a></li>
+												<li> <a href = "https://www.epicurious.com/"> <font color='blue'> <u> https://www.epicurious.com/ </u></font> </a></li>
+												<li> <a href = "https://www.allrecipes.com/"> <font color='blue'> <u> https://www.allrecipes.com/ </u></font> </a></li>
 											</ul>
 										</ul>
 
 										<li><strong>Algorthims and elements of Data Science Used</strong></li>
-										
+
 										<ul style="list-style-type:circle">
 												<li> Data ETL </li>
 												<ul>
@@ -98,37 +100,43 @@
 														to nutritional database hard if the recipe format was not standard.
 													</li>
 												</ul>
-												<li> Principal Component Analysis (PCA)</li> 
+												<li> Principal Component Analysis (PCA)</li>
 													<ul>
-														<li> Helps understand the different nutritional space categories of food i.e beef vs chicken vs legumes vs fruits, etc., 
+														<li> Helps understand the different nutritional space categories of food i.e beef vs chicken vs legumes vs fruits, etc.,
 															based on nuritional features.
 														</li>
 													</ul>
-												<li> Neural Net - CBOW</li> 
+												<li> Neural Net - CBOW</li>
 													<ul>
 														<li> Used for ingredient linkage to data.gov nutrition database.</li>
-														<li> We attempted to use linear and nonlinear machine learning alorithms 
+														<li> We attempted to use linear and nonlinear machine learning alorithms
 																(logistic regression, random forests, SVM, gradient boost) to link an ingredient item to the database
-																ingredient list sentence was very non linear (i.e. asparagus washed in water, chicken with skin on, skinless boneless chicken…) 
-																and all machine learning algorithms were getting an accuracy around ~80%.			
+																ingredient list sentence was very non linear (i.e. asparagus washed in water, chicken with skin on, skinless boneless chicken…)
+																and all machine learning algorithms were getting an accuracy around ~80%.
 														</li>
 														<li> CBOW neural net helped push accuracy of predicting recipes to 95 percent </li>
 														<li> When recipe fails tag in CBOW-NN it fails softer than linear models and stays within a similar category.</li>
-													</ul>												
-												<li> Archive-based Micro Genetic Algorithm (AMGA) </li> 
+													</ul>
+												<li> Archive-based Micro Genetic Algorithm (AMGA) </li>
 													<ul>
 														<li> For multi-objective optimization (i.e. optimize loss function of important macro and micronutrients).  </li>
 														<li> Input of the user is how many meals a week do you want the algorithm to feed you.</li>
 														<li> After recipe filter is applied (removes recent recipes and food items you don't like) it will go through and optimize loss function of combination of recipes that make up your meal plan. </li>
 														<li> Genetic algorithm was used because it was a discrete mathematical space with many different combinations of recipes.  </li>
-													</ul>	
+													</ul>
 										</ul>
 
 										<li><strong>User Feedback</strong></li>
-										
-										<ul style="list-style-type:circle">
-											<p>Insert here about Mechanical Turk etc.</p>
 
+										<ul style="list-style-type:circle">
+											<li> Team completed user evaluations at the onset of the project to to steer product development and goals.</li>
+											<li> These initial user evaluations shifted focus to value nutrition and meal planning from price and budgeting and led to a
+												focus on implementing a system with low start-up and maintenance costs. </li>
+											<li> Over the course of MVP and UI development, the team has conducted (and continues to conduct) additional user evaluations to test the UI and models.</li>
+											<li> These user tests have helped identify opportunities to streamline UI to make it more intuitive for users as well as identified opportunities to
+												improve the underlying model and features.  </li>
+											<li>  Users like the ability to customize their meal planning to their dietary needs and health requirements and are also excited by having everything (recipe, shopping cart, etc.) in one place.</li>
+										</ul>
 								</div>
 								<div class="col col1 first">
 									<div class="image round fit">
@@ -137,7 +145,7 @@
 								</div>
 							</div>
 							<p><strong> Hope this impact project impacts:</strong></p>
-							<ul>
+							<ul style="list-style-type:circle">
 								<li>Why pay a broker for recipe suggsestions that don't fit in your nutritional space?  Services like Blue Apron and Hello Fresh
 									produce lower quality items and recipes that are not optimized for individual needs.  Root Cellar automatically chooses a meal plan and aggregated
 									food list so you don't have to think about what to buy and how much of it.
@@ -161,33 +169,36 @@
 							<div class="flex flex-4">
 								<div class="col align-center">
 									<div class="image round fit">
-										<img src="{{ url_for('static', filename='images/pic03.jpg') }}" alt="" />
+										<img src="{{ url_for('static', filename='images/anjali.jpg') }}" alt="" />
 									</div>
-									<p>Anjali Kayal</p>
+									<p><strong>Anjali Kayal</strong></p>
 									<p>blah blah blah </p>
-									<a href="#" class="button">LinkedIn</a>
+									<a href="https://www.linkedin.com/in/anjalikayal/" class="button">LinkedIn</a>
 								</div>
 								<div class="col align-center">
 									<div class="image round fit">
 										<img src="{{ url_for('static', filename='images/pic05.jpg') }}" alt="" />
 									</div>
-									<p>Mike Gruzinski</p>
+									<p><strong>Mike Gruzinski</strong></p>
 									<p>blah blah blah </p>
 									<a href="#" class="button">LinkedIn</a>
 								</div>
 								<div class="col align-center">
 									<div class="image round fit">
-										<img src="{{ url_for('static', filename='images/pic04.jpg') }}" alt="" />
+										<img src="{{ url_for('static', filename='images/max.jpg') }}" alt="" />
 									</div>
-									<p>Max Lee</p>
-									<p>blah blah blah </p>
-									<a href="#" class="button">LinkedIn</a>
+									<p><strong>Max Lee</strong></p>
+
+									<p>After graduation from Rice University with a Masters of Statistics, Max joined Bank of America Merrill Lynch as a trader on the commodity index desk.  He now leads the delta 1
+											trading team with a focus on commodity futures and options as well as FX forwards and futures. </p>
+
+
 								</div>
 								<div class="col align-center">
 									<div class="image round fit">
 										<img src="{{ url_for('static', filename='images/pic04.jpg') }}" alt="" />
 									</div>
-									<p>Maura Cullen</p>
+									<p><strong>Maura Cullen</strong></p>
 									<p>blah blah blah </p>
 									<a href="#" class="button">LinkedIn</a>
 								</div>
