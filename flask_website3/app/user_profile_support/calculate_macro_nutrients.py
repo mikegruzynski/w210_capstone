@@ -1,6 +1,7 @@
 import pandas as pd
 
 def calculate_macros(user_profile_data):
+    print("\n**Calculate Macros")
     # user_profile_dict - contains the users information
     # return macors_dictionary for user
     height = int(user_profile_data.height_in.values[0])

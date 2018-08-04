@@ -8,7 +8,7 @@ from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
 from app.user_profile_support.get_recipe_center_data import *
-from app.user_profile_support.run_pantry_suggestion import get_pantry_suggetsions
+
 import numpy as np
 # import matplotlib
 # matplotlib.use('Agg')
@@ -28,70 +28,122 @@ def about():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    msg = ""
+    print("Login")
+    print("is authenticated", current_user.is_authenticated)
     if current_user.is_authenticated:
         return redirect(url_for('user_profile'))
     form = LoginForm()
+    print("Login page")
     if form.validate_on_submit():
+        print(form.username.data)
         user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
-            return redirect(url_for('login'))
-        login_user(user, remember=form.remember_me.data)
+        print("user", user)
+        # print(user.check_password(form.password.data))
+        try:
+            if user is None or not user.check_password(form.password.data):
+                print("Not Valid")
+                msg = "We did not recognize your username. Please try again or go to regsitration page to register."
+                flash('Invalid username or password')
+                return render_template('login.html', title='Sign In', form=form, msg=msg)
+            login_user(user, remember=form.remember_me.data)
+        except:
+            msg = "We did not recognize your username. Please try again or go to regsitration page to register."
+            return render_template('login.html', title='Sign In', form=form, msg=msg)
+
         return redirect(url_for('user_profile'))
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template('login.html', title='Sign In', form=form, msg=msg)
 
 
 @app.route('/logout',  methods=['GET', 'POST'])
 def logout():
     logout_user()
     print(session.keys())
-    session.pop('data', None)
-    session.pop('ignore_list', None)
-    session.pop('user_id', None)
-    session.pop('user_meal_plan', None)
-    session.pop('micros', None)
-    session.pop('macros', None)
-    session.pop('df_ingredient_NDB', None)
-
+    if 'data' in session.keys():
+        session.pop('data', None)
+    if 'ignore_list' in session.keys():
+        session.pop('ignore_list', None)
+    if 'user_id' in session.keys():
+        session.pop('user_id', None)
+    if 'user_meal_plan' in session.keys():
+        session.pop('user_meal_plan', None)
+    if 'micros' in session.keys():
+        session.pop('micros', None)
+    if 'macros' in session.keys():
+        session.pop('macros', None)
+    if 'df_ingredient_NDB' in session.keys():
+        session.pop('df_ingredient_NDB', None)
+    if 'pantry_items_list' in session.keys():
+        session.pop('pantry_items_list', None)
+    if 'pantry_recipe_ids' in session.keys():
+        session.pop('pantry_recipe_ids', None)
+    if 'switch_df_temp' in session.keys():
+        session.pop('switch_df_temp', None)
     return redirect(url_for('index'))
 
 # User Registraions
 # TODO: clear form data after registration
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('user_profile'))
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('user_profile'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        login_user(user)
-        return redirect(url_for('user_profile'))
+        try:
+            print("Try Register")
+            user = User(username=form.username.data, email=form.email.data)
+            print(user)
+            user.authenticated=True
+            print("User is authenticated")
+            user.set_password(form.password.data)
+            db.session.add(user)
+            print("User is added to session")
+            db.session.commit()
+            print("User is comitted to session")
+            flash('Congratulations, you are now a registered user!')
+
+            login_user(user)
+            print("User Logged in")
+            return redirect(url_for('user_profile'))
+        except:
+            print("ERROR")
+            db.session.rollback()
+            msg = "We apologize, There has been an error with Regsitraion. Please Try again"
+
     return render_template('register.html', title='Register', form=form)
 
 
 # User Prefernce Survey
 @app.route('/preference_survey')
 def preference_survey():
-   return render_template('survey.html', title='Preferences')
+    print(current_user.is_authenticated)
+    if current_user.is_authenticated:
+        user = current_user.username
+        print(user)
+        return render_template('survey.html', title='Preferences', user=user)
+    else:
+        return redirect(url_for('register'))
 
 
 # Render User Profile page
 @app.route('/user_profile', methods=['GET', 'POST'])
 def user_profile():
+    print(current_user.is_authenticated)
     if current_user.is_authenticated:
         user = current_user.username
-
         if 'data' not in session.keys():
+            print("Data is not in session keys")
             # Get user prefernces from form if the session dat ahas not yet been populated
-            data = get_userPreferences(user)
+            try:
+                data = get_userPreferences(user)
+            except:
+                data = False
             if data is not False:
                 session['data'] = data.to_json()
+            print('data' in session.keys())
 
         if 'data' in session.keys():
+            print("Data is in session keys")
             user_profile_data = pd.read_json(session['data'])
 
             # Calculate or Load Micro and Macros for the User
@@ -101,13 +153,15 @@ def user_profile():
                 micros = get_micro_nutrients(session)
             macros = pd.read_json(session['macros'])
             micros = pd.read_json(session['micros'])
-
+            print("Micros and Macros Calculated")
             # Check if Recipe Suggestions have been created for the user
             # If not, calclate and pass to profile to list
+
             if 'user_meal_plan' not in session.keys():
+                print("user_meal_plan not in keys")
                 best_recipe_combo, weekly_diet_amount, user_profile_data, df_ingredient_NDB = get_recipe_list(session, user)
             user_meal_plan = pd.read_json(session['user_meal_plan'])
-
+            print("user_meal_plan calculated")
             # Check to make sure recipes are not in the ignore list
             ignore_list = get_user_ignore_responses(user_profile_data, user)
             while any(np.intersect1d(ignore_list, user_meal_plan.recipe_id)):
@@ -118,18 +172,23 @@ def user_profile():
             # micros_form = InputMicroNutrientsForm(request.form)
 
             if request.method == 'POST':
+                print("POST ")
                 macros, micros = process_nutrient_edit_form(macros_form.data, micros_form.data, macros, micros)
                 # Save micro and Macro edited list for later fram
                 session['macros'] = pd.DataFrame(macros).to_json()
                 session['micros'] = pd.DataFrame(micros, index=[0]).to_json()
+
                 # Render the Users Profile Page
                 return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.values)
             else:
+                print(request.method)
                 return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros, user_meal_plan=user_meal_plan.values)
         else:
+            print("data does not exist ")
+            print(session.keys())
             # Render the New User Landing page until they complete Preferneces Survey
             return render_template('userProfile_new.html', title="User Preferneces", user=user)
-        return redirect(url_for('index'))
+    return redirect(url_for('index'))
 
 
 ## Recipe Center ----------------------------------------------
@@ -162,40 +221,14 @@ def recipe_center():
 def display_recipe():
     if current_user.is_authenticated:
         user = current_user.username
+        user_profile_data = pd.read_json(session['data'])
+        pantry_recipe_ids = session['pantry_recipe_ids']
+        best_recipe_combo = []
+        for id in pantry_recipe_ids:
+            best_recipe_combo.append("RECIPE_"+str(id))
 
-        recipeNameIdForm = ChooseRecipeToSubIngredients(request.form)
-        if request.method == 'POST':
-
-            user_profile_data = pd.read_json(session['data'])
-            user_meal_plan = pd.read_json(session['user_meal_plan'])
-            best_recipe_combo = user_meal_plan.recipe_id
-            recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
-
-            for itr, details in enumerate(recipe_details):
-                if recipe_details[itr].get('name') == recipeNameIdForm.recipe_name.data:
-                    recipe_id = recipe_details[itr].get('id')
-                    break
-
-            # single_ingredient_replacement(recipe_id)
-            return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
-        else:
-            user_profile_data = pd.read_json(session['data'])
-            if user_profile_data is not False:
-                # Get Recipes, ingredients and instructions
-                # try:
-                user_meal_plan = pd.read_json(session['user_meal_plan'])
-                best_recipe_combo = user_meal_plan.recipe_id
-                recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
-                # except:
-                #     recipe_details = []
-                # print("recipe Details")
-                # print(len(recipe_details), type(recipe_details))
-                # print(recipe_details[0].get('name'))
-                # print(recipe_details[0].get('id'))
-                # for pos in recipe_details:
-                #     print(pos)
-
-            return render_template('display_recipe.html', user_data=user_profile_data, recipe_details=recipe_details, form=recipeNameIdForm)
+        recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
+        return render_template('display_recipe.html', user_data=user_profile_data, recipe_details=recipe_details)
     else:
         # Render the New User SetUp page until they comlete prefernece
         return render_template('userProfile_existing.html', title="User Profile",
@@ -212,9 +245,9 @@ def recipe_recommendation():
 
         user_profile_data = pd.read_json(session['data'])
         if user_profile_data is not False:
-            user_meal_plan = return_user_meal_plan(session, user_profile_data, user)
+            user_meal_plan = return_user_meal_plan(session, user_profile_data, user=user)
             update_text = ''
-            
+
             #### Here is where plot needs to be called and saved off for jpg
             # fig = plt.figure()
             # ax = plt.axes()
@@ -256,7 +289,6 @@ def recipe_recommendation():
             return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros)
         return redirect(url_for('index'))
 
-
 # TODO: visualizations
 @app.route('/single_ingredient_replacement/<recipe_id>', methods=['GET', 'POST'])
 def single_ingredient_replacement(recipe_id):
@@ -269,6 +301,7 @@ def single_ingredient_replacement(recipe_id):
             best_recipe_combo = user_meal_plan.recipe_id
 
             # Get input Form from models for html
+            choices = ['one','two', 'three']
             ingredientSubForm = IngredientSubForm(request.form)
             recipe_id_exp = "RECIPE_"+str(recipe_id) # Recipe User is choosing to Edit
 
@@ -443,9 +476,9 @@ def pantry_recipe():
             pantry_items_list = []
 
         # Check for existing pantry suggetsions
-        if 'pantry_recipe_ids' in session.keys():
-            pantry_recipe_ids = session['pantry_recipe_ids']
-            if len(pantry_recipe_ids)> 0:
+        if 'pantry_recipe_names' in session.keys():
+            pantry_recipe_names = session['pantry_recipe_names']
+            if len(pantry_recipe_names)> 0:
                 has_suggestions = True
             else:
                 has_suggestions = False
@@ -491,30 +524,33 @@ def pantry_recipe():
                 print("*** ERRROR Saving Pantry list")
 
         # Get Recipes
-        if remove_item is False:
-            if len(pantry_items_list) > 0:
-                pantry_exists=True
-                # Run pantry suggestion code here
-                try:
-                    recipe_id_suggestion_list = get_pantry_suggetsions(user_profile_data, pantry_items_list, 5)
-
-                    # Process suggestions from input
-                    recipe_details = get_recipe_details(recipe_id_suggestion_list, pd.read_json(session['data']))
-                    recipe_name_suggestion_list = []
-                    for itr, details in enumerate(recipe_details):
-                        recipe_name_suggestion_list.append(recipe_details[itr].get('name'))
-                    has_suggestions = True
-                    msg = ''
-                    session['pantry_recipe_ids'] = recipe_name_suggestion_list
-                except:
-                    has_suggestions = False
-                    msg = 'We are sorry we did not find a recipe for your pantry. Update pantry and try again'
-
-            else:
-                pantry_exists=False
-        else:
+        if len(pantry_items_list) > 0:
             pantry_exists=True
+            # Run pantry suggestion code here
+            try:
+                recipe_id_suggestion_list = get_pantry_suggetsions(user_profile_data, pantry_items_list, 5)
 
+                # Process suggestions from input
+                recipe_details = get_recipe_details(recipe_id_suggestion_list, pd.read_json(session['data']))
+                recipe_name_suggestion_list = []
+                recipe_id_suggestion_list = []
+                for itr, details in enumerate(recipe_details):
+                    recipe_name_suggestion_list.append(recipe_details[itr].get('name'))
+                    recipe_id_suggestion_list.append(recipe_details[itr].get('id'))
+                has_suggestions = True
+                msg = ''
+                session['pantry_recipe_names'] = recipe_name_suggestion_list
+                session['pantry_recipe_ids'] = recipe_id_suggestion_list
+            except:
+                has_suggestions = False
+                msg = 'We are sorry we did not find a recipe for your pantry. Update pantry and try again'
+
+        else:
+            pantry_exists=False
+
+        if remove_item is not False:
+            pantry_exists=True
+        print(pantry_items_list, recipe_name_suggestion_list, pantry_exists, has_suggestions, msg)
         return render_template('pantry_recipe.html', pantry_items_list=pantry_items_list, recipe_name_suggestion_list=recipe_name_suggestion_list, form1=createPantryForm1, form2=removePantryItemsForm1, pantry_exists=pantry_exists, has_suggestions=has_suggestions, msg=msg)
     else:
         return redirect(url_for('index'))

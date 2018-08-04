@@ -12,7 +12,6 @@ def get_pantry_suggetsions(user_profile_data, ingredient_list, num_suggested_rec
     recipe_init = recipes.Recipes(profile_init)
     model_init = models.Models(recipe_init)
 
-
     ## Virtual Pantry to recipe suggestion
     # ingredient_list = ['12 large egg', '12 oz mayonnaise', '12 oz BBQ Sauce', '24 oz mustard', '6 skinless chicken breast',
     #                    '12 salmon burgers', '12 pita', '2 zucchini', '4 onions', '1 pound mushrooms',

@@ -170,7 +170,7 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
                 tag_list.remove(tag)
                 potential_switches.remove(potential_switches[i])
         switch_df = pd.DataFrame(data={'tags':tag_list[:3], "potential_switches":potential_switches[:3]})
-
+        session['potential_switches'] = potential_switches
         # DO following process to get visuals
         # Split User input into the item to replace and type, format: ['"44005":7']
         # master_tag_list = []
@@ -204,6 +204,14 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
         # print("visual 2")
         return switch_df, potential_switches[:3]
 
+
+# Return Choices for Ingredien Sub
+def get_potential_switch_choices():
+    # print(session.keys())
+    # print(session['potential_switches'])
+    choices = ['Subsitute 1', 'Subsitute 2', 'Subsitute 3']
+    # choices = session['potential_switches']
+    return(choices)
 
 # Switch the ingrediet out for the user selected ingredient
 # For Single Ingredient Subsitution

@@ -11,15 +11,16 @@ def get_userPreferences(user):
     # if None exist in data, return
     scope = ['https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive']
-
+    print("Getting Survey Responses")
     cred_path = 'app/static/csv_files/'
     credentials = ServiceAccountCredentials.from_json_keyfile_name(cred_path + 'w210-e41e21aed377.json', scope)
-
+    print("Success!")
     # Get Google Sheet of Reponses
     gc = gspread.authorize(credentials)
     wks = gc.open("User preference survey (Responses)").sheet1
     userPref_df = pd.DataFrame(wks.get_all_records(), dtype=str)
-
+    print("userPref_df complete!")
+    print(userPref_df.columns)
     # Rename columns for easier use
     rename_dict = {'How frequently do you exercise?': 'activity_level',
       'How much time are you willing to spend on a meal?': 'meal_prep_time',
@@ -43,8 +44,10 @@ def get_userPreferences(user):
       'How Many Recipes Would You Like to Plan per Week?':'meals_per_week'}
 
     userPref_df.rename(columns=rename_dict, inplace=True)
+    print(userPref_df.columns)
     # Look for user if exists in user preferneces
     if any(userPref_df.username == user):
+        print(user)
         user_prefs = userPref_df[userPref_df.username == user]
         # Choose Most Recent Answers
         if len(user_prefs > 1):
@@ -55,10 +58,14 @@ def get_userPreferences(user):
             filter_list = get_micro_label_list(user_prefs.user_macro_choices.values[0])
             user_prefs['filter_list'] = [filter_list]
             # user_prefs['plan_exists'] = False
+
+        print("Returning user preferenecs")
+        # return userPref_df
         return user_prefs
     else:
+        print("returning False")
         # Send to the user new user_profile page to fill out preferneces
-        return(False)
+        return False
 
 
 def create_ignore_list_from_session_df(session):
