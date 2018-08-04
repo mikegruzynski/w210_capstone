@@ -473,10 +473,9 @@ def pantry_recipe():
             while '' in pantry_items_list:
                 pantry_items_list.remove('')
             pantry_items_list = list(set(pantry_items_list))
-            print(type(pantry_items_list))
+
             # Remove Items From Pantry
             remove_list = []
-            print(removePantryItemsForm1.removePantryItems.data)
             if len([removePantryItemsForm1.removePantryItems.data])>0:
                 for item in [removePantryItemsForm1.removePantryItems.data]:
                     remove_list = remove_list+(item.split(", "))
@@ -515,8 +514,6 @@ def pantry_recipe():
         else:
             pantry_exists=True
 
-        # print(len(pantry_items_list), recipe_name_suggestion_list)
-        print(pantry_items_list, recipe_name_suggestion_list,pantry_exists, has_suggestions,msg)
         return render_template('pantry_recipe.html', pantry_items_list=pantry_items_list, recipe_name_suggestion_list=recipe_name_suggestion_list, form1=createPantryForm1, form2=removePantryItemsForm1, pantry_exists=pantry_exists, has_suggestions=has_suggestions, msg=msg)
     else:
         return redirect(url_for('index'))
@@ -524,7 +521,7 @@ def pantry_recipe():
 # Delet Entire Pantry
 @app.route('/delete_pantry_items') #  methods=['GET', 'POST']
 def delete_pantry_items():
-    "Delet Pantry Items"
+    # "Delet Pantry Items"
     pantry_items_list = session['pantry_items_list']
     pantry_items_list = []
     session['pantry_items_list'] = pantry_items_list
@@ -532,3 +529,8 @@ def delete_pantry_items():
     session['pantry_recipe_ids'] = pantry_recipe_ids
 
     return redirect(url_for('pantry_recipe'))
+
+# Master Run HTML
+@app.route('/master_run') #  methods=['GET', 'POST']
+def master_run():
+    return render_template('master_run.html')
