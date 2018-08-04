@@ -99,6 +99,13 @@ class UserPreference(db.Model, UserMixin):
     height_in = db.Column(db.Integer, index=True)
     foods_allergic = db.Column(db.String(1200), index=True)
 
+# Pantry Recipe Suggestion forms
+class createPantryForm(Form):
+    pantryItemList = StringField()
+
+class removePantryItemsForm(Form):
+    removePantryItems = StringField()
+
 
 @login.user_loader
 def load_user(id):

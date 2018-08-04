@@ -6,10 +6,6 @@ import numpy as np
 import pandas as pd
 import json
 import time
-# pd.set_option('display.height', 1000)
-# pd.set_option('display.max_rows', 500)
-# pd.set_option('display.max_columns', 500)
-# pd.set_option('display.width', 10008
 from app.user_profile_support.rootseller import recipes
 from app.user_profile_support.rootseller import rootprofile
 
@@ -18,6 +14,9 @@ class Models(object):
         path = 'app/static'
         with open(path+'/models/tokenizer.pickle', 'rb') as handle:
             self.tokenizer = pickle.load(handle)
+
+        with open(path+'/models/NDB_tag_unique_unique_dict.json') as f:
+            self.NDB_tag_unique_unique_dict = json.load(f)
         # load json and create model
         json_file = open(path+'/models/model_simple_nn.json', 'r')
         loaded_model_json = json_file.read()
@@ -35,7 +34,6 @@ class Models(object):
         original = recipe_item.lower()
         original = re.sub(r'/s*(/d+|[./+*-])', '', original)
         original_split = original.split(" ")
-
         units_of_food_recipe_list = []
         for key in self.recipe_init.food_unit_standard_dictionary:
             # print(key)
@@ -47,10 +45,9 @@ class Models(object):
             # print(i)
             if i not in self.recipe_init.food_size and i not in units_of_food_recipe_list:
                 keep_list.append(i)
-
         original_split = list(filter(None, keep_list))
         new = " ".join(original_split)
-        # return new
+        return new
 
 class GA(object):
     def __init__(self):

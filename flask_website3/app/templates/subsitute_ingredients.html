@@ -68,7 +68,7 @@
 										Choose a Type of Food to Replace With (Choose from list):
 										{{form.foodType(class='dropdown-content hide')}}
 									<p></p>
-									<input type=submit value="See Potential Replacment Ingredient">
+									<input type=submit value="See Potential Replacement Ingredient">
 									<!-- </form> -->
 							</div>
 							<!-- <form method=post action=""> -->
@@ -83,14 +83,6 @@
 									</ol>
 									{{form.replacementChoice()}}
 								</div>
-								{% for subfield in form.replacementChoice() %}
-								<div>
-										<tr>
-								        <td>{{ Hey }}</td>
-								        <td>{{ subfield.label }}</td>
-								    </tr>
-								</div>
-								{% endfor %}
 									<p></p>
 											<p><input type=submit value="Replace Ingredient"></p>
 												<h3>See how the Ingredent change will effect your nutriet goals</h3>
@@ -98,10 +90,11 @@
 												<img src="{{ url_for('static', filename='images/test_replacement_radar_plot.png') }}" alt="" />
 									      <p></p>
 									{% else %}
-										<h5>{{ msg_print }}</h5>
+										<h5><font color="blue">{{ msg_print }}</font></h5>
 									{% endif %}
 							<section class="wrapper style1">
-									 <a href = "/user_profile" class="button">Back to User Profile</a>
+									<a href = "/recipe_center" class="button">Back to Recipe Center</a>
+									<a href = "/user_profile" class="button">Back to User Profile</a>
 							</section>
 							<p></p><p></p>
 							</form>

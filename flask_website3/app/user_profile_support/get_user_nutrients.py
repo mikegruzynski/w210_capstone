@@ -60,7 +60,7 @@ def get_micro_label_list(user_micro_choices):
             micro_list = all_list
             continue
         elif micro == 'None':
-            micro_list = None
+            micro_list = all_list
             continue
         elif micro == 'Vitamin A':
             micro_list = micro_list + ['Vitamin A']

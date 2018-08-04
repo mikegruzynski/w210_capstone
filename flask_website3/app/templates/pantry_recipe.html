@@ -39,45 +39,87 @@
 		<!-- Main -->
 				<section class="wrapper style1">
 					<div class="inner">
-						<!-- 2 Columns -->
 							<div class="flex flex-1">
 							<div class="col col1">
-								<h1>Pantry Recipe</h1>
-								<h2>Coming Soon!</h2>
-								<h6>We are working very hard to make sure your recipe suggetsions is close to perfect! We will be updating soon so check back in!</h6>
-
-								<div style="float: left; width: 100%;">
-									<h5>Not sure what to cook? Don't want to go to the store?</h4>
-									<h5>No Problem! Tell us what you have in stock at home and we will suggest a recipe to cook tonight!</h5>
-       <p></p>
-			 					<h3>Here is an example of what is to come! </h3>
-								<div style="float: left; width: 100%;">
-								You tell us that you have the following ingredients in your pantry:
-									<ul {list-style-type: disc; -webkit-columns: 2;
-										-moz-columns: 2;
-										columns: 2;
-										list-style-position: inside; }>
-										{% for ingredient in ingredient_list %}
-											<li> {{ ingredient }} </li>
-										{%endfor%}
-									</ul>
+								<h1>Pantry Recipes</h1>
+									<div style="float: left; width: 100%;">
+										<h5>Not sure what to cook? Don't want to go to the store?</h4>
+										<h5>No Problem! Tell us what you have in stock at home and we will suggest a recipe to cook tonight!</h5>
+						       <p></p>
+									 </div>
+				 						{% if has_suggestions %}
+										<div>
+										 <p></p>
+										 <h3>Recipe Suggetsions</h3>
+										 </div>
+											 <h5>Based on your pantry and nutritional goals we suggest:</h5>
+											 <ul>
+											 {% for name in recipe_name_suggestion_list %}
+												 <li> {{ name }} </li>
+											 {%endfor%}
+											 </ul>
+											 <img src="{{ url_for('static', filename='images/test_barplot.png') }}" alt="" />
+											 <img src="{{ url_for('static', filename='images/test_radar_plot.png') }}" alt="" />
+										{% else %}
+											<h3>Recipe Suggetsions</h3>
+											<h5> <font color='blue'>{{ msg }}</font><h5>
+									 {% endif %}
+								 </div>
+								 </div>
+					 </div>
+				 </section>
+				 <section class="wrapper style1">
+					 <div class="inner">
+						 <div class="flex flex-1">
+						 <div class="col col1">
+							 <h4></h4>
+								<h3>Update or Create your Pantry </h3>
+								{% if pantry_exists == False %}
+									<h4>Create your pantry by listing your ingredients below.</h4>
+								{% else %}
+									<h4>Add to your pantry by listing your ingredients below.</h4>
+								{% endif %}
+								<h5>Separate each item with a comma.</h5>
+								<div class="inner">
+									<form method=post action="">
+											<p>{{ form1.pantryItemList(autocomplete="off") }} </p>
+										{% if pantry_exists == False %}
+											<p><input type=submit value="Create Pantry"></p>
+										{% else %}
+											<p><input type=submit value="Add items to pantry"></p>
+										{% endif %}
+									</form>
 								</div>
-							</div>
-								We will suggest you make:
-								<ul>
-								{% for name in recipe_name_suggestion_list %}
-									<li> {{ name }} </li>
-								{%endfor%}
-							</ul>
-								<img src="{{ url_for('static', filename='images/test_barplot.png') }}" alt="" />
-								<img src="{{ url_for('static', filename='images/test_radar_plot.png') }}" alt="" />
-							</div>
-							</div>
-						</section>
-						<section class="wrapper style1">
-								 <a href = "/user_profile" class="button">Back to User Profile</a>
-						</section>
-					</div>
+						</div>
+					<!-- </div>
+					</div> -->
+					<!-- </section>
+					<section class="wrapper style1"> -->
+						{% if pantry_exists %}
+								<div classs="inner">
+									<p><a href = "/delete_pantry_items" class="button">Delete Entire Pantry</a></p>
+									<!-- <div style="float: right; width: 100%;"> -->
+									Your Current Pantry:
+										<ul>
+											{% for item in pantry_items_list %}
+												<li> {{item}} </li>
+											{%endfor%}
+										</ul>
+										<form method=post action="">
+											<h4>To Remove Items prom pantry, list them below.</h4>
+											<p>{{ form2.removePantryItems(autocomplete="off") }} </p>
+											<p><input type=submit value="Remove Item(s) From Pantry"></p>
+										</form>
+								</div>
+
+							<!-- </div> -->
+						{% endif %}
 				</section>
+				<section class="wrapper style1">
+				<div class="inner">
+						<a href = "/recipe_center" class="button">Back to Recipe Center</a>
+						<a href = "/user_profile" class="button">Back to User Profile</a>
+				</div>
+			</section>
 	</body>
 </html>

@@ -2,11 +2,13 @@ from app import app, db
 from flask import render_template, flash, redirect, url_for, session, request
 from flask_login import current_user, login_user, logout_user
 from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
-from app.models import User, InputMacroNutrientsForm, InputMicroNutrientsForm, IgnoreRecipeForm, IngredientSubForm, ChooseRecipeToSubIngredients
+# from app.models import User, InputMacroNutrientsForm, InputMicroNutrientsForm, IgnoreRecipeForm, IngredientSubForm, ChooseRecipeToSubIngredients
+from app.models import *
 from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
 from app.user_profile_support.get_recipe_center_data import *
+from app.user_profile_support.run_pantry_suggestion import get_pantry_suggetsions
 import numpy as np
 # import matplotlib
 # matplotlib.use('Agg')
@@ -53,7 +55,8 @@ def logout():
 
     return redirect(url_for('index'))
 
-
+# User Registraions
+# TODO: clear form data after registration
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -78,7 +81,6 @@ def preference_survey():
 
 # Render User Profile page
 @app.route('/user_profile', methods=['GET', 'POST'])
-# @login_required
 def user_profile():
     if current_user.is_authenticated:
         user = current_user.username
@@ -176,7 +178,6 @@ def display_recipe():
 
             # single_ingredient_replacement(recipe_id)
             return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
-            # return render_template('display_recipe.html', user_data=user_profile_data, recipe_details=recipe_details, form=recipeNameIdForm)
         else:
             user_profile_data = pd.read_json(session['data'])
             if user_profile_data is not False:
@@ -283,23 +284,28 @@ def single_ingredient_replacement(recipe_id):
             if request.method == 'POST':
                 # User has not yet entered an ingredient to sub
                 msg_print = ""
-                if ingredientSubForm.replacemnetChoice.data == 'None':
+                if ingredientSubForm.replacementChoice.data == 'None':
                     # Find options for food replacements
                     try:
                         switch_df, potential_switches = get_single_ingredient_replacement(session, ingredientSubForm, recipe_id_exp)
                         # update session switch options
-                        session['switch_df_temp'] = switch_df.to_json()
+                        try:
+                            session['switch_df_temp'] = switch_df.to_json()
+                        except:
+                            print("** Error in saving to session")
+                        display_bottom = True
                     except:
                         print("GET Ingredient SUB FAILED******")
                         msg_print = "We are sorry, We could not find a good replacment matching your request. Pleasse try again."
-                        potential_switches = None
+                        potential_switches = []
+                        display_bottom = False
 
-                    display_bottom = True
+
                     # print(session.keys())
                     # print(pd.read_json(session['switch_df_temp']))
                 else:
                     # User entered an ingredient to sub
-                    if ingredientSubForm.replacemnetChoice.data == "DNR":
+                    if ingredientSubForm.replacementChoice.data == "DNR":
                         return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
 
                     # TODO: figure out why saved session switches not saved between page loads
@@ -316,6 +322,7 @@ def single_ingredient_replacement(recipe_id):
                     display_bottom = False
                     msg_print = "We have updated your recipe with the siwtch!"
 
+                print(potential_switches, display_bottom, msg_print)
                 # Render the Subsitute Ingredient HTML
                 return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi[['NDB_NO', 'Description']].values, potential_switches=potential_switches, display_bottom=display_bottom, msg_print=msg_print)
 
@@ -408,22 +415,122 @@ def shopping_list():
 def food_network():
     return render_template('data.html', title="Graph Test")
 
-
-@app.route('/pantry_recipe') #  methods=['GET', 'POST']
+# Recipe Suggetsion from Pantry Items
+@app.route('/pantry_recipe', methods=['GET', 'POST']) #  methods=['GET', 'POST']
 def pantry_recipe():
-    # TODO: Integrate real code
-    ingredient_list = ingredient_list = ['12 large egg', '12 oz mayonnaise', '12 oz BBQ Sauce', '24 oz mustard', '6 skinless chicken breast',
-                   '12 salmon burgers', '12 pita', '2 zucchini', '4 onions', '1 pound mushrooms',
-                   '12 cups lettuce', '24 beer', '1 whole duck', '4 oranges', '2 potatoes', '2 red peppers',
-                   '4 pounds white rice', '48 oz peanut butter', '6 sausage', '4 pounds ham', '1 cauliflower',
-                   '6 sticks butter', '12 cups sugar', '12 brown sugar', 'water', '1 whole lemon', '0.25 cup lemon juice',
-                   '10 whole apples', '1 tomato', '0.25 cup Lime juice', '1 bottle rum', '12 egg whites', '1 whole garlic']
-    recipe_id_suggestion_list = ['RECIPE_48743', 'RECIPE_9117', 'RECIPE_78461']
 
-    recipe_details = get_recipe_details(recipe_id_suggestion_list, pd.read_json(session['data']))
+    # pantry Example list to use:
+    # 12 large egg, 12 oz mayonnaise, 12 oz BBQ Sauce, 24 oz mustard, 6 skinless chicken breast, 12 salmon burgers, 12 pita, 2 zucchini, 4 onions, 1 pound mushrooms, 12 cups lettuce, 24 beer, 1 whole duck, 4 oranges, 2 potatoes, 2 red peppers, 4 pounds white rice, 48 oz peanut butter, 6 sausage, 4 pounds ham, 1 cauliflower, 6 sticks butter,
+    # 12 cups sugar, 12 brown sugar, water, 1 whole lemon, 0.25 cup lemon juice, 10 whole apples, 1 tomato, 0.25 cup Lime juice, 1 bottle rum, 12 egg whites, 1 whole garlic
 
-    recipe_name_suggestion_list = []
-    for itr, details in enumerate(recipe_details):
-        recipe_name_suggestion_list.append(recipe_details[itr].get('name'))
+    if current_user.is_authenticated:
+        # Default values for rendering page first time or after clear
+        pantry_exists=False
+        msg = ''
+        has_suggestions=False
+        recipe_name_suggestion_list = []
+        remove_item = False
 
-    return render_template('pantry_recipe.html', ingredient_list=ingredient_list, recipe_name_suggestion_list=recipe_name_suggestion_list)
+        # Get user profile data from session
+        user_profile_data = pd.read_json(session['data'])
+        user = current_user.username
+
+        # Check if user has a pantry already established
+        if 'pantry_items_list' in session.keys():
+            pantry_items_list = session['pantry_items_list']
+        else:
+            pantry_items_list = []
+
+        # Check for existing pantry suggetsions
+        if 'pantry_recipe_ids' in session.keys():
+            pantry_recipe_ids = session['pantry_recipe_ids']
+            if len(pantry_recipe_ids)> 0:
+                has_suggestions = True
+            else:
+                has_suggestions = False
+
+        # Get User Forms
+        createPantryForm1 = createPantryForm(request.form)
+        removePantryItemsForm1 = removePantryItemsForm(request.form)
+
+        # User add pantry data
+        if request.method == 'POST':
+            print("POST ")
+            # Add items to pantry
+            if len(pantry_items_list) > 0:
+                pantry_exists=True
+            else:
+                pantry_exists=False
+            pantry_items_list = pantry_items_list+[createPantryForm1.pantryItemList.data]
+
+            # separate list of items into individual list items
+            pantry_items_list_sep = []
+            for item in pantry_items_list:
+                pantry_items_list_sep = pantry_items_list_sep+(item.split(","))
+            pantry_items_list = pantry_items_list_sep
+
+            # Remove Duplicate and Blank items
+            while '' in pantry_items_list:
+                pantry_items_list.remove('')
+            pantry_items_list = list(set(pantry_items_list))
+
+            # Remove Items From Pantry
+            remove_list = []
+            if len([removePantryItemsForm1.removePantryItems.data])>0:
+                for item in [removePantryItemsForm1.removePantryItems.data]:
+                    remove_list = remove_list+(item.split(", "))
+                    msg = 'Removed Item From Pantry'
+                remove_item = True
+
+            # Save Pantry Updates
+            pantry_items_list = list(pantry_items_list)
+            try:
+                session['pantry_items_list'] = pantry_items_list
+            except:
+                print("*** ERRROR Saving Pantry list")
+
+        # Get Recipes
+        if remove_item is False:
+            if len(pantry_items_list) > 0:
+                pantry_exists=True
+                # Run pantry suggestion code here
+                try:
+                    recipe_id_suggestion_list = get_pantry_suggetsions(user_profile_data, pantry_items_list, 5)
+
+                    # Process suggestions from input
+                    recipe_details = get_recipe_details(recipe_id_suggestion_list, pd.read_json(session['data']))
+                    recipe_name_suggestion_list = []
+                    for itr, details in enumerate(recipe_details):
+                        recipe_name_suggestion_list.append(recipe_details[itr].get('name'))
+                    has_suggestions = True
+                    msg = ''
+                    session['pantry_recipe_ids'] = recipe_name_suggestion_list
+                except:
+                    has_suggestions = False
+                    msg = 'We are sorry we did not find a recipe for your pantry. Update pantry and try again'
+
+            else:
+                pantry_exists=False
+        else:
+            pantry_exists=True
+
+        return render_template('pantry_recipe.html', pantry_items_list=pantry_items_list, recipe_name_suggestion_list=recipe_name_suggestion_list, form1=createPantryForm1, form2=removePantryItemsForm1, pantry_exists=pantry_exists, has_suggestions=has_suggestions, msg=msg)
+    else:
+        return redirect(url_for('index'))
+
+# Delet Entire Pantry
+@app.route('/delete_pantry_items') #  methods=['GET', 'POST']
+def delete_pantry_items():
+    # "Delet Pantry Items"
+    pantry_items_list = session['pantry_items_list']
+    pantry_items_list = []
+    session['pantry_items_list'] = pantry_items_list
+    pantry_recipe_ids = []
+    session['pantry_recipe_ids'] = pantry_recipe_ids
+
+    return redirect(url_for('pantry_recipe'))
+
+# Master Run HTML
+@app.route('/master_run') #  methods=['GET', 'POST']
+def master_run():
+    return render_template('master_run.html')
