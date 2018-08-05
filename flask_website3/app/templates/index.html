@@ -33,17 +33,37 @@
     </script>
 </footer>
 
-</html>
-© 2018 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
-API
-Training
-Shop
-Blog
-About
-Press h to open a hovercard with more details.
+
+<head>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script>
+      var radar_data_macro = {{ radar_data_macro|tojson }};
+      var radar_layout_macro = {{ radar_layout_macro|tojson }};
+  </script>
+</head>
+
+<body>
+  <div id="macroMealPlanRadar"><!-- Plotly chart will be drawn inside this DIV --></div>
+  <script>
+    Plotly.plot("macroMealPlanRadar", radar_data_macro, radar_layout_macro)
+  </script>
+</body>
+
+
+
+<head>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script>
+      var radar_data_micro = {{ radar_data_micro|tojson }};
+      var radar_layout_micro = {{ radar_layout_micro|tojson }};
+  </script>
+</head>
+
+<body>
+  <div id="microMealPlanRadar"><!-- Plotly chart will be drawn inside this DIV --></div>
+  <script>
+    Plotly.plot("microMealPlanRadar", radar_data_micro, radar_layout_micro)
+  </script>
+</body>
