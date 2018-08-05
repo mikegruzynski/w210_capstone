@@ -571,3 +571,36 @@ def delete_pantry_items():
 @app.route('/master_run') #  methods=['GET', 'POST']
 def master_run():
     return render_template('master_run.html')
+
+@app.route('/plotly_test')
+def plotly():
+    import plotly.plotly as py
+    import plotly.graph_objs as go
+    import json
+    from plotly.utils import PlotlyJSONEncoder
+
+    trace1 = go.Bar(
+        x=['giraffes', 'orangutans', 'monkeys'],
+        y=[20, 14, 23],
+        name='SF Zoo'
+    )
+    trace2 = go.Bar(
+        x=['giraffes', 'orangutans', 'monkeys'],
+        y=[12, 18, 29],
+        name='LA Zoo'
+    )
+
+    data = [trace1, trace2]
+    layout = go.Layout(
+        barmode='stack'
+    )
+
+    graphs = [dict(data=data, layout=layout)]
+    ids = ['graph-{}'.format(i) for i, _ in enumerate(graphs)]
+
+
+    graphJSON = json.dumps(graphs, cls=PlotlyJSONEncoder)
+    return render_template('index.html',
+                           ids=ids,
+                           graphJSON=graphJSON)
+
