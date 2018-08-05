@@ -573,7 +573,7 @@ def master_run():
     return render_template('master_run.html')
 
 @app.route('/plotly_test')
-def plotly():
+def plotly_test():
     import plotly.plotly as py
     import plotly.graph_objs as go
     import json
