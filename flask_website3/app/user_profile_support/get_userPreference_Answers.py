@@ -70,15 +70,31 @@ def create_ignore_list_from_session_df(session):
     return ignore_list
 
 
+# def process_ignore_form(session, ignore_form):
+#     if 'ignore_list' in session.keys():
+#         existing_ignore_list = create_ignore_list_from_session_df(session)
+#     ignore_list1 = ignore_form.ignore_list.data.split('RECIPE_ ')
+#     ignore_list = []
+#     for recipe_id in ignore_list1:
+#         ignore_list = ignore_list + recipe_id.split(', ')
+#     ignore_list = existing_ignore_list + ignore_list
+#     session['ignore_list'] = pd.DataFrame({'recipe_ignore':ignore_list}).to_json()
+
 def process_ignore_form(session, ignore_form):
+    # Get Existing Ignore List
     if 'ignore_list' in session.keys():
         existing_ignore_list = create_ignore_list_from_session_df(session)
-    ignore_list1 = ignore_form.ignore_list.data.split('RECIPE_ ')
-    ignore_list = []
-    for recipe_id in ignore_list1:
-        ignore_list = ignore_list + recipe_id.split(', ')
-    ignore_list = existing_ignore_list + ignore_list
-    session['ignore_list'] = pd.DataFrame({'recipe_ignore':ignore_list}).to_json()
+
+    # Get User Meal plan
+    user_meal_plan = pd.read_json(session['user_meal_plan'])
+
+    # Add New recipes to ignore list
+    for idx in ignore_form.ignore_list.data:
+        t = user_meal_plan.iloc[int(idx)]
+        existing_ignore_list = existing_ignore_list+ [t.recipe_id]
+
+    # Save data to session ignore list 
+    session['ignore_list'] = pd.DataFrame({'recipe_ignore':existing_ignore_list}).to_json()
 
 
 def get_user_ignore_responses(user_profile_data, user):

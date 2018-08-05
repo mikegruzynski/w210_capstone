@@ -3,7 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import login
 from wtforms import Form, FloatField, StringField, SelectField, RadioField #, validators,
-from wtforms import widgets, SelectMultipleField
+from wtforms import widgets, SelectMultipleField, FieldList, FormField, TextField
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -19,6 +20,11 @@ class User(db.Model, UserMixin):
 
 def __repr__(self):
         return '<User {}>'.format(self.username)
+
+
+class MultiCheckboxField(SelectMultipleField):
+    widget = widgets.ListWidget(prefix_label=False, html_tag='ul')
+    option_widget = widgets.CheckboxInput()
 
 # Model
 # TODO: Valdate ranges in filed (optional)
@@ -73,8 +79,31 @@ class InputMicroNutrientsForm(Form):
 class ChooseRecipeToSubIngredients(Form):
     recipe_name = StringField()
 
+# class IgnoreRecipeForm(Form):
+#     ignore_list = StringField()
+
+class IMForm(Form):
+    protocol = SelectField(choices=[('aim', 'AIM'), ('msn', 'MSN')])
+    username = StringField()
+
 class IgnoreRecipeForm(Form):
-    ignore_list = StringField()
+    print("TODO: Create Dynamic List of Recipes")
+    # print(recipe_names)
+    # create a list of value/description tuples
+    # address = FieldList(FormField(AddressEntryForm), min_entries=1)
+    # print("address")
+    # print(address)
+    # print(recipe_names1)
+
+    im_accounts = FieldList(FormField(IMForm))
+    print(im_accounts)
+    recipe_names = ['Artichoke Spinach Dip with Roasted Red Bell Pe',
+    'Brisket Tacos With Red Cabbage',
+    'Sweet Potato Hash', 'Curry-Dusted Scallops with Pea Purée', 'Mint Julep']
+
+    # get_choice_parameters(session)
+    files = [(i, x) for i, x in enumerate(recipe_names)]
+    ignore_list = MultiCheckboxField('Label', choices=files)
 
 class IngredientSubForm(Form):
     ingredientSub = StringField()
@@ -90,18 +119,17 @@ class IngredientSubForm(Form):
     replacementChoice = RadioField('', choices=[('1', '1'), ('2','2'), ('3','3'), ('DNR', 'Do Not Replace')])
 
 
-class MultiCheckboxField(SelectMultipleField):
-    widget = widgets.ListWidget(prefix_label=False)
-    option_widget = widgets.CheckboxInput()
-
-
 class SimpleForm(Form):
-    string_of_files = ['one\r\ntwo\r\nthree\r\n']
-    list_of_files = string_of_files[0].split()
+    recipe_names = ['Artichoke Spinach Dip with Roasted Red Bell Pe',
+    'Brisket Tacos With Red Cabbage',
+    'Sweet Potato Hash', 'Curry-Dusted Scallops with Pea Purée', 'Mint Julep']
+
     # create a list of value/description tuples
-    print(list_of_files)
-    files = [(i,x) for i, x in enumerate(list_of_files)]
+    print(recipe_names)
+    # get_choice_parameters(session)
+    files = [(i, x) for i, x in enumerate(recipe_names)]
     example = MultiCheckboxField('Label', choices=files)
+
 
 
 class UserPreference(db.Model, UserMixin):

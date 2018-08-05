@@ -225,10 +225,22 @@ def recipe_recommendation():
             # fig.savefig('app/static/images/plot.png')
 
             # Form and route to ignore Recipes from list
+            user_addresses = [{"name": "First Address"},
+                  {"name": "Second Address"}]
+            # form = AddressesForm(addresses=user_addresses)
+            # return render_template("edit.html", form=form)
+
+            # ignore_form = IgnoreRecipeForm(request.form)
+            recipe_names = ['Artichoke Spinach Dip with Roasted Red Bell Pe',
+            'Brisket Tacos With Red Cabbage']
             ignore_form = IgnoreRecipeForm(request.form)
+            print("RecipeRecomendation")
+            print(ignore_form.data)
+            print(ignore_form.ignore_list)
             # Form for Ingredient Swap Page
             recipeNameIdForm = ChooseRecipeToSubIngredients(request.form)
             if request.method == 'POST':
+                print("POST")
                 # Ingredient Replacment Request
                 if recipeNameIdForm.recipe_name.data is not '':
                     best_recipe_combo = user_meal_plan.recipe_id
@@ -533,6 +545,7 @@ def delete_pantry_items():
 
     return redirect(url_for('pantry_recipe'))
 
+
 # Master Run HTML
 @app.route('/master_run') #  methods=['GET', 'POST']
 def master_run():
@@ -544,11 +557,24 @@ def master_run():
 def example_page():
     form = SimpleForm(request.form)
 
-    print("HERE")
+    user_meal_plan = pd.read_json(session['user_meal_plan'])
+
+    ignore_list = []
+    print(ignore_list)
     if request.method == 'POST':
-        remove_list = form.example.data
-        print(request.method)
-        print(form.example.data)
+        print("POST")
+
+        # Add Recipe ID to the ignore list
+        ignore_list = []
+        for idx in form.example.data:
+            t = user_meal_plan.iloc[int(idx)]
+            ignore_list = ignore_list+ [t.recipe_id]
+            print(ignore_list)
+            # print(user_meal_plan.recipe_name[int(idx)])
+            # print(user_meal_plan.recipe_id[int(idx)])
+
+
+
     # if form.validate_on_submit():
     #     print(form.example.data)
     # else:

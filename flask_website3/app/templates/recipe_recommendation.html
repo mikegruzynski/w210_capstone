@@ -62,34 +62,32 @@
 							<div class="col col1">
 								<h2>My Recipe Plan</h2>
 								<h5>Enter Recipes you do not want to make into the survey below to remove from list. We will replace it better recipe option!</h5>
-								<h5>Based on your user preferneces. We suggest the following Recipes:</h5>
-
-								<div style="float: left; width: 30%;">
+								<h5>Based on your user preferences. We suggest the following Recipes:</h5>
+								<div style="float: right; width: 100%;">
 										<ul>
-											{% for id in user_meal_plan.recipe_id %}
-												<li> {{id+":"}} </li>
-											{%endfor%}
-										</ul>
-								</div>
-								<div style="float: right; width: 70%;">
-										<ul style="list-style: none;">
 											{% for name in user_meal_plan.recipe_name %}
 												<li> {{name}} </li>
 											{%endfor%}
 										</ul>
 								</div>
+								<p></p><p></p>
+								<h3>Ignore Recipes From Future Meal Plans</h3>
 								<h4><font color = "blue">{{update_text}}</font></h4>
 								<h5>Want to ignore one of these recipes and remove it from the possible recipe suggestions? </h5>
 								<p>Please list recipe ID's you would like to see removed (separate by commas).</p>
 								<div class="inner">
 									<form method=post action="">
-											{{ ignore_form.ignore_list }}
-								</div>
+											{{ ignore_form.ignore_list | safe }}
+											{{ ignore_form.im_accounts | safe }}
 									<p><input type=submit value="Ignore Recipes Listed"></p>
+								</div>
+
+								<div>
+									<h2>Recipe and Nutrition Dashboard</h2>
 									<a href = "/rerun_recipe_plan" class="button">Create a New Recipe Plan</a>
 									<a href = "/recipe_center" class="button">See My Recipes</a>
 									<!-- <a href = "/display_recipe" class="button">See My Recipes</a> -->
-
+								</div>
 
 									<div style="float: left; width: 50%;">
 										<img src="{{ url_for('static', filename='images/plot.png') }}"/>
