@@ -13,6 +13,8 @@ import numpy as np
 # import matplotlib
 # matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
+
 # import matplotlib.pyplot as plt
 
 @app.route('/')
@@ -214,7 +216,7 @@ def recipe_recommendation():
         if user_profile_data is not False:
             user_meal_plan = return_user_meal_plan(session, user_profile_data, user)
             update_text = ''
-            
+
             #### Here is where plot needs to be called and saved off for jpg
             # fig = plt.figure()
             # ax = plt.axes()
@@ -535,3 +537,20 @@ def delete_pantry_items():
 @app.route('/master_run') #  methods=['GET', 'POST']
 def master_run():
     return render_template('master_run.html')
+
+
+# TESTING PAGES --------------------------
+@app.route('/example_page', methods=['post','get'])
+def example_page():
+    form = SimpleForm(request.form)
+
+    print("HERE")
+    if request.method == 'POST':
+        remove_list = form.example.data
+        print(request.method)
+        print(form.example.data)
+    # if form.validate_on_submit():
+    #     print(form.example.data)
+    # else:
+    #     print(form.errors)
+    return render_template('example.html', form=form)

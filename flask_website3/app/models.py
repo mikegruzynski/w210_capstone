@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import login
 from wtforms import Form, FloatField, StringField, SelectField, RadioField #, validators,
+from wtforms import widgets, SelectMultipleField
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -87,6 +88,21 @@ class IngredientSubForm(Form):
     ('18','Sweets'), ('19','Vegetables_and_Vegetable')])
     # replacemnetChoice = StringField()
     replacementChoice = RadioField('', choices=[('1', '1'), ('2','2'), ('3','3'), ('DNR', 'Do Not Replace')])
+
+
+class MultiCheckboxField(SelectMultipleField):
+    widget = widgets.ListWidget(prefix_label=False)
+    option_widget = widgets.CheckboxInput()
+
+
+class SimpleForm(Form):
+    string_of_files = ['one\r\ntwo\r\nthree\r\n']
+    list_of_files = string_of_files[0].split()
+    # create a list of value/description tuples
+    print(list_of_files)
+    files = [(i,x) for i, x in enumerate(list_of_files)]
+    example = MultiCheckboxField('Label', choices=files)
+
 
 class UserPreference(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
