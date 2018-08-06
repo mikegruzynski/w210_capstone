@@ -630,19 +630,72 @@ def reset_nutrient_goals():
 
 @app.route('/shopping_list')
 def shopping_list():
-    if current_user.is_authenticated:
-        user = current_user.username
-
-        user_profile_data = pd.read_json(session['data'])
         if user_profile_data is not False:
             # Get Ingredient List to Create a Shopping List
-            try:
-                user_meal_plan = pd.read_json(session['user_meal_plan'])
-                best_recipe_combo = user_meal_plan.recipe_id
-                ingredient_list = get_shopping_list(best_recipe_combo, user_profile_data)
-            except:
-                ingredient_list = []
-            return render_template('shopping_list.html', ingredient_list=ingredient_list, user_data=user_profile_data)
+            user_meal_plan = return_user_meal_plan(session, user_profile_data, user)
+
+            #// START: initialize for df creation to plot bar/radar plots
+            profile_init = rootprofile.UserProfile(user_profile_data)
+            recipe_init = recipes.Recipes(profile_init)
+            recipe_init = recipes.Recipes(profile_init)
+            list_keys = user_meal_plan['recipe_id'].get_values()
+            recipe_itr = 0
+
+            weight_lb_list = []
+            amount_recipe_list = []
+            unit_recipe_list = []
+            df_list = []
+            for recipe in list_keys:
+                print("*******************************", "Recipe Itr: ", recipe_itr, "Out of: ", len(list_keys) - 1, recipe)
+                # try:
+                temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe)
+                temp_recipe_df = temp_recipe_df.reset_index(drop=True)
+                multiplier_normalizer = profile_init.profile_macro_filtered_df['calories'].get_values()[0] / 3.0
+                multiplier_normalizer = multiplier_normalizer / temp_recipe_df['Energy (kcal)'].sum()
+                temp_recipe_df['conversion_factor'] = temp_recipe_df['conversion_factor'] * multiplier_normalizer
+                temp_recipe_df = temp_recipe_df[["NDB_NO", "Description", 'conversion_factor']]
+                df_list.append(temp_recipe_df)
+
+                for index in temp_recipe_df.index:
+                    try:
+                        temp = recipe_init.nutrtion_init.NDB_NO_lookup(temp_recipe_df.loc[index, 'NDB_NO'],
+                                                                   filter_list=['Weight(g)', 'Measure']).get_values()[0]
+                        temp = temp.tolist()
+                        weight = float(temp[0]) * float(temp_recipe_df.loc[index, 'conversion_factor']) * 0.00220462
+
+                        temp_split = temp[1].split(" ")
+                        amount_recipe = float(temp_split[0]) * float(temp_recipe_df.loc[index, 'conversion_factor'])
+                        del temp_split[0]
+                        unit_recipe = " ".join(temp_split)
+
+                        weight_lb_list.append(weight)
+                        amount_recipe_list.append(amount_recipe)
+                        unit_recipe_list.append(unit_recipe)
+
+                    except:
+                        weight_lb_list.append(0.0)
+                        amount_recipe_list.append(0.0)
+                        unit_recipe_list.append(0.0)
+
+            master_df = pd.concat(df_list)
+            se = pd.Series(weight_lb_list)
+            master_df['Weight (lb)'] = se.values
+            se2 = pd.Series(amount_recipe_list)
+            master_df['Amount'] = se2.values
+            se3 = pd.Series(unit_recipe_list)
+            master_df['Unit'] = se3.values
+
+            df_sum = master_df[['NDB_NO', 'Weight (lb)', 'Amount', 'Unit', 'Description']].groupby(['NDB_NO', 'Unit', 'Description']).sum().reset_index()
+            df_final = df_sum.merge(master_df[['NDB_NO', 'Amount']])
+            df_final['Unit Total'] = df_final[['Amount', 'Unit']].apply(lambda x: '{} {}'.format(math.ceil(x[0]), x[1]), axis=1)
+            df_final['Weight (lb)'] = round(df_final['Weight (lb)'], 3)
+            del df_final['Amount']
+            del df_final['Unit']
+            del df_final['NDB_NO']
+            df_final = df_final[round(df_final['Weight (lb)'], 3) != round(0, 3)]
+            
+            return render_template('shopping_list.html', ingredient_list=df_final, user_data=user_profile_data)
+
         else:
             # Render the New User SetUp page until they comlete prefernece
             return render_template('userProfile_existing.html', title="User Profile",
