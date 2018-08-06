@@ -75,10 +75,18 @@
 								<h4><font color = "blue">{{update_text}}</font></h4>
 								<h5>Want to ignore one of these recipes and remove it from the possible recipe suggestions? </h5>
 								<p>Please list recipe ID's you would like to see removed (separate by commas).</p>
+
+							</div>
+						 <form method=post action="">
+							 {{ ignore_form.ignore_list }}
+							 <p><input type=submit value="Ignore Recipes Listed"></p>
+						 </form>
+						</div>
+
 								<div class="inner">
 									<form method=post action="">
 											{{ ignore_form.ignore_list | safe }}
-											{{ ignore_form.im_accounts | safe }}
+											<!-- {{ ignore_form.im_accounts | safe }} -->
 									<p><input type=submit value="Ignore Recipes Listed"></p>
 								</div>
 

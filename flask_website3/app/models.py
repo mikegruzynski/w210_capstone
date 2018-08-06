@@ -7,6 +7,8 @@ from wtforms import widgets, SelectMultipleField, FieldList, FormField, TextFiel
 from flask_wtf import FlaskForm
 from wtforms_sqlalchemy.fields import QuerySelectField
 from flask_sqlalchemy import SQLAlchemy
+import pandas as pd
+from flask import request
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -88,25 +90,29 @@ class IMForm(Form):
     protocol = SelectField(choices=[('aim', 'AIM'), ('msn', 'MSN')])
     username = StringField()
 
-class IgnoreRecipeForm(Form):
-    choices = QuerySelectField()
-    print("TODO: Create Dynamic List of Recipes")
-    # print(recipe_names)
-    # create a list of value/description tuples
-    # address = FieldList(FormField(AddressEntryForm), min_entries=1)
-    # print("address")
-    # print(address)
-    # print(recipe_names1)
+# def create_ignore_form(session):
+#     print(session.keys())
 
-    im_accounts = FieldList(FormField(IMForm))
-    print(im_accounts)
+class IgnoreRecipeForm(Form):
+    # user_meal_plan = pd.read_json(session['user_meal_plan'])
+    # print("TODO: Create Dynamic List of Recipes")
+    #
+    # recipe_names = user_meal_plan.recipe_name.values
+    # print(recipe_names)
+
     recipe_names = ['Artichoke Spinach Dip with Roasted Red Bell Pe',
     'Brisket Tacos With Red Cabbage',
     'Sweet Potato Hash', 'Curry-Dusted Scallops with Pea Purée', 'Mint Julep']
 
     # get_choice_parameters(session)
     files = [(i, x) for i, x in enumerate(recipe_names)]
-    ignore_list = MultiCheckboxField('Label', choices=files)
+    print(files)
+    ignore_list = MultiCheckboxField('Label', choices=recipe_names)
+    print("igonore list", ignore_list)
+# print(IgnoreRecipeForm)
+# return ignore_list
+# return IgnoreRecipeForm(request.form) # request.form
+
 
 class IngredientSubForm(Form):
     ingredientSub = StringField()
@@ -122,20 +128,22 @@ class IngredientSubForm(Form):
     replacementChoice = RadioField('', choices=[('1', '1'), ('2','2'), ('3','3'), ('DNR', 'Do Not Replace')])
 
 
-class ChoiceForm(FlaskForm):
-    opts = QuerySelectField(query_factory=, allow_blank=)
+# class ChoiceForm(Form):
+#     choices = QuerySelectField('trans_id')
+#     print(choices)
 
-class SimpleForm(Form):
-
-    recipe_names = ['Artichoke Spinach Dip with Roasted Red Bell Pe',
-    'Brisket Tacos With Red Cabbage',
-    'Sweet Potato Hash', 'Curry-Dusted Scallops with Pea Purée', 'Mint Julep']
-
-    # create a list of value/description tuples
-    print(recipe_names)
-    # get_choice_parameters(session)
-    files = [(i, x) for i, x in enumerate(recipe_names)]
-    example = MultiCheckboxField('Label', choices=files)
+# class SimpleForm(Form):
+#     choices = QuerySelectField('trans_id')
+#     print(choices)
+#     recipe_names = ['Artichoke Spinach Dip with Roasted Red Bell Pe',
+#     'Brisket Tacos With Red Cabbage',
+#     'Sweet Potato Hash', 'Curry-Dusted Scallops with Pea Purée', 'Mint Julep']
+#
+#     # create a list of value/description tuples
+#     print(recipe_names)
+#     # get_choice_parameters(session)
+#     files = [(i, x) for i, x in enumerate(recipe_names)]
+#     example = MultiCheckboxField('Label', choices=files)
 
 
 

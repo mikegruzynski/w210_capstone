@@ -1,0 +1,67 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>RootCellar: Scale Recipe</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project</a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+					<li><a href="/user_profile">User Profile</a></li>
+					<li><a href="/recipe_recommendation">Edit Recipes Plan</li>
+					<li><a href="/shopping_list">Shopping List</a></li>
+					<li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Main -->
+
+				<div class="inner">
+					<h3>Customize Serving Size</h3>
+					<a href = "/rerun_recipe_plan" class="button">Generate New Meal Plan</a>
+					<a href = "/recipe_recommendation" class="button">Personalize Recipes and Ingredients</a>
+					<!-- <a href = "/display_recipe" class="button">See My Recipes</a> -->
+					<a href = "/shopping_list" class="button">See My Shopping List</a>
+				</div>
+				<div class="inner">
+					<div class="flex flex-1">
+					<div class="col col1">
+						<div style="float: left; width: 100%;">
+							<h4>Placeholder page</h4>
+							<h2>Recipe ID {{recipe_id}}</h2>
+						</div>
+					</div>
+					</div>
+				</div>
+       <p></p>
+				<!-- {{ ingredient_list }} -->
+			<div class="inner">
+			 <a href = "/user_profile" class="button">Back to User Profile</a>
+			 <a href = "/recipe_center" class="button">Back to Recipe Center</a>
+		 </div>
+	</body>
+</html>
