@@ -108,6 +108,9 @@ class createPantryForm(Form):
 class removePantryItemsForm(Form):
     removePantryItems = StringField()
 
+# Form for Recipe Id for scaled Recipe
+class scaleRecipeForm(Form):
+    customizeRecipeName = StringField()
 
 @login.user_loader
 def load_user(id):

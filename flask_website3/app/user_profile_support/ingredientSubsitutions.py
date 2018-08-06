@@ -76,6 +76,13 @@ def get_recipe_details(best_recipe_combo, user_profile_data):
 
     return recipe_details
 
+# Lookup Recipe ID from Name
+def get_recipe_id_from_name(recipe_name, recipe_details):
+    for itr, details in enumerate(recipe_details):
+        if recipe_details[itr].get('name') == recipe_name:
+            recipe_id = recipe_details[itr].get('id')
+            break
+    return recipe_id
 
 # Get ingredient List for Shopping list
 def get_shopping_list(best_recipe_combo, user_profile_data):

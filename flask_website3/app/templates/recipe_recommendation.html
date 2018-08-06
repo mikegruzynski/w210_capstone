@@ -78,6 +78,7 @@
 											{%endfor%}
 										</ul>
 								</div>
+								<h2>Personalization Options</h2>
 								<h4><font color = "blue">{{update_text}}</font></h4>
 								<h5>Want to ignore one of these recipes and remove it from the possible recipe suggestions? </h5>
 								<p>Please list recipe ID's you would like to see removed (separate by commas).</p>
@@ -90,6 +91,27 @@
 									<a href = "/rerun_recipe_plan" class="button">Create a New Recipe Plan</a>
 									<a href = "/recipe_center" class="button">See My Recipes</a>
 									<!-- <a href = "/display_recipe" class="button">See My Recipes</a> -->
+
+							</form>
+									<p></p>
+									<h4></h4>
+									<h4></h4>
+									<h3>Replace Ingredients in the Recipe</h3>
+									<h5>Copy and Paste the Recipe Name and we will help suggest a replacement</h5>
+									<div class="inner">
+										<form method=post action="">
+												<p>{{ form2.recipe_name }} </p>
+										<p><input type=submit value="Subsitute Ingredients in this Recipe"></p>
+									</form>
+									</div>
+
+									<div class="inner">
+										<form method=post action="">
+												<p>{{ scaleRecipeForm.customizeRecipeName }} </p>
+										<p><input type=submit value="Customize Serving Size in Recipe"></p>
+									</form>
+									</div>
+
 								<h1></h1>
 								<h3>How do these recipes stack up to your nutritional goals?</h3>
 								<p></p>
@@ -174,28 +196,15 @@
 									<br>
 									<p></p>
 
-								</form>
-									<p></p>
-									<h4></h4>
-									<h4></h4>
-									<h3>Replace Ingredients in the Recipe</h3>
-									<h5>Copy and Paste the Recipe Name and we will help suggest a replacement</h5>
-									<div class="inner">
-										<form method=post action="">
-												<p>{{ form2.recipe_name }} </p>
-										<p><input type=submit value="Subsitute Ingredients in this Recipe"></p>
-									</form>
-									</div>
-
-									<div>
-										<a href = "/recipe_center" class="button">Back to Recipe Center</a>
-										<a href = "/user_profile" class="button">Back to User Profile</a>
-									</div>
 									<!-- <a href = "/subsitute_ingredients" class="button">Subsitute Ingredients in Meals </a> -->
 								</div>
 							</div>
 						</div>
 
+						<div>
+							<a href = "/recipe_center" class="button">Back to Recipe Center</a>
+							<a href = "/user_profile" class="button">Back to User Profile</a>
+						</div>
 						<!-- <section class="wrapper">
 							<div class="inner">
 								<header class="align-center">
