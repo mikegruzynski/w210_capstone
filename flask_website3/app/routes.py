@@ -476,14 +476,9 @@ def recipe_recommendation():
             scaleRecipeForm1 = scaleRecipeForm(request.form)
             # Form for Ingredient Swap Page
             recipeNameIdForm = ChooseRecipeToSubIngredients(request.form)
-            print(request.method)
             if request.method == 'POST':
-                print("POST")
                 # Ingredient Replacment Request
-                print(recipeNameIdForm.recipe_name.data)
-                print(scaleRecipeForm1.customizeRecipeName.data)
                 if recipeNameIdForm.recipe_name.data is not '':
-                    print("recipeNameIdForm")
                     best_recipe_combo = user_meal_plan.recipe_id
                     recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
                     recipe_id = get_recipe_id_from_name(recipeNameIdForm.recipe_name.data, recipe_details)
@@ -499,34 +494,24 @@ def recipe_recommendation():
                     return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
 
                 if scaleRecipeForm1.customizeRecipeName.data is not '':
-                    print("scaleRecipeForm1")
-                    print(scaleRecipeForm1.customizeRecipeName.data)
                     best_recipe_combo = user_meal_plan.recipe_id
                     recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
                     recipe_id = get_recipe_id_from_name(scaleRecipeForm1.customizeRecipeName.data, recipe_details)
-
-                    # recipe_id = scaleRecipeForm1.recipe_name.data
-                    print(recipe_id)
                     return redirect(url_for('customize_serving_size', recipe_id=recipe_id))
 
                 else:
-                    print("GETT")
-                    print(scaleRecipeForm1.customizeRecipeName.data)
                     if scaleRecipeForm1.customizeRecipeName.data is not '':
-                        print("scaleRecipeForm1")
-                        print(scaleRecipeForm1.customizeRecipeName.data)
                         best_recipe_combo = user_meal_plan.recipe_id
                         recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
                         recipe_id = get_recipe_id_from_name(scaleRecipeForm1.customizeRecipeName.data, recipe_details)
-
-                        # recipe_id = scaleRecipeForm1.recipe_name.data
-                        print(recipe_id)
                         return redirect(url_for('customize_serving_size', recipe_id=recipe_id))
 
 
                     # Ignore ingredient request
                     print("**TODO: Clear box when submitted")
                     # TODO: clear input box after submit
+                    print(ignore_form)
+                    print(ignore_form.data)
                     process_ignore_form(session, ignore_form)
                     # Render the Users Profile Page
                     update_text = 'Sorry you did not like the recipes! You will not see it again. Regenerate your recipe plan for new suggestions'
