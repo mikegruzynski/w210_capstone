@@ -2,12 +2,19 @@ from app import app, db
 from flask import render_template, flash, redirect, url_for, session, request
 from flask_login import current_user, login_user, logout_user
 from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
-# from app.models import User, InputMacroNutrientsForm, InputMicroNutrientsForm, IgnoreRecipeForm, IngredientSubForm, ChooseRecipeToSubIngredients
-from app.models import *
+from app.models import User, InputMacroNutrientsForm, InputMicroNutrientsForm, IgnoreRecipeForm, IngredientSubForm, ChooseRecipeToSubIngredients
 from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
 from app.user_profile_support.get_recipe_center_data import *
+from app.user_profile_support.rootseller import rootprofile as rootprofile
+from app.user_profile_support.rootseller import recipes as recipes
+import numpy as np
+import json
+import math
+import plotly.plotly as py
+import plotly.graph_objs as go
+from plotly.utils import PlotlyJSONEncoder
 
 import numpy as np
 # import matplotlib
