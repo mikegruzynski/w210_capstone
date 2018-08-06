@@ -1,0 +1,335 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<title>RootCellar: User Profile Home</title>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project</a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+					<li><a href="/recipe_recommendation">Edit Recipe Plan</li>
+					<li><a href="/shopping_list">Shopping List</a></li>
+					<li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Main -->
+			<div id="main">
+        <section id="banner">
+          <div class="inner">
+            <header>
+              <h1>Hello John Smith</h1>
+              <p>Welcome Back to Root Cellar!</p>
+							<a  class="button">Profile Home</a>
+							<p></p>
+							<a class="button">My Recipe Center</a>
+							<a class="button">My Nutrition Center</a>
+							<a class="button">Recipe Based on Current Pantry</a>
+							<h3></h3>
+							<h5><font color="lightgray">More Features Coming Soon!</font>	</h5>
+							<a class="button">See Network Graph of Food</a>
+			</header>
+		</div>
+	</section>
+
+				<section class="wrapper style1">
+					<div class="inner">
+						<h1 id="ProfileHome">Profile Home</h1>
+							<div class="flex flex-1">
+							<div class="col col1">
+								<h2>User Profile Information</h2>
+								 <li>Gender: Male</li>
+								 <li>Age: 25 </li>
+								 <li>Height (Inches): 72 </li>
+								 <li>Weight (Pounds): 205</li>
+								 <li>Activity Level: Exercise 6+ times per week</li>
+							 </ul>
+									<a  class="button">Edit My Preferences</a>
+								</div>
+							</div>
+						</div>
+				<!-- </section> -->
+				<!-- <section class="wrapper style1"> -->
+				<p></p>
+				<p></p>
+					<div class="inner">
+						<!-- 2 Columns -->
+							<div class="flex flex-1">
+							<div class="col col1">
+								<h2>My Recipe Plan</h2>
+								<p>Based on your user preferneces. We suggest the following Recipes:
+									<div style="float: left; width: 100%;">
+										<ul>
+										
+											<li>Purple Potato Vichyssoise with Roasted Garlic</li>
+											<li>Chile-Marinated Flank Steak</li>
+											<li>Fresh Pasta</li>
+					
+									</ul>
+									</div>
+									<a  class="button">My Recipe Center</a>
+								</div>
+							</div>
+							<!-- <a href = "/recipe_recommendation" class="button">Choose a Recipe to Ignore</a>
+							<a href = "/rerun_recipe_plan" class="button">New Meal Plan</a>
+							<p></p>
+							<a href = "/display_recipe" class="button">See My Recipes</a>
+							<a href = "/shopping_list" class="button">See My Shopping List</a> -->
+
+							<p></p>
+							<!-- <h4>Features Coming Soon!</h4>
+							<a href = "/food_network" class="button">See Network Graph of Food</a>
+							<a href = "/pantry_recipe" class="button">Recipe Based on Current Pantry</a> -->
+
+						</div>
+
+
+				<!-- </section> -->
+				<!-- <section class="wrapper style1"> -->
+					<!-- <p></p>
+					<div class="inner"> -->
+						<!-- 2 Columns -->
+							<!-- <d	iv class="flex flex-1">
+							<div class="col col1">
+								<h4>Shopping List</h4>
+								<ul class="links">
+							 </ul>
+									<a href = "/shopping_list" class="button">See My Shopping List</a>
+								</div>
+							</div>
+						</div> -->
+
+				<!-- </section> -->
+				<!-- TODO Create dynamic table, with Names Dynamic based on interest -->
+				<!-- <section class="wrapper style1"> -->
+					<p></p>
+					<div class="inner">
+							<div class="flex flex-5">
+							<div class="col col1">
+								<p></p><p></p>
+								<h2>Nutrient Goals</h2>
+								<a  class="button">My Nutrition Center</a>
+								<h3>Macro Nutrients</h3>
+								<h5>Want to change the goals from the defualt calculations? Visit the Nutrition Center to Edit taregts</h5>
+									<!-- <p>Note: Updating Target Nurient Values will update the Recipe Plan</p> -->
+									<p></p><p></p>
+									<h6><a >Click to Learn More About Nutrition</a></h6>
+									<table style="width:100%">
+									 <thead>
+											<tr>
+										    <th><h4>Nutrient</h4></th>
+										    <th align="center"><h4>Goal</h4</th>
+												<th><h4>Nutrient</h4></th>
+										    <th align="center"><h4>Goal</h4</th>
+												<th><h4>Nutrient</h4></th>
+												<th align="center"><h4>Goal</h4</th>
+										  </tr>
+										</thead>
+										<tbody>
+										  <tr>
+										    <td>calories</td>
+										    <td>3798.6</td>
+												<td>Carbohydrates</td>
+												<td>590.8</td>
+										    <td>Protein</td>
+										    <td>205</td>
+											</tr>
+											<tr>
+												<td>Fat</td>
+												<td>88.4</td>
+												<td>Cholesterol</td>
+												<td>300</td>
+												<td>Saturated Fat</td>
+												<td>44.2</td>
+											</tr>
+											<tr>
+												<td>Unsaturated Fat</td>
+												<td>132.6</td>
+												<td>Sugar</td>
+												<td>44.2</td>
+												<td>Fiber</td>
+												<td>55.7</td>
+											</tr>
+										</tbody>
+										</table>
+										<p></p><p></p><p></p>
+
+										<h4>Micro Nutrients </h4>
+											<p>Target Nutrients For the Day!
+												<!-- <p>Note: Updating Target Nurient Values will update the Recipe Plan -->
+												<table style="width:110%">
+												<thead>
+													<tr>
+														<th>Nutrient</th>
+														<th align="center">Goal</th>
+														<th>Nutrient</th>
+														<th align="center">Goal</th>
+														<th>Nutrient</th>
+														<th align="center">Goal</th>
+													</tr>
+												</thead>
+													<tbody>
+													<tr>
+														<td>Calcium</td>
+														<td>100 mg</td>
+														<td>Iron</td>
+														<td>100 mg</td>
+														<td>Magnesium</td>
+														<td>100 mg</td>
+													</tr>
+													<tr>
+														<td>Phosphorus</td>
+														<td>100 mg</td>
+														<td>Potassium</td>
+														<td>100 mg</td>
+														<td>Sodium</td>
+														<td>100 mg</td>
+													</tr>
+													<tr>
+														<td>Zinc </td>
+														<td>100 mg</td>
+														<td>Copper </td>
+														<td>100 mg</td>
+														<td>Manganese</td>
+														<td>100 mg</td>
+													</tr>
+													<tr>
+														<td>Selenium</td>
+														<td>100 microg</td>
+														<td>Fluoride </td>
+														<td>100 microg</td>
+														<td>Vitamin C, total ascorbic acid</td>
+														<td>100 mg</td>
+													</tr>
+													<tr>
+														<td>Thiamin</td>
+														<td>100 mg</td>
+														<td>Riboflavin</td>
+														<td>100 mg</td>
+														<td>Niacin</td>
+														<td>100 mg</td>
+													</tr>
+													<tr>
+														<td>Pantothenic Acid</td>
+														<td>100 mg</td>
+														<td>Vitamin B-6 </td>
+														<td>100 mg</td>
+														<td>Folate, total </td>
+														<td>100 microg</td>
+													</tr>
+													<tr>
+														<td>Folic acid </td>
+														<td>100 microg</td>
+														<td>Folate, food </td>
+														<td>100 microg</td>
+														<td>Folate, DFE </td>
+														<td>100 microg</td>
+													</tr>
+													<tr>
+														<td>Choline, total</td>
+														<td>100 mg</td>
+														<td>Betaine </td>
+														<td>100 mg</td>
+														<td>Vitamin B-12 </td>
+														<td>100 microg</td>
+													</tr>
+													<tr>
+														<td>Vitamin B-12, added</td>
+														<td>100 microg</td>
+														<td>Vitamin A, RAE </td>
+														<td>100 microg</td>
+														<td>Vitamin K (phylloquinone)</td>
+														<td>100 microg</td>
+													</tr>
+													<tr>
+														<td>Vitamin E (alpha-tocopherol)</td>
+														<td>100 mg</td>
+														<td>Vitamin E, added</td>
+														<td>100 mg</td>
+														<td>Vitamin D (D2 + D3)</td>
+														<td>100 microg</td>
+													</tr>
+													<tr>
+														<td>Vitamin D2 </td>
+														<td>100 microg </td>
+														<td>Vitamin D3 </td>
+														<td>100 microg </td>
+														<td>Retinol </td>
+														<td>100 microg</td>
+													</tr>
+													<tr>
+														<td>Vitamin E </td>
+														<td>100 mg</td>
+													</tr>
+													</tbody>
+												</table>
+												<h3><a href = "/about_nutrition">Learn More About Nutrition</a></h3>
+								</div>
+							</div>
+						</div>
+
+					</section>
+
+					<!-- Radar and Bar Plots - Add from Python Images -->
+					<!-- TODO: Visuals -->
+						<!-- <section class="wrapper style1">
+						<div class="inner">
+							<div class="flex flex-1">
+								<div class="col align-center">
+									<div class="image square fit">
+										<img src="{{ url_for('static', filename='images/test_stacked_barplot.png') }}" alt="" />
+									</div>
+								</div>
+
+
+								<div class="inner">
+									<div class="flex flex-1">
+										<div class="col align-center">
+											<div class="image square fit">
+												<img src="{{ url_for('static', filename='images/test_radar.png') }}" alt="" />
+											</div>
+						</div>
+						</section> -->
+
+
+						<!-- Remove Recipe Google Form -->
+						<!-- <section class="wrapper">
+							<div class="inner">
+								<header class="align-center">
+									<h2>Find a Recipe you did not like and never want to see again?</h2>
+									<p>We are sorry! Please fill out the form below and we will make sure you never see it again!</p>
+								</header>
+
+															<iframe src="https://docs.google.com/forms/d/1NolLCQfXgA2k4iBniKsQAKNK62bvglqUDPAQc7pl0CA/viewform?embedded=true" width="1200"
+															 height="600" frameborder="0" marginheight="0" marginwidth="0" align="center">Loading...</iframe>
+
+							</div>
+						</section> -->
+       <p>
+			</div>
+	</body>
+</html>
