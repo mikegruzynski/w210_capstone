@@ -4,7 +4,9 @@ from flask_login import UserMixin
 from app import login
 from wtforms import Form, FloatField, StringField, SelectField, RadioField #, validators,
 from wtforms import widgets, SelectMultipleField, FieldList, FormField, TextField
-
+from flask_wtf import FlaskForm
+from wtforms_sqlalchemy.fields import QuerySelectField
+from flask_sqlalchemy import SQLAlchemy
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -87,6 +89,7 @@ class IMForm(Form):
     username = StringField()
 
 class IgnoreRecipeForm(Form):
+    choices = QuerySelectField()
     print("TODO: Create Dynamic List of Recipes")
     # print(recipe_names)
     # create a list of value/description tuples
@@ -119,7 +122,11 @@ class IngredientSubForm(Form):
     replacementChoice = RadioField('', choices=[('1', '1'), ('2','2'), ('3','3'), ('DNR', 'Do Not Replace')])
 
 
+class ChoiceForm(FlaskForm):
+    opts = QuerySelectField(query_factory=, allow_blank=)
+
 class SimpleForm(Form):
+
     recipe_names = ['Artichoke Spinach Dip with Roasted Red Bell Pe',
     'Brisket Tacos With Red Cabbage',
     'Sweet Potato Hash', 'Curry-Dusted Scallops with Pea Purée', 'Mint Julep']
