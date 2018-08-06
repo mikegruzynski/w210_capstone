@@ -12,12 +12,13 @@ class UserProfile(object):
     def __init__(self, user_profile_data):
         self.userid = user_profile_data.username
         self.userprofile_df = user_profile_data
-
+        
         init_macro = macronutrients.Macronutrients(self.userprofile_df)
         init_micro = micronutrients.MicroNutrients(self.userprofile_df)
 
         # Get user Specified Macro List From Prefernece Survey
         self.macro_label_list = get_macro_label_list(user_profile_data.user_macro_choices.values[0])
+        print(self.macro_label_list )
         self.macro_list = init_macro.convert_labels_to_df_columns(self.macro_label_list)
 
         # TODO:
@@ -25,6 +26,7 @@ class UserProfile(object):
         # Get user Specified Micro List From Prefernece Survey
         self.micro_label_list = ['iron', 'magnesium', 'manganese', 'thiamin', 'Vitamin D']
         # self.micro_label_list = get_micro_label_list(user_profile_data.user_micro_choices.values[0])
+        print(self.micro_label_list)
         self.micro_list = init_micro.convert_labels_to_df_columns(self.micro_label_list)
 
         self.profile_macro_df = init_macro.macro_daily_macro_estimation(user_profile_data)

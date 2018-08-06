@@ -134,7 +134,6 @@ class Macronutrients(object):
         return new_macro_list
 
     def add_unsaturated_fat_columns(self, recipe):
-
         recipe['unsaturated_fat'] = 0
         del_bool = True
         for label in recipe.columns:

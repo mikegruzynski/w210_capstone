@@ -85,19 +85,83 @@
 									<form method=post action="">
 											{{ ignore_form.ignore_list }}
 								</div>
+								<div>
 									<p><input type=submit value="Ignore Recipes Listed"></p>
 									<a href = "/rerun_recipe_plan" class="button">Create a New Recipe Plan</a>
 									<a href = "/recipe_center" class="button">See My Recipes</a>
 									<!-- <a href = "/display_recipe" class="button">See My Recipes</a> -->
+								</div>
 
 
-									<div style="float: left; width: 50%;">
+								<body>
+
+								    {% for id in ids %}
+								        <h3>{{id}}</h3>
+								        <div id="{{id}}"></div>
+								    {% endfor %}
+
+								</body>
+								<footer>
+								    <!-- D3.js -->
+								    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+								    <!-- jQuery -->
+								    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+								    <!-- Plotly.js -->
+								    <script src="https://d14fo0winaifog.cloudfront.net/plotly-basic.js"></script>
+
+								    <script type="text/javascript">
+								        var graphs = {{graphJSON | safe}};
+								        var ids = {{ids | safe}};
+								        for(var i in graphs) {
+								            Plotly.plot(ids[i], // the ID of the div, created above
+								                        graphs[i].data,
+								                        graphs[i].layout || {});
+								        }
+								    </script>
+								</footer>
+
+
+								<head>
+								  <!-- Plotly.js -->
+								  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+								  <script>
+								      var radar_data_macro = {{ radar_data_macro|tojson }};
+								      var radar_layout_macro = {{ radar_layout_macro|tojson }};
+								  </script>
+								</head>
+
+								<body>
+								  <div id="macroMealPlanRadar"><!-- Plotly chart will be drawn inside this DIV --></div>
+								  <script>
+								    Plotly.plot("macroMealPlanRadar", radar_data_macro, radar_layout_macro)
+								  </script>
+								</body>
+
+
+
+								<head>
+								  <!-- Plotly.js -->
+								  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+								  <script>
+								      var radar_data_micro = {{ radar_data_micro|tojson }};
+								      var radar_layout_micro = {{ radar_layout_micro|tojson }};
+								  </script>
+								</head>
+
+								<body>
+								  <div id="microMealPlanRadar"><!-- Plotly chart will be drawn inside this DIV --></div>
+								  <script>
+								    Plotly.plot("microMealPlanRadar", radar_data_micro, radar_layout_micro)
+								  </script>
+								</body>
+
+									<!-- <div style="float: left; width: 50%;">
 										<img src="{{ url_for('static', filename='images/plot.png') }}"/>
 									</div>
 
 									<div style="float: right; width: 50%;">
 										<img src="{{ url_for('static', filename='images/plot.png') }}"/>
-									</div>
+									</div> -->
 
 									<br>
 									<br>
@@ -107,7 +171,7 @@
 									<p></p>
 									<h4></h4>
 									<h4></h4>
-									<h3>Replce Ingredients in the Recipe</h3>
+									<h3>Replace Ingredients in the Recipe</h3>
 									<h5>Copy and Paste the Recipe Name and we will help suggest a replacement</h5>
 									<div class="inner">
 										<form method=post action="">

@@ -8,7 +8,12 @@ from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
 from app.user_profile_support.get_recipe_center_data import *
-
+from app.user_profile_support.rootseller import macronutrients
+# from app.user_profile_support.rootseller import micronutrients
+import math, json
+import plotly.plotly as py
+import plotly.graph_objs as go
+from plotly.utils import PlotlyJSONEncoder
 import numpy as np
 # import matplotlib
 # matplotlib.use('Agg')
@@ -247,7 +252,7 @@ def recipe_recommendation():
         if user_profile_data is not False:
             user_meal_plan = return_user_meal_plan(session, user_profile_data, user=user)
             update_text = ''
-            user_meal_plan = return_user_meal_plan(session, user_profile_data, user)
+            # user_meal_plan = return_user_meal_plan(session, user_profile_data, user)
 
             #// START: initialize for df creation to plot bar/radar plots
             profile_init = rootprofile.UserProfile(user_profile_data)
@@ -267,7 +272,7 @@ def recipe_recommendation():
             name_list = []
             recipe_itr = 0
             for recipe in list_keys:
-                print("*******************************", "Recipe Itr: ", recipe_itr, "Out of: ", len(list_keys) - 1, recipe)
+                # print("*******************************", "Recipe Itr: ", recipe_itr, "Out of: ", len(list_keys) - 1, recipe)
                 try:
                     temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe)
 
@@ -314,10 +319,16 @@ def recipe_recommendation():
                 data_micro_normalized.columns = profile_init.micro_label_list
 
                 data_macro = df.loc[itr, profile_init.macro_list].to_frame().T.reset_index(drop=True)
-
-                new_columns = profile_init.init_macro.convert_labels_to_pretty_labels(data_macro.columns)
+                # print(profile_init.init_macro)
+                init_macro = macronutrients.Macronutrients(user_profile_data)
+                # new_columns = profile_init.macro_list
+                new_columns = init_macro.convert_labels_to_pretty_labels(data_macro.columns)
+                # new_columns = profile_init.convert_labels_to_pretty_labels(data_macro.columns)
                 data_macro.columns = new_columns
-                data_macro_raw = profile_init.init_macro.add_unsaturated_fat_columns(data_macro)
+
+                # init_micro = micronutrients.MicroNutrients(self.userprofile_df)
+                # data_macro_raw = profile_init.init_macro.add_unsaturated_fat_columns(data_macro)
+                data_macro_raw = init_macro.add_unsaturated_fat_columns(data_macro)
                 data_macro_normalized = data_macro_raw[
                                             profile_init.profile_macro_filtered_df.columns] / profile_init.profile_macro_filtered_df
 
@@ -386,9 +397,9 @@ def recipe_recommendation():
                 recipe_temp_df_micro_fix.columns = profile_init.micro_label_list
 
                 recipe_temp_df_macro_fix = recipe_temp_df[profile_init.macro_list]
-                new_columns = profile_init.init_macro.convert_labels_to_pretty_labels(recipe_temp_df_macro_fix.columns)
+                new_columns = init_macro.convert_labels_to_pretty_labels(recipe_temp_df_macro_fix.columns)
                 recipe_temp_df_macro_fix.columns = new_columns
-                recipe_temp_df_macro_fix = profile_init.init_macro.add_unsaturated_fat_columns(recipe_temp_df_macro_fix)
+                recipe_temp_df_macro_fix = init_macro.add_unsaturated_fat_columns(recipe_temp_df_macro_fix)
 
                 recipe_temp_df_raw = recipe_temp_df_macro_fix.join(recipe_temp_df_micro_fix)
                 column_plot_labels = recipe_temp_df_raw.columns
@@ -630,23 +641,24 @@ def reset_nutrient_goals():
 
 @app.route('/shopping_list')
 def shopping_list():
+        user_profile_data = pd.read_json(session['data'])
         if user_profile_data is not False:
+            user = current_user.username
             # Get Ingredient List to Create a Shopping List
             user_meal_plan = return_user_meal_plan(session, user_profile_data, user)
 
             #// START: initialize for df creation to plot bar/radar plots
             profile_init = rootprofile.UserProfile(user_profile_data)
             recipe_init = recipes.Recipes(profile_init)
-            recipe_init = recipes.Recipes(profile_init)
+            # recipe_init = recipes.Recipes(profile_init)
             list_keys = user_meal_plan['recipe_id'].get_values()
             recipe_itr = 0
-
             weight_lb_list = []
             amount_recipe_list = []
             unit_recipe_list = []
             df_list = []
             for recipe in list_keys:
-                print("*******************************", "Recipe Itr: ", recipe_itr, "Out of: ", len(list_keys) - 1, recipe)
+                # print("*******************************", "Recipe Itr: ", recipe_itr, "Out of: ", len(list_keys) - 1, recipe)
                 # try:
                 temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe)
                 temp_recipe_df = temp_recipe_df.reset_index(drop=True)
@@ -658,11 +670,10 @@ def shopping_list():
 
                 for index in temp_recipe_df.index:
                     try:
-                        temp = recipe_init.nutrtion_init.NDB_NO_lookup(temp_recipe_df.loc[index, 'NDB_NO'],
+                        temp = recipe_init.nutrition_init.NDB_NO_lookup(temp_recipe_df.loc[index, 'NDB_NO'],
                                                                    filter_list=['Weight(g)', 'Measure']).get_values()[0]
                         temp = temp.tolist()
                         weight = float(temp[0]) * float(temp_recipe_df.loc[index, 'conversion_factor']) * 0.00220462
-
                         temp_split = temp[1].split(" ")
                         amount_recipe = float(temp_split[0]) * float(temp_recipe_df.loc[index, 'conversion_factor'])
                         del temp_split[0]
@@ -684,7 +695,7 @@ def shopping_list():
             master_df['Amount'] = se2.values
             se3 = pd.Series(unit_recipe_list)
             master_df['Unit'] = se3.values
-
+            # print("\n\nmaster_df", master_df)
             df_sum = master_df[['NDB_NO', 'Weight (lb)', 'Amount', 'Unit', 'Description']].groupby(['NDB_NO', 'Unit', 'Description']).sum().reset_index()
             df_final = df_sum.merge(master_df[['NDB_NO', 'Amount']])
             df_final['Unit Total'] = df_final[['Amount', 'Unit']].apply(lambda x: '{} {}'.format(math.ceil(x[0]), x[1]), axis=1)
@@ -693,9 +704,9 @@ def shopping_list():
             del df_final['Unit']
             del df_final['NDB_NO']
             df_final = df_final[round(df_final['Weight (lb)'], 3) != round(0, 3)]
-            
-            return render_template('shopping_list.html', ingredient_list=df_final, user_data=user_profile_data)
-
+            # ingredient_list = list(set(df_final.Description))
+            df_show = df_final[['Unit Total', 'Description']]
+            return render_template('shopping_list.html', df_show=df_show.to_html(index=False, justify='left'), user_data=user_profile_data)
         else:
             # Render the New User SetUp page until they comlete prefernece
             return render_template('userProfile_existing.html', title="User Profile",
@@ -831,35 +842,41 @@ def delete_pantry_items():
 def master_run():
     return render_template('master_run.html')
 
-@app.route('/plotly_test')
-def plotly_test():
-    import plotly.plotly as py
-    import plotly.graph_objs as go
-    import json
-    from plotly.utils import PlotlyJSONEncoder
 
-    trace1 = go.Bar(
-        x=['giraffes', 'orangutans', 'monkeys'],
-        y=[20, 14, 23],
-        name='SF Zoo'
-    )
-    trace2 = go.Bar(
-        x=['giraffes', 'orangutans', 'monkeys'],
-        y=[12, 18, 29],
-        name='LA Zoo'
-    )
-
-    data = [trace1, trace2]
-    layout = go.Layout(
-        barmode='stack'
-    )
-
-    graphs = [dict(data=data, layout=layout)]
-    ids = ['graph-{}'.format(i) for i, _ in enumerate(graphs)]
+@app.route('/sample_profile')
+def sample_profile():
+   return render_template('sample_profile.html')
 
 
-    graphJSON = json.dumps(graphs, cls=PlotlyJSONEncoder)
-    return render_template('index.html',
-                           ids=ids,
-                           graphJSON=graphJSON)
-
+# # Plotly Test
+# @app.route('/plotly_test')
+# def plotly_test():
+#     import plotly.plotly as py
+#     import plotly.graph_objs as go
+#     import json
+#     from plotly.utils import PlotlyJSONEncoder
+#
+#     trace1 = go.Bar(
+#         x=['giraffes', 'orangutans', 'monkeys'],
+#         y=[20, 14, 23],
+#         name='SF Zoo'
+#     )
+#     trace2 = go.Bar(
+#         x=['giraffes', 'orangutans', 'monkeys'],
+#         y=[12, 18, 29],
+#         name='LA Zoo'
+#     )
+#
+#     data = [trace1, trace2]
+#     layout = go.Layout(
+#         barmode='stack'
+#     )
+#
+#     graphs = [dict(data=data, layout=layout)]
+#     ids = ['graph-{}'.format(i) for i, _ in enumerate(graphs)]
+#
+#
+#     graphJSON = json.dumps(graphs, cls=PlotlyJSONEncoder)
+#     return render_template('index.html',
+#                            ids=ids,
+#                            graphJSON=graphJSON)

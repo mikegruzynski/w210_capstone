@@ -44,13 +44,16 @@
 							<div class="col col1">
 								<h1>{{ user_data.firstname.values[0] }}'s Shopping List</h1>
 								<h1></h1>
-
-								<div style="float: left; width: 100%;">
+								<div>
+									<h5>{{df_show | safe}}</h5>
+								</div>
+								<!-- <div style="float: left; width: 100%;">
 										<ul>
 											{% for ingredient in ingredient_list %}
 												<li> {{ ingredient }} </li>
 											{%endfor%}
 										</ul>
+								</div> -->
        <p></p>
 				<!-- {{ ingredient_list }} -->
 				<a href = "/recipe_center" class="button">Back to Recipe Center</a>

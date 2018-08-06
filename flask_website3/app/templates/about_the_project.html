@@ -90,50 +90,50 @@
 										</ul>
 
 										<li><strong>Algorthims</strong></li>
-										
+
 										<ul style="list-style-type:circle">
 												<li> Data ETL </li>
 												<ul>
-													<li> Recipes do not have a standard frmat.  They have fuzzy language for ingredients and lack of consistency in measurements which makes linkage to a 
+													<li> Recipes do not have a standard frmat.  They have fuzzy language for ingredients and lack of consistency in measurements which makes linkage to a
 														nutritional database hard if the recipe format was not standard.
 													</li>
 												</ul>
-												<li> Principal Component Analysis (PCA)</li> 
+												<li> Principal Component Analysis (PCA)</li>
 													<ul>
 														<li> PCA helps understand and define the different nutritional space categories of food based on nuritional features, (e.g. differentiating
 															beef vs chicken vs legmes vs fruits).
 														</li>
 													</ul>
-												<li> Neural Net - CBOW</li> 
+												<li> Neural Net - CBOW</li>
 													<ul>
 														<li> The CBOW neural net was used for ingredient linkage to data.gov nutrition database.</li>
-														<li> We attempted to use linear and nonlinear machine learning algorithms 
+														<li> We attempted to use linear and nonlinear machine learning algorithms
 																(logistic regression, random forests, SVM, gradient boost) to link individual ingredients to database
 																ingredients; however ingredient descriptions were very non-linear (e.g. asparagus washed in water, chicken with skin on, skinless boneless chicken),
-																which resulted in accuracies of ~80% using typical machine learning algorithms.			
+																which resulted in accuracies of ~80% using typical machine learning algorithms.
 														</li>
 														<li> CBOW neural net helped push accuracy of predicting recipes to 95%. </li>
 														<li> An additional benefit is that when the CBOW-NN fails to match an ingredient,
 															 it fails softer than linear models and generally stays within a similar category.</li>
-													</ul>												
-												<li> Archive-based Micro Genetic Algorithm (AMGA) </li> 
+													</ul>
+												<li> Archive-based Micro Genetic Algorithm (AMGA) </li>
 													<ul>
 														<li> AMGA was used for multi-objective optimization (i.e. optimize loss function of important macro and micronutrients).  </li>
 														<li> Ths algorithm gathers input from users on how many meals a week they would like planned.</li>
-														<li> After a recipe filter is applied (removes recent recipes and user dislikes), it creates a meal plan by optimizing loss function of macro/micro 
+														<li> After a recipe filter is applied (removes recent recipes and user dislikes), it creates a meal plan by optimizing loss function of macro/micro
 															 combinations of recipes.  </li>
 														<li> A genetic algorithm was used because it was a discrete mathematical space with many different combinations of recipes.  </li>
-													</ul>	
+													</ul>
 										</ul>
 
 										<li><strong>User Feedback</strong></li>
-										
+
 										<ul style="list-style-type:circle">
-											<li> The team completed user evaluations at the onset of the project to to steer product development and goals.  These initial user evaluations 
+											<li> The team completed user evaluations at the onset of the project to to steer product development and goals.  These initial user evaluations
 												shifted the team's focus to value nutrition and meal planning from price and budgeting.
 												Additionally, initial user outreach led the team to focus on implementing a system with low start-up and maintenance costs. </li>
 											<li> Over the course of MVP and UI development, the team has conducted (and continues to conduct) additional user evaluations to test the UI and models.
-												These user tests have helped identify opportunities to streamline UI to make it more intuitive for users as well as identified opportunities to 
+												These user tests have helped identify opportunities to streamline UI to make it more intuitive for users as well as identified opportunities to
 												improve the underlying model and features.  </li>
 											<li>  Overall users are very excited about the project and like the ability to have meal planning customied to their dietary and health needs.
 												Uers are also enthusiastic about having everything (e.g. recipe, shopping, cart) in one place.
@@ -150,15 +150,15 @@
 							<ul style="list-style-type:circle">
 								<li>Why pay a broker for recipe suggestions that aren't right for your health?  Instead have a meal plan customized to your preferences and nutritional needs.</li>
 									<ul>
-										<li>Services like Blue Apron and Hello Fresh produce lower quality recipes that are not optimized for individual nutritional needs. 
+										<li>Services like Blue Apron and Hello Fresh produce lower quality recipes that are not optimized for individual nutritional needs.
 											Root Cellar automatically chooses a meal plan and aggregated food list so you don't have to think about what to buy.</li>
 
 										<li>Root Cellar’s goal is to enable you to efficiently find recipes and create meals that maximize nutrients and taste preferences.</li>
-										<li>Moreover, we are able to help reduce food waste by building meal plans that optimize utilization of ingredients in 
+										<li>Moreover, we are able to help reduce food waste by building meal plans that optimize utilization of ingredients in
 											your pantry and supplement additional ingredients with an e-grocery cart.</li>
 									</ul>
 
-								
+
 								<li> In addition to helping you create an amazing customized meal plan, Root Cellar aims to be a resource to the community by: </li>
 									<ul>
 										<li>Aiding education and research as a tool to study how different diets and individual food plans alter when changing macro nutrients and quantities.</li>
@@ -208,11 +208,12 @@
 								</div>
 								<div class="col align-center">
 									<div class="image round fit">
-										<img src="{{ url_for('static', filename='images/pic04.jpg') }}" alt="" />
+										<img src="{{ url_for('static', filename='images/maura.jpg') }}" alt="" />
 									</div>
 									<p><strong>Maura Cullen</strong></p>
-									<p>blah blah blah </p>
-									<a href="#" class="button">LinkedIn</a>
+									<p>Before attending Berkeley's program for a Master's of Information and Data Science, Maura began her careen in Health Tech, analyzing and creating algorithms for wearable devices.
+                    Currently, she works at Apple an Algorithms Quality Analytics Engineer. </p>
+									<a href="https://www.linkedin.com/in/maurakcullen/" class="button">LinkedIn</a>
 								</div>
 							</div>
 						</div>
