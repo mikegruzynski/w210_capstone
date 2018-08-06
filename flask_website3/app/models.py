@@ -77,8 +77,6 @@ class IgnoreRecipeForm(Form):
     ignore_list = StringField()
 
 class IngredientSubForm(Form):
-    choices = get_potential_switch_choices()
-    print(choices)
     ingredientSub = StringField()
     # foodType = StringField()
     foodType = SelectField('type', choices=[('1','Baked'), ('2','Beef'),
@@ -89,7 +87,7 @@ class IngredientSubForm(Form):
     ('16','Soups_Sauces_and_Gravies'), ('17','Spices_and_Herbs'),
     ('18','Sweets'), ('19','Vegetables_and_Vegetable')])
     # replacemnetChoice = StringField()
-    # choices = ['Subsitute 1', 'Subsitute 2', 'Subsitute 3']
+    choices = ['Subsitute 1', 'Subsitute 2', 'Subsitute 3']
     replacementChoice = RadioField('', choices=[('1', choices[0]), ('2',choices[1]), ('3',choices[2]), ('DNR', 'Do Not Replace')])
 
 class UserPreference(db.Model, UserMixin):

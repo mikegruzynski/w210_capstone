@@ -90,16 +90,19 @@
 									<a href = "/rerun_recipe_plan" class="button">Create a New Recipe Plan</a>
 									<a href = "/recipe_center" class="button">See My Recipes</a>
 									<!-- <a href = "/display_recipe" class="button">See My Recipes</a> -->
+								<h1></h1>
+								<h3>How do these recipes stack up to your nutritional goals?</h3>
+								<p></p>
 								</div>
 
 
 								<body>
-
+									<h1></h1>
+									<h3>Nutrients Bar Chart</h3>
 								    {% for id in ids %}
-								        <h3>{{id}}</h3>
+								        <!-- <h3>{{id}}</h3> -->
 								        <div id="{{id}}"></div>
 								    {% endfor %}
-
 								</body>
 								<footer>
 								    <!-- D3.js -->
@@ -131,6 +134,8 @@
 								</head>
 
 								<body>
+									<h1></h1>
+									<h3>Macro Nutrients Radar Plot</h3>
 								  <div id="macroMealPlanRadar"><!-- Plotly chart will be drawn inside this DIV --></div>
 								  <script>
 								    Plotly.plot("macroMealPlanRadar", radar_data_macro, radar_layout_macro)
@@ -140,6 +145,8 @@
 
 
 								<head>
+									<h1></h1>
+									<h3>Micro Nutrients Radar Plot</h3>
 								  <!-- Plotly.js -->
 								  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 								  <script>
@@ -178,6 +185,11 @@
 												<p>{{ form2.recipe_name }} </p>
 										<p><input type=submit value="Subsitute Ingredients in this Recipe"></p>
 									</form>
+									</div>
+
+									<div>
+										<a href = "/recipe_center" class="button">Back to Recipe Center</a>
+										<a href = "/user_profile" class="button">Back to User Profile</a>
 									</div>
 									<!-- <a href = "/subsitute_ingredients" class="button">Subsitute Ingredients in Meals </a> -->
 								</div>

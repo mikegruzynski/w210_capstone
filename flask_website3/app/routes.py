@@ -2,8 +2,7 @@ from app import app, db
 from flask import render_template, flash, redirect, url_for, session, request
 from flask_login import current_user, login_user, logout_user
 from app.forms import LoginForm, RegistrationForm, UserPreferenceForm
-# from app.models import User, InputMacroNutrientsForm, InputMicroNutrientsForm, IgnoreRecipeForm, IngredientSubForm, ChooseRecipeToSubIngredients
-from app.models import *
+from app.models import User, InputMacroNutrientsForm, InputMicroNutrientsForm, IgnoreRecipeForm, IngredientSubForm, ChooseRecipeToSubIngredients
 from app.user_profile_support.get_user_nutrients import *
 from app.user_profile_support.get_userPreference_Answers import *
 from app.user_profile_support.ingredientSubsitutions import *
@@ -123,9 +122,17 @@ def register():
 def preference_survey():
     print(current_user.is_authenticated)
     if current_user.is_authenticated:
-        user = current_user.username
-        print(user)
-        return render_template('survey.html', title='Preferences', user=user)
+        # Check if user is New or Returning
+        print(session.keys())
+        if 'data' in session.keys():
+            data = pd.read_json(session['data'])
+            is_new_user = False
+            user = data.firstname.values[0]
+        else:
+            is_new_user = True
+            user = current_user.username
+
+        return render_template('survey.html', title='Preferences', user=user, is_new_user=is_new_user)
     else:
         return redirect(url_for('register'))
 
@@ -551,9 +558,6 @@ def single_ingredient_replacement(recipe_id):
                         potential_switches = []
                         display_bottom = False
 
-
-                    # print(session.keys())
-                    # print(pd.read_json(session['switch_df_temp']))
                 else:
                     # User entered an ingredient to sub
                     if ingredientSubForm.replacementChoice.data == "DNR":

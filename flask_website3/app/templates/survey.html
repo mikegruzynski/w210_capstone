@@ -42,18 +42,32 @@
 					<section class="wrapper">
 						<div class="inner">
 							<header class="align-center">
-								<h2>Hello {{user}}, Let's Get Started</h2>
+								{% if is_new_user %}
+									<h2>Hello {{user}}, Let's Get Started</h2>
+								{% else %}
+									<h2>Hello {{user}}, Please Update Preferneces Below</h2>
+								{% endif %}
 								<h3>Please Fill Out the Below!</h3>
 								<p>Once submitted please visit your profile link from the menu</p>
 								<p>We will use the answers from the survey to calculate the optimal nutritional goals for you and a meal plan to help you achieve those goals<p>
-								<a href = "/user_profile" class="button">Go To User Profile</a>
+								{% if is_new_user %}
+									<a href = "/user_profile" class="button">Go To User Profile</a>
+								{% else %}
+									<a href = "/user_profile" class="button">Go To User Profile</a>
+									<a href = "/recipe_center" class="button">Back to Recipe Center</a>
+								{% endif %}
 							</header>
 
-                            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScje_AVitzASqydFcGAFNJ3_sa1J9KBWCbx2-Df4N38gk5CIw/viewform?embedded=true" width="1200"
-                             height="600" frameborder="0" marginheight="0" marginwidth="0" align="center">Loading...</iframe>
+	              <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScje_AVitzASqydFcGAFNJ3_sa1J9KBWCbx2-Df4N38gk5CIw/viewform?embedded=true" width="1200"
+	               height="600" frameborder="0" marginheight="0" marginwidth="0" align="center">Loading...</iframe>
 
-                        </div>
-
+								{% if is_new_user %}
+									<a href = "/user_profile" class="button">Go To User Profile</a>
+								{% else %}
+									<a href = "/user_profile" class="button">Go To User Profile</a>
+									<a href = "/recipe_center" class="button">Back to Recipe Center</a>
+								{% endif %}
+					  </div>
 					</section>
 
 

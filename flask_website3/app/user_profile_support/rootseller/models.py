@@ -164,7 +164,6 @@ class GA(object):
 
 
     def create_individual_recipe_population(self, recipe, amount_per_population):
-        print("create_individual_recipe_population")
         recipe = recipe.copy()
 
         description_list = recipe['NDB_NO']
@@ -344,7 +343,6 @@ class GA(object):
         recipe_population = np.asarray(self.create_individual_recipe_population(recipe, amount_per_population))
 
         for generation in range(num_generations):
-            print("Generation : ", generation)
             fitness_recipe = self.recipe_population_fitness_individual(recipe_population, recipe)
 
             index = self.recipe_select_mating_pool_individual(daily_diet_amount, fitness_recipe, amount_parents_mating)
@@ -361,22 +359,22 @@ class GA(object):
             print_best_index, df_loss = self.print_recipe_select_mating_pool_individual(daily_diet_amount, print_best, amount_per_population)
             # print(print_best_index[:5])
 
-        print('***************')
+        # print('***************')
         best_recipe_combo = recipe_population[print_best_index[0]]
         # print(best_recipe_combo)
-        print()
-        print('Original Recipe:')
-        print(pd.DataFrame(recipe[self.macro_labels].sum()).T)
-        print()
-        print('Optimized Recipe:')
-        print(self.recipe_population_fitness_individual([best_recipe_combo], recipe))
-        print()
-        print('User should eat per meal:')
-        print(daily_diet_amount)
+        # print()
+        # print('Original Recipe:')
+        # print(pd.DataFrame(recipe[self.macro_labels].sum()).T)
+        # print()
+        # print('Optimized Recipe:')
+        # print(self.recipe_population_fitness_individual([best_recipe_combo], recipe))
+        # print()
+        # print('User should eat per meal:')
+        # print(daily_diet_amount)
 
         df_temp = pd.DataFrame({'original_conversion_factor': recipe['conversion_factor'],
                                 'new_conversion_factor': best_recipe_combo,
                                 'Description': recipe['Description']})
-        print()
-        print('Differnce in unoptimized and optimized ratios:')
-        print(df_temp[['original_conversion_factor', 'new_conversion_factor', 'Description']])
+        # print()
+        # print('Differnce in unoptimized and optimized ratios:')
+        # print(df_temp[['original_conversion_factor', 'new_conversion_factor', 'Description']])
