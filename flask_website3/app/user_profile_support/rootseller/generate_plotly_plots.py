@@ -122,8 +122,6 @@ def full_recipe_rec_plots(df, df_list, df_summed_list, profile_init, session, na
     trace_radar_micro_list = []
     master_stack_list = []
     buttons_list = []
-    print("HERE IN VISUAL")
-    print(df)
     for itr in range(len(recipe_list)):
         #// START: Aggregate information and transform data labels into easily read output labels
         data_micro_raw = df.loc[itr, profile_init.micro_list].to_frame().T.reset_index(drop=True)

@@ -68,18 +68,13 @@
 								{% if display_bottom == True %}
 								<h4>Choose What you Would like to Replace the Ingredient With</h4>
 								<div style="float: left; width: 100%;">
-									<ol>
-										{% for choice in potential_switches %}
-										<li>  {{ choice }}</li>
-										{%endfor%}
-									</ol>
 									{{ form.replacementChoice }}
 								</div>
 									<p></p>
 											<p><input type=submit value="Replace Ingredient"></p>
-												<h3>See how the Ingredient change will affect your nutrient goals</h3>
+												<!-- <h3>See how the Ingredient change will affect your nutrient goals</h3>
 												<p>Note this image is a placeholder. Will be updated</p>
-												<img src="{{ url_for('static', filename='images/test_replacement_radar_plot.png') }}" alt="" />
+												<img src="{{ url_for('static', filename='images/test_replacement_radar_plot.png') }}" alt="" /> -->
 									      <p></p>
 									{% else %}
 										<h5><font color="blue">{{ msg_print }}</font></h5>

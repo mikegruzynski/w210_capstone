@@ -398,8 +398,8 @@ def single_ingredient_replacement(recipe_id):
                 if ingredientSubForm.replacementChoice.data is None:
                     # Get nbd_no
                     nbd_no = df_ingredient_NDBi.iloc[int(ingredientSubForm.ingredientSub.data)].NDB_NO
-
                     # Find options for food replacements
+
                     try:
                         switch_df, potential_switches = get_single_ingredient_replacement(session, ingredientSubForm, recipe_id_exp, nbd_no)
                         # update session switch options

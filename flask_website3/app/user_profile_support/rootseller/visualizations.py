@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings('ignore')
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+from app.user_profile_support.rootseller import macronutrients
 
 class Plots(object):
     def __init__(self, df_list, rootprofile):
@@ -68,17 +69,22 @@ class Plots(object):
         fig.savefig('test_images/{}'.format(output_file_name))
 
 
-    def bar_plot_recipe(self, name_list, output_file_name):
-
+    def bar_plot_recipe(self, name_list, output_file_name, session):
+        print("bar_plot_recipe_static")
         df_new_list = []
+        user_profile_data = pd.read_json(session['data'])
         for df in self.df_list:
+            print("HERE DF")
             data_micro = df.loc[:, self.rootprofile.micro_list].copy()
             data_micro = data_micro[self.rootprofile.profile_micro_filtered_df.columns].sum() / self.rootprofile.profile_micro_filtered_df
             data_micro.columns = self.rootprofile.micro_label_list
 
             data_macro = df.loc[:, self.rootprofile.macro_list].copy()
 
-            new_columns = self.rootprofile.init_macro.convert_labels_to_pretty_labels(data_macro.columns)
+            init_macro = macronutrients.Macronutrients(user_profile_data)
+            # new_columns = self.rootprofile.init_macro.convert_labels_to_pretty_labels(data_macro.columns)
+            ew_columns = init_macro.convert_labels_to_pretty_labels(data_macro.columns)
+            print("init_macro")
             data_macro.columns = new_columns
             data_macro = self.rootprofile.init_macro.add_unsaturated_fat_columns(data_macro)
 

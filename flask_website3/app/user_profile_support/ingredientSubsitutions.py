@@ -178,38 +178,41 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id, nbd
         session['potential_switches'] = potential_switches
 
 
-        # Get Visuals Data
-        print("Ingredeint Sub Visual")
-        # Split User input into the item to replace and type, format: ['"44005":7']
-        master_tag_list = []
-        replace_list = []
-        new_recipe_dict = recipe_init.recipe_alternitive_create(replacement_ndb_tag, tag_list, temp_recipe_dict)
-        replace_list.append(replacement_ndb_tag)
-        master_tag_list.append(tag_list)
-        print("HERE")
-        # Create an iterable list. Change Masetr tage list from:
-        # master_tag_list =  [['"04042"', '"04618"', '"04545"']] to
-        # iterable_list =  [('"04042"',), ('"04618"',), ('"04545"',)]
-        iterable_list = list(itertools.product(*master_tag_list))
-        new_recipe_dict = recipe_init.recipe_alternitive_iter_create(replace_list, iterable_list, temp_recipe_dict)
-        print("HERE1")
-        print("\n\nCreated iterable list ")
-        print("new_recipe_dict", new_recipe_dict, "iterable_list", iterable_list)
-        temp = recipe_init.recipe_list_to_conversion_factor_list(recipe_id)
-        df_list = []
-        name_list = []
-        for recipe in new_recipe_dict.keys():
-            temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe, dict=new_recipe_dict)
-            df_list.append(temp_recipe_df)
-            name_list.append(new_recipe_dict[recipe]['name'])
-        print('*____ Visuals ___*')
-        print("df_list", df_list)
-        print("profile_init", profile_init)
-        print('name_list', name_list)
-        # # visualizations.Plots(df_list, profile_init).bar_plot_recipe(name_list, 'test_replacement_barplot')
-        # print("visual 1")
+        # # Get Visuals Data
+        # print("******Ingredeint Sub Visual****")
+        # # Split User input into the item to replace and type, format: ['"44005":7']
+        # master_tag_list = []
+        # replace_list = []
+        #
+        # temp_recipe_dict = {}
+        # temp_recipe_dict[recipe_id] = recipe_init.recipe_clean[recipe_id].copy()
+        #
+        # new_recipe_dict = recipe_init.recipe_alternitive_create(replacement_ndb_tag, tag_list, temp_recipe_dict)
+        # replace_list.append(replacement_ndb_tag)
+        # master_tag_list.append(tag_list)
+        #
+        # # Create an iterable list. Change Masetr tage list from:
+        # # master_tag_list =  [['"04042"', '"04618"', '"04545"']] to
+        # # iterable_list =  [('"04042"',), ('"04618"',), ('"04545"',)]
+        # iterable_list = list(itertools.product(*master_tag_list))
+        # new_recipe_dict = recipe_init.recipe_alternitive_iter_create(replace_list, iterable_list, temp_recipe_dict)
+        # temp = recipe_init.recipe_list_to_conversion_factor_list(recipe_id)
+        # df_list = []
+        # name_list = []
+        # for recipe in new_recipe_dict.keys():
+        #     temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe, dict=new_recipe_dict)
+        #     df_list.append(temp_recipe_df)
+        #     name_list.append(new_recipe_dict[recipe]['name'])
+        # print('*____ Visuals ___*')
+        # # print("df_list", df_list)
+        # # print("profile_init", profile_init)
+        # # print('name_list', name_list)
+        # visualizations.Plots(df_list, profile_init).bar_plot_recipe(name_list, 'test_replacement_barplot', session)
+        # # print("visual 1")
         # # visualizations.Plots(df_list, profile_init).radar_plot_recipe(name_list, 'test_replacement_radar_plot')
-        # print("visual 2")
+        # # print("visual 2")
+
+
         return switch_df, potential_switches[:3]
 
 
