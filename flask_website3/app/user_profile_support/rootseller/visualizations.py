@@ -74,7 +74,6 @@ class Plots(object):
         df_new_list = []
         user_profile_data = pd.read_json(session['data'])
         for df in self.df_list:
-            print("HERE DF")
             data_micro = df.loc[:, self.rootprofile.micro_list].copy()
             data_micro = data_micro[self.rootprofile.profile_micro_filtered_df.columns].sum() / self.rootprofile.profile_micro_filtered_df
             data_micro.columns = self.rootprofile.micro_label_list
@@ -83,26 +82,34 @@ class Plots(object):
 
             init_macro = macronutrients.Macronutrients(user_profile_data)
             # new_columns = self.rootprofile.init_macro.convert_labels_to_pretty_labels(data_macro.columns)
-            ew_columns = init_macro.convert_labels_to_pretty_labels(data_macro.columns)
-            print("init_macro")
+            new_columns = init_macro.convert_labels_to_pretty_labels(data_macro.columns)
             data_macro.columns = new_columns
-            data_macro = self.rootprofile.init_macro.add_unsaturated_fat_columns(data_macro)
+            data_macro = init_macro.add_unsaturated_fat_columns(data_macro)
 
             data_macro = data_macro[self.rootprofile.profile_macro_filtered_df.columns].sum() / self.rootprofile.profile_macro_filtered_df
 
             df_out = data_macro.join(data_micro)
             df_new_list.append(df_out)
+        print("df_new_list",df_new_list)
 
         df_master = pd.concat(df_new_list)
         df_master = df_master.transpose()
         df_master = df_master.reset_index()
         df_master.columns = ['index'] + name_list
+        print([df_master.iloc[:,:4]])
+        print('name_list', name_list)
+        df_small = df_master.iloc[:,:4]
+        label_list = ['Do Not Replcae', 'Sub 1', 'Sub 2', 'Sub 3']
+        ax = df_small.plot(x='index', y=name_list, kind="bar", color=self.color_list)
+        print("Hereee")
 
-        ax = df_master.plot(x='index', y=name_list, kind="bar", color=self.color_list)
-        ax.plot(df_master.index, [1.0]*len(df_master.index), color='black', linestyle='--', lw=2)
-
+        ax.plot(df_small.index, [1.0]*len(df_master.index), color='black', linestyle='--', lw=2)
+        print("fig")
         fig = ax.get_figure()
-        fig.savefig('test_images/{}'.format(output_file_name), bbox_inches='tight')
+        print("output_file_name", output_file_name)
+        print("Saving to 'test_images/{}'.format(output_file_name)")
+        path = 'app/static/images/'
+        fig.savefig(path+'test_images/{}'.format(output_file_name), bbox_inches='tight')
 
 
     def stacked_barplot(self, itr, recipe_list, output_file_name):
