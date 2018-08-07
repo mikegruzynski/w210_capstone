@@ -636,10 +636,25 @@ def customize_serving_size(recipe_id):
             marker=dict(color='red',
                         size=10)
             )
+        recipe_temp_df_normalized = temp_recipe_df_AMGA[profile_init.macro_label_list] / temp_recipe_df_AMGA[profile_init.macro_label_list].sum()
+        recipe_temp_df_normalized = recipe_temp_df_normalized[profile_init.macro_label_list]
+        master_stack_list = []
+
+        # df_AMGA_single_col_bar_stacked =
+        for index in temp_recipe_df_AMGA.index:
+            temp = dict(
+                x=profile_init.macro_label_list.copy(),
+                y=recipe_temp_df_normalized.loc[index, profile_init.macro_label_list].values.tolist(),
+                type='bar',
+                name=temp_recipe_df_AMGA.loc[index, 'Description'],
+                text=temp_recipe_df_AMGA.loc[index, profile_init.macro_label_list].values.tolist(),
+                hoverInfo='text')
+            master_stack_list.append(temp)
+
 
         trace_radar_macro_list.append(temp_trace_radar_macro)
         layout_meal_plan_radar_macro = dict(polar=dict(radialaxis=dict(visible=True)))
-
+        layout_single_stacked_bar = dict(barmode='stack')
         ingredients = recipe_init.recipe_clean[recipe_id]['ingredients']
         instructions = recipe_init.recipe_clean[recipe_id]['instructions']
 
@@ -658,10 +673,10 @@ def customize_serving_size(recipe_id):
 
         df_show = pd.DataFrame({'Ingredients': new_ingredient_list})
 
-
         return render_template('customize_serving_size.html', recipe_id=recipe_id,
                                radar_data_macro=trace_radar_macro_list, radar_layout_macro=layout_meal_plan_radar_macro,
-                               df_show=df_show.to_html(index=False), instructions=instructions)
+                               df_show=df_show.to_html(index=False), instructions=instructions,
+                               bar_data_macro=master_stack_list, bar_layout_macro=layout_single_stacked_bar)
         # return render_template('customize_serving_size.html', recipe_id=recipe_id)
     return redirect(url_for('index'))
 
