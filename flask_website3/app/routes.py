@@ -562,8 +562,107 @@ def customize_serving_size(recipe_id):
     user = current_user.username
     if pd.read_json(session['data']) is not False:
         user_meal_plan = pd.read_json(session['user_meal_plan'])
+        user_profile_data = pd.read_json(session['data'])
+        profile_init = rootprofile.UserProfile(user_profile_data)
+        recipe_init = recipes.Recipes(profile_init)
+        init_macro = macronutrients.Macronutrients(user_profile_data)
 
-        return render_template('customize_serving_size.html', recipe_id=recipe_id)
+        temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe_id)
+        temp_recipe_df = temp_recipe_df[~temp_recipe_df.isin(profile_init.micro_list)].reset_index(drop=True)
+
+        # multiplier_normalizer = profile_init.profile_macro_filtered_df['calories'].get_values()[0] / 3.0
+        # multiplier_normalizer = multiplier_normalizer / temp_recipe_df['Energy (kcal)'].sum()
+        # for column in profile_init.macro_list + ['conversion_factor']:
+        #     temp_recipe_df[column] = temp_recipe_df[column] * multiplier_normalizer
+
+        new_columns = init_macro.convert_labels_to_pretty_labels(temp_recipe_df.columns)
+        temp_recipe_df.columns = new_columns
+        temp_recipe_df_original = init_macro.add_unsaturated_fat_columns(temp_recipe_df)
+        temp_recipe_df_original = temp_recipe_df_original[~temp_recipe_df_original.isin(profile_init.micro_list)].reset_index(drop=True)
+
+        num_generations = 30
+        amount_per_population = 40
+        amount_parents_mating = 20
+        GA_init = models.GA(macro_list=profile_init.macro_label_list)
+        daily_diet_amount = (GA_init.user_df[GA_init.macro_labels] / 3.0)
+
+        df_AMGA_single = GA_init.AMGA_individual_recipe(num_generations, temp_recipe_df_original, amount_per_population,
+                                           amount_parents_mating, daily_diet_amount)
+
+        temp_recipe_df_AMGA = temp_recipe_df_original.copy()
+        temp_recipe_df_AMGA = temp_recipe_df_AMGA[~temp_recipe_df_AMGA.isin(profile_init.micro_list)].reset_index(drop=True)
+
+        new_scale_list = []
+        for index in temp_recipe_df_AMGA.index:
+            scale_factor = df_AMGA_single.loc[index, 'new_conversion_factor'] / df_AMGA_single.loc[index, 'original_conversion_factor']
+            new_scale_list.append(scale_factor)
+            for column in profile_init.macro_label_list:
+                temp_recipe_df_AMGA.loc[index, column] = temp_recipe_df_AMGA.loc[index, column] * scale_factor
+
+
+        trace_radar_macro_list = []
+        r_macro = temp_recipe_df_AMGA[profile_init.macro_label_list].sum() / daily_diet_amount[profile_init.macro_label_list]
+        r_macro = r_macro[profile_init.macro_label_list].values.tolist()[0]
+        theta_macro = profile_init.macro_label_list.copy()
+        # theta_macro.append(theta_macro[0])
+        temp_trace_radar_macro = dict(
+            type='scatterpolar',
+            r=r_macro,
+            theta=theta_macro,
+            fill='toself',
+            opacity=0.5,
+            text=temp_recipe_df_AMGA[profile_init.macro_label_list].values.tolist()[0],
+            hoverInfo='text',
+            name="Optimized Personal Serving Recipe",
+            marker=dict(color='blue',
+                        size=10)
+            )
+
+
+        trace_radar_macro_list.append(temp_trace_radar_macro)
+        r_macro = temp_recipe_df_original[profile_init.macro_label_list].sum() / daily_diet_amount[profile_init.macro_label_list]
+        r_macro = r_macro[profile_init.macro_label_list].values.tolist()[0]
+        theta_macro = profile_init.macro_label_list.copy()
+        # theta_macro.append(theta_macro[0])
+        temp_trace_radar_macro = dict(
+            type='scatterpolar',
+            r=r_macro,
+            theta=theta_macro,
+            fill='toself',
+            opacity=0.5,
+            text=temp_recipe_df_original[profile_init.macro_label_list].values.tolist()[0],
+            hoverInfo='text',
+            name="Original Recipe",
+            marker=dict(color='red',
+                        size=10)
+            )
+
+        trace_radar_macro_list.append(temp_trace_radar_macro)
+        layout_meal_plan_radar_macro = dict(polar=dict(radialaxis=dict(visible=True)))
+
+        ingredients = recipe_init.recipe_clean[recipe_id]['ingredients']
+        instructions = recipe_init.recipe_clean[recipe_id]['instructions']
+
+        new_ingredient_list = []
+        for cf_itr in range(len(new_scale_list)):
+            if ingredients[cf_itr]:
+                ingredients_split = ingredients[cf_itr].split(" ")
+                amount = float(ingredients_split[0])
+                amount = amount * new_scale_list[cf_itr]
+                del ingredients_split[0]
+                ingredients_split = [str(round(amount, 2))] + ingredients_split
+                ingredient_new = " ".join(ingredients_split)
+                new_ingredient_list.append(ingredient_new)
+            else:
+                new_ingredient_list.append("")
+
+        df_show = pd.DataFrame({'Ingredients': new_ingredient_list})
+
+
+        return render_template('customize_serving_size.html', recipe_id=recipe_id,
+                               radar_data_macro=trace_radar_macro_list, radar_layout_macro=layout_meal_plan_radar_macro,
+                               df_show=df_show.to_html(index=False), instructions=instructions)
+        # return render_template('customize_serving_size.html', recipe_id=recipe_id)
     return redirect(url_for('index'))
 
 
@@ -779,6 +878,9 @@ def shopping_list():
             df_final = df_final[round(df_final['Weight (lb)'], 3) != round(0, 3)]
             # ingredient_list = list(set(df_final.Description))
             df_show = df_final[['Unit Total', 'Description']]
+
+
+
             return render_template('shopping_list.html', df_show=df_show.to_html(index=False, justify='left'), user_data=user_profile_data)
         else:
             # Render the New User SetUp page until they comlete prefernece
