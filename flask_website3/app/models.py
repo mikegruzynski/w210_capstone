@@ -87,21 +87,7 @@ class IngredientSubForm(Form):
     # TODO: Create Select field of choices
     # ingredientSub = StringField()
     ingredientSub = RadioField('type', coerce=int)
-
-    # foodType = StringField()
-    # food_types_list = [('1','Baked'), ('2','Beef'),
-    # ('3','Beverages'), ('4','Breakfast_Cereals'), ('5','Cereal_Grains_and_Pasta'),
-    # ('6','Dairy_and_Egg'), ('7','Fats_and_Oils'), ('8','Finfish_and_Shellfish'),
-    # ('9','Fruits_and_Fruit_Juices'), ('10','Lamb_Veal_and_Game'), ('11','Legumes_and_Legume'),
-    # ('12','Nut_and_Seed'), ('13','Pork'), ('14','Poultry'), ('15','Sausages_and_Luncheon_Meats'),
-    # ('16','Soups_Sauces_and_Gravies'), ('17','Spices_and_Herbs'),
-    # ('18','Sweets'), ('19','Vegetables_and_Vegetable')]
-    # foodType = SelectField('type', choices=food_types_list)
     foodType = SelectField('type', coerce=int)
-
-    choices = ['Substitute 1', 'Substitute 2', 'Substitute 3']
-    # [('1', choices[0]), ('2',choices[1]), ('3',choices[2]), ('DNR', 'Do Not Replace')]
-    # TODO: Create Select field of choices
     replacementChoice = RadioField('', coerce=int)
 
 class UserPreference(db.Model, UserMixin):
