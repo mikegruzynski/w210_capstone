@@ -70,6 +70,18 @@
 				  <script>
 					Plotly.plot("macroMealPlanRadar", radar_data_macro, radar_layout_macro)
 				  </script>
+				  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+				  <script>
+				    var bar_data_macro = {{ bar_data_macro|tojson }};
+				    var bar_layout_macro = {{ bar_layout_macro|tojson }};
+				  </script>
+                <body>
+				  	<h1></h1>
+				  	<h3>Whats makes up the recipe</h3>
+				    <div id="barSingle"><!-- Plotly chart will be drawn inside this DIV --></div>
+				    <script>
+				  	Plotly.plot("barSingle", bar_data_macro, bar_layout_macro)
+				    </script>
 				</body>
 				<section class="wrapper style1">
 				<div class="inner">
