@@ -50,7 +50,7 @@ class Models(object):
         return new
 
 class GA(object):
-    def __init__(self):
+    def __init__(self, **kwargs):
         # TODO - Remove dependency on static files
         print("**TODO: GA: Remove the user df csv dependency")
         code_path = 'app/static/csv_files/GA_help'
@@ -64,9 +64,7 @@ class GA(object):
                        "sugar", "protein", "Iron, Fe (mg)", "Magnesium, Mg (mg)", "Manganese, Mn (mg)",
                        "Thiamin (mg)",
                        "Vitamin D (D2 + D3) (microg)"]
-        self.macro_labels = ["calories", "fat", "carbohydrate", "fiber", "cholesterol", "saturated_fat",
-                             "unsaturated_fat",
-                             "sugar", "protein"]
+        self.macro_labels = kwargs['macro_list']
 
 
     def find_nearest(self, input_array, value):
@@ -375,6 +373,8 @@ class GA(object):
         df_temp = pd.DataFrame({'original_conversion_factor': recipe['conversion_factor'],
                                 'new_conversion_factor': best_recipe_combo,
                                 'Description': recipe['Description']})
+
+        return df_temp
         # print()
         # print('Differnce in unoptimized and optimized ratios:')
         # print(df_temp[['original_conversion_factor', 'new_conversion_factor', 'Description']])
