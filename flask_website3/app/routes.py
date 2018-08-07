@@ -9,6 +9,7 @@ from app.user_profile_support.ingredientSubsitutions import *
 from app.user_profile_support.get_recipe_center_data import *
 from app.user_profile_support.rootseller import macronutrients
 from app.user_profile_support.rootseller.generate_plotly_plots import *
+from app.user_profile_support.run_pantry_suggestion import *
 # from app.user_profile_support.rootseller import micronutrients
 # import math, json
 # import plotly.plotly as py
@@ -285,16 +286,16 @@ def recipe_recommendation():
             if request.method == 'POST':
                 # Process Form Data
                 # Ingredient Replacment Request
-                if recipeNameIdForm.recipe_name.data is not '':
+                if recipeNameIdForm.recipe_name.data is not None:
                     t = user_meal_plan.iloc[int(recipeNameIdForm.recipe_name.data)]
                     recipe_name = t.recipe_name
                     best_recipe_combo = user_meal_plan.recipe_id
                     recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
                     recipe_id = get_recipe_id_from_name(recipe_name, recipe_details)
+                    print(recipe_details)
                     return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
 
-                if scaleRecipeForm1.customizeRecipeName.data is not '':
-                    print("Scale Recipe Form")
+                if scaleRecipeForm1.customizeRecipeName.data is not None:
                     # Get recipe Name
                     t = user_meal_plan.iloc[int(scaleRecipeForm1.customizeRecipeName.data)]
                     recipe_id = t.recipe_id
@@ -302,7 +303,7 @@ def recipe_recommendation():
                     return redirect(url_for('customize_serving_size', recipe_id=recipe_id))
 
                 # Ignore ingredient request
-                if ignoreRecipeForm.ignore_list.data is not '':
+                if ignoreRecipeForm.ignore_list.data is not None:
                     print("**TODO: Clear box when submitted")
                     # TODO: clear input box after submit
                     process_ignore_form(session, ignoreRecipeForm)
@@ -334,6 +335,18 @@ def recipe_recommendation():
 
 
 # Customize Serving Size of Recipe
+# @app.route('/customize_serving_size/<recipe_id>')
+# def customize_serving_size(recipe_id):
+#     print("Customize Recipe")
+#     print(recipe_id)
+#     user = current_user.username
+#     if pd.read_json(session['data']) is not False:
+#         user_meal_plan = pd.read_json(session['user_meal_plan'])
+#
+#         return render_template('customize_serving_size.html', recipe_id=recipe_id)
+#     return redirect(url_for('index'))
+
+# Customize Serving Size of Recipe
 @app.route('/customize_serving_size/<recipe_id>')
 def customize_serving_size(recipe_id):
     print("Customize Recipe")
@@ -341,8 +354,122 @@ def customize_serving_size(recipe_id):
     user = current_user.username
     if pd.read_json(session['data']) is not False:
         user_meal_plan = pd.read_json(session['user_meal_plan'])
+        user_profile_data = pd.read_json(session['data'])
+        profile_init = rootprofile.UserProfile(user_profile_data)
+        recipe_init = recipes.Recipes(profile_init)
+        init_macro = macronutrients.Macronutrients(user_profile_data)
 
-        return render_template('customize_serving_size.html', recipe_id=recipe_id)
+        temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe_id)
+        temp_recipe_df = temp_recipe_df[~temp_recipe_df.isin(profile_init.micro_list)].reset_index(drop=True)
+
+        # multiplier_normalizer = profile_init.profile_macro_filtered_df['calories'].get_values()[0] / 3.0
+        # multiplier_normalizer = multiplier_normalizer / temp_recipe_df['Energy (kcal)'].sum()
+        # for column in profile_init.macro_list + ['conversion_factor']:
+        #     temp_recipe_df[column] = temp_recipe_df[column] * multiplier_normalizer
+
+        new_columns = init_macro.convert_labels_to_pretty_labels(temp_recipe_df.columns)
+        temp_recipe_df.columns = new_columns
+        temp_recipe_df_original = init_macro.add_unsaturated_fat_columns(temp_recipe_df)
+        temp_recipe_df_original = temp_recipe_df_original[~temp_recipe_df_original.isin(profile_init.micro_list)].reset_index(drop=True)
+
+        num_generations = 30
+        amount_per_population = 40
+        amount_parents_mating = 20
+        GA_init = models.GA(macro_list=profile_init.macro_label_list)
+        daily_diet_amount = (GA_init.user_df[GA_init.macro_labels] / 3.0)
+
+        df_AMGA_single = GA_init.AMGA_individual_recipe(num_generations, temp_recipe_df_original, amount_per_population,
+                                           amount_parents_mating, daily_diet_amount)
+
+        temp_recipe_df_AMGA = temp_recipe_df_original.copy()
+        temp_recipe_df_AMGA = temp_recipe_df_AMGA[~temp_recipe_df_AMGA.isin(profile_init.micro_list)].reset_index(drop=True)
+
+        new_scale_list = []
+        for index in temp_recipe_df_AMGA.index:
+            scale_factor = df_AMGA_single.loc[index, 'new_conversion_factor'] / df_AMGA_single.loc[index, 'original_conversion_factor']
+            new_scale_list.append(scale_factor)
+            for column in profile_init.macro_label_list:
+                temp_recipe_df_AMGA.loc[index, column] = temp_recipe_df_AMGA.loc[index, column] * scale_factor
+
+
+        trace_radar_macro_list = []
+        r_macro = temp_recipe_df_AMGA[profile_init.macro_label_list].sum() / daily_diet_amount[profile_init.macro_label_list]
+        r_macro = r_macro[profile_init.macro_label_list].values.tolist()[0]
+        theta_macro = profile_init.macro_label_list.copy()
+        # theta_macro.append(theta_macro[0])
+        temp_trace_radar_macro = dict(
+            type='scatterpolar',
+            r=r_macro,
+            theta=theta_macro,
+            fill='toself',
+            opacity=0.5,
+            text=temp_recipe_df_AMGA[profile_init.macro_label_list].values.tolist()[0],
+            hoverInfo='text',
+            name="Optimized Personal Serving Recipe",
+            marker=dict(color='blue',
+                        size=10)
+            )
+
+
+        trace_radar_macro_list.append(temp_trace_radar_macro)
+        r_macro = temp_recipe_df_original[profile_init.macro_label_list].sum() / daily_diet_amount[profile_init.macro_label_list]
+        r_macro = r_macro[profile_init.macro_label_list].values.tolist()[0]
+        theta_macro = profile_init.macro_label_list.copy()
+        # theta_macro.append(theta_macro[0])
+        temp_trace_radar_macro = dict(
+            type='scatterpolar',
+            r=r_macro,
+            theta=theta_macro,
+            fill='toself',
+            opacity=0.5,
+            text=temp_recipe_df_original[profile_init.macro_label_list].values.tolist()[0],
+            hoverInfo='text',
+            name="Original Recipe",
+            marker=dict(color='red',
+                        size=10)
+            )
+        recipe_temp_df_normalized = temp_recipe_df_AMGA[profile_init.macro_label_list] / temp_recipe_df_AMGA[profile_init.macro_label_list].sum()
+        recipe_temp_df_normalized = recipe_temp_df_normalized[profile_init.macro_label_list]
+        master_stack_list = []
+
+        # df_AMGA_single_col_bar_stacked =
+        for index in temp_recipe_df_AMGA.index:
+            temp = dict(
+                x=profile_init.macro_label_list.copy(),
+                y=recipe_temp_df_normalized.loc[index, profile_init.macro_label_list].values.tolist(),
+                type='bar',
+                name=temp_recipe_df_AMGA.loc[index, 'Description'],
+                text=temp_recipe_df_AMGA.loc[index, profile_init.macro_label_list].values.tolist(),
+                hoverInfo='text')
+            master_stack_list.append(temp)
+
+
+        trace_radar_macro_list.append(temp_trace_radar_macro)
+        layout_meal_plan_radar_macro = dict(polar=dict(radialaxis=dict(visible=True)))
+        layout_single_stacked_bar = dict(barmode='stack')
+        ingredients = recipe_init.recipe_clean[recipe_id]['ingredients']
+        instructions = recipe_init.recipe_clean[recipe_id]['instructions']
+
+        new_ingredient_list = []
+        for cf_itr in range(len(new_scale_list)):
+            if ingredients[cf_itr]:
+                ingredients_split = ingredients[cf_itr].split(" ")
+                amount = float(ingredients_split[0])
+                amount = amount * new_scale_list[cf_itr]
+                del ingredients_split[0]
+                ingredients_split = [str(round(amount, 2))] + ingredients_split
+                ingredient_new = " ".join(ingredients_split)
+                new_ingredient_list.append(ingredient_new)
+            else:
+                new_ingredient_list.append("")
+
+        df_show = pd.DataFrame({'Ingredients': new_ingredient_list})
+
+        return render_template('customize_serving_size.html', recipe_id=recipe_id,
+                               radar_data_macro=trace_radar_macro_list, radar_layout_macro=layout_meal_plan_radar_macro,
+                               df_show=df_show.to_html(index=False), instructions=instructions,
+                               bar_data_macro=master_stack_list, bar_layout_macro=layout_single_stacked_bar)
+        # return render_template('customize_serving_size.html', recipe_id=recipe_id)
     return redirect(url_for('index'))
 
 
@@ -352,22 +479,18 @@ def single_ingredient_replacement(recipe_id):
     if current_user.is_authenticated:
         user = current_user.username
         if pd.read_json(session['data']) is not False:
-
             # Get user meal plan from session
             user_meal_plan = pd.read_json(session['user_meal_plan'])
             best_recipe_combo = user_meal_plan.recipe_id
-
             recipe_id_exp = "RECIPE_"+str(recipe_id) # Recipe User is choosing to Edit
             recipe_name = user_meal_plan.recipe_name[user_meal_plan.recipe_id == recipe_id_exp].values[0]
 
             # Get input Form from models for html
             # Get Ingredients from Recipe as options to replace
-            if 'df_ingredient_NDB' not in session.keys():
-                df_ingredient_NDB = get_ingredient_NDB_number(session, best_recipe_combo)
-                session['df_ingredient_NDB'] = df_ingredient_NDB.to_json()
-            else:
-                df_ingredient_NDB = pd.read_json(session['df_ingredient_NDB'])
+            df_ingredient_NDB = get_ingredient_NDB_number(session, best_recipe_combo)
+            session['df_ingredient_NDB'] = df_ingredient_NDB.to_json()
             df_ingredient_NDBi = df_ingredient_NDB[df_ingredient_NDB.recipe_id == recipe_id_exp]
+
 
             ingredient_choice_list = []
             for i, desc in enumerate(df_ingredient_NDBi[['Description']].values):
@@ -399,6 +522,7 @@ def single_ingredient_replacement(recipe_id):
                     # Get nbd_no
                     nbd_no = df_ingredient_NDBi.iloc[int(ingredientSubForm.ingredientSub.data)].NDB_NO
                     # Find options for food replacements
+                    switch_df, potential_switches = get_single_ingredient_replacement(session, ingredientSubForm, recipe_id_exp, nbd_no)
 
                     try:
                         switch_df, potential_switches = get_single_ingredient_replacement(session, ingredientSubForm, recipe_id_exp, nbd_no)
@@ -447,6 +571,7 @@ def single_ingredient_replacement(recipe_id):
                         ingredient_choice_list = ingredient_choice_list + [(i, desc[0])]
                     ingredientSubForm.ingredientSub.choices = ingredient_choice_list
 
+                print(df_ingredient_NDBi[['NDB_NO', 'Description']].values)
                 # Render the Subsitute Ingredient HTML
                 return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi[['NDB_NO', 'Description']].values,
                 potential_switches=potential_switches, display_bottom=display_bottom, msg_print=msg_print, recipe_name=recipe_name)
@@ -671,6 +796,8 @@ def pantry_recipe():
         if len(pantry_items_list) > 0:
             pantry_exists=True
             # Run pantry suggestion code here
+            # recipe_id_suggestion_list = get_pantry_suggetsions(user_profile_data, pantry_items_list, 5)
+
             try:
                 recipe_id_suggestion_list = get_pantry_suggetsions(user_profile_data, pantry_items_list, 5)
 
@@ -683,8 +810,14 @@ def pantry_recipe():
                     recipe_id_suggestion_list.append(recipe_details[itr].get('id'))
                 has_suggestions = True
                 msg = ''
-                session['pantry_recipe_names'] = recipe_name_suggestion_list
-                session['pantry_recipe_ids'] = recipe_id_suggestion_list
+                try:
+                    session['pantry_recipe_names'] = recipe_name_suggestion_list
+                except:
+                    print("Error in saving Pantry Recipe Name")
+                try:
+                    session['pantry_recipe_ids'] = recipe_id_suggestion_list
+                except:
+                    print("Error in saving Recipe Ids")
             except:
                 has_suggestions = False
                 msg = 'We are sorry we did not find a recipe for your pantry. Update pantry and try again'

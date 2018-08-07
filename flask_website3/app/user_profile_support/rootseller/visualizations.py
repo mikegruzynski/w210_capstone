@@ -98,18 +98,23 @@ class Plots(object):
         df_master.columns = ['index'] + name_list
         print([df_master.iloc[:,:4]])
         print('name_list', name_list)
+        print(df_master.shape)
         df_small = df_master.iloc[:,:4]
+        print(df_small)
         label_list = ['Do Not Replcae', 'Sub 1', 'Sub 2', 'Sub 3']
-        ax = df_small.plot(x='index', y=name_list, kind="bar", color=self.color_list)
-        print("Hereee")
 
-        ax.plot(df_small.index, [1.0]*len(df_master.index), color='black', linestyle='--', lw=2)
-        print("fig")
+        # ax = df_small.plot(x='index', y=label_list, kind="bar", color=self.color_list)
+        fig, ax = plt.subplots()
+        ax = df_small.plot(kind="bar", legend=True)
+        print("Hereee")
+        print(df_small.shape)
+        # ax.plot(df_small.index, [1.0]*len(df_small.index), color='black', linestyle='--', lw=2)
         fig = ax.get_figure()
         print("output_file_name", output_file_name)
         print("Saving to 'test_images/{}'.format(output_file_name)")
         path = 'app/static/images/'
-        fig.savefig(path+'test_images/{}'.format(output_file_name), bbox_inches='tight')
+        print(path+'test_images/'+output_file_name+'.png')
+        fig.savefig(path+'test_images/'+output_file_name+'.png') # bbox_inches='tight'
 
 
     def stacked_barplot(self, itr, recipe_list, output_file_name):
