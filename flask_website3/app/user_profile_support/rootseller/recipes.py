@@ -263,6 +263,7 @@ class Recipes(object):
 
         return amount, unit
 
+
     def recipe_list_to_conversion_factor_list(self, recipe_id, **kwargs):
         # print([kwargs["filter_list"]])
         if kwargs:
@@ -296,8 +297,15 @@ class Recipes(object):
             itr = 0
             df_list = []
             conversion_factor_list = []
+            print("ingredients")
+            print(self.recipe_clean[recipe_id]['ingredients'])
+            print(self.recipe_clean[recipe_id]['NDB_NO_tags'][itr])
             while itr < len(self.recipe_clean[recipe_id]['ingredients']):
+                print(self.recipe_clean[recipe_id]['NDB_NO_tags'][itr])
                 try:
+                    # if swap is True:
+                    #     self.recipe_clean[recipe_id]['NDB_NO_tags'][itr]
+
                     if self.recipe_clean[recipe_id]['ingredients'][itr] and self.recipe_clean[recipe_id]['NDB_NO_tags'][itr] != 'np.nan' and self.recipe_clean[recipe_id]['NDB_NO_tags'][itr] != '':
                         food_unit_dict = self.extact_unit_from_recipe(self.recipe_clean[recipe_id]['ingredients'][itr])
                         amount, unit = self.extact_number_from_recipe(self.recipe_clean[recipe_id]['ingredients'][itr], food_unit_dict)
