@@ -3,7 +3,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from app.user_profile_support.calculate_macro_nutrients import get_macro_label_list
 from app.user_profile_support.get_user_nutrients import get_micro_label_list
-from flask import session
+# from flask import session
 
 def get_userPreferences(user):
     # Returns the user preferences from the google Form
@@ -72,45 +72,48 @@ def create_ignore_list_from_session_df(session):
     if 'ignore_list' in session.keys():
         existing_ignores = pd.read_json(session['ignore_list'])
         ignore_list = []
+        print("existing_ignores", existing_ignores)
+        print(existing_ignores.recipe_ignore.values)
         for ignore in existing_ignores.recipe_ignore.values:
+            print(ignore)
             ignore_list = ignore_list + ignore.split(', ')
     return ignore_list
 
 
 def process_ignore_form(session, ignore_form):
+    print("process_ignore_form")
+    # Get Existing Ignore List
     if 'ignore_list' in session.keys():
         existing_ignore_list = create_ignore_list_from_session_df(session)
-    ignore_list1 = ignore_form.ignore_list.data.split('RECIPE_ ')
-    ignore_list = []
-    for recipe_id in ignore_list1:
-        ignore_list = ignore_list + recipe_id.split(', ')
-    ignore_list = existing_ignore_list + ignore_list
-    session['ignore_list'] = pd.DataFrame({'recipe_ignore':ignore_list}).to_json()
+        print(existing_ignore_list)
+    else:
+        existing_ignore_list = []
+    print("\n\nin Process ignore")
+    print(existing_ignore_list)
+    # Get User Meal plan
+    user_meal_plan = pd.read_json(session['user_meal_plan'])
+
+    # Add New recipes to ignore list
+    for idx in ignore_form.ignore_list.data:
+        t = user_meal_plan.iloc[int(idx)]
+        existing_ignore_list = existing_ignore_list+[t.recipe_id]
+
+    # Save data to session ignore list
+    print(existing_ignore_list)
+    session['ignore_list'] = pd.DataFrame(data={'recipe_ignore':existing_ignore_list}).to_json()
+    print(pd.read_json(session['ignore_list']))
 
 
-def get_user_ignore_responses(user_profile_data, user):
-    scope = ['https://spreadsheets.google.com/feeds',
-            'https://www.googleapis.com/auth/drive']
+def get_user_ignore_responses(session, user):
+    if 'ignore_list' in session.keys():
+        ignore_df = pd.read_json(session['ignore_list'])
+        # print(ignore_df['recipe_ignore'])
+        if ignore_df.empty is True:
+            ignore_list = []
+        else:
+            ignore_list = ignore_df.recipe_ignore.values
+    else:
+        ignore_list = []
 
-    cred_path = 'app/static/csv_files/'
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(cred_path + 'w210-e41e21aed377.json', scope)
-
-    # Get Google Sheet of Reponses
-    gc = gspread.authorize(credentials)
-    wks2 = gc.open("Recipe Removal (Responses)").sheet1
-    all_user_ignore_df = pd.DataFrame(wks2.get_all_records(), dtype=str)
-
-    rename_dict = {'Please re-enter your Root Cellar username': 'username',
-    'Please list recipe ID\'s you would like to see removed (separate by commas).':'ignore_list'}
-    all_user_ignore_df.rename(columns=rename_dict, inplace=True)
-
-    ignore_list = []
-    # Look for user if exists in user preferneces
-    if any(all_user_ignore_df.username == user):
-        user_ignore_df = all_user_ignore_df[all_user_ignore_df.username == user]
-        for ignore in user_ignore_df.ignore_list.values:
-            ignore_list = ignore_list + ignore.split(', ')
-
-    session['ignore_list'] = pd.DataFrame({'recipe_ignore':ignore_list}).to_json()
-    # user_profile_data.ignore_list = ignore_list
+    print(ignore_list)
     return ignore_list

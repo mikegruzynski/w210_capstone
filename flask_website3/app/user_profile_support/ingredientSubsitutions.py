@@ -27,7 +27,7 @@ def get_recipe_list(session, user):
     recipe_init = recipes.Recipes(profile_init)
 
     # Check for any recipes to ignore
-    ignore_list = get_user_ignore_responses(user_profile_data, user)
+    ignore_list = get_user_ignore_responses(session, user)
 
     # number of meal preferences
     if 'meals_per_week' not in user_profile_data.keys():
@@ -73,7 +73,7 @@ def get_recipe_details(best_recipe_combo, user_profile_data):
     for rec_idx in best_recipe_combo:
         recipe_details.append(recipe_init.recipe_clean[rec_idx])
         # recipe_details = recipe_details.update(rec_idx=recipe_init.recipe_clean[rec_idx])
-
+    # print(recipe_details)
     return recipe_details
 
 # Lookup Recipe ID from Name
@@ -95,10 +95,6 @@ def get_shopping_list(best_recipe_combo, user_profile_data):
 
     while '' in ingredient_list:
         ingredient_list.remove('')
-
-    # TODO: aggregate the ingredients to combine recipies and amounts
-    print("***TODO: aggregate the ingredients to combine recipies and amounts")
-    # print(type(ingredient_list), ingredient_list)
     return(ingredient_list)
 
 
