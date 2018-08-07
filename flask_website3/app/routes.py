@@ -173,9 +173,17 @@ def user_profile():
                 print("user_meal_plan not in keys")
                 best_recipe_combo, weekly_diet_amount, user_profile_data, df_ingredient_NDB = get_recipe_list(session, user)
             user_meal_plan = pd.read_json(session['user_meal_plan'])
-            print("user_meal_plan calculated")
+
             # Check to make sure recipes are not in the ignore list
-            ignore_list = get_user_ignore_responses(user_profile_data, user)
+
+            ignore_list = get_user_ignore_responses(session, user)
+            # if 'ignore_list' in session.keys():
+            #     print("YEs")
+            #     ignore_df = pd.read_json(session['ignore_list'])
+            #     print(ignore_df)
+            #     ignore_list = ignore_df.recipe_id.values
+            # else:
+            #     ignore_list = []
             while any(np.intersect1d(ignore_list, user_meal_plan.recipe_id)):
                 best_recipe_combo, weekly_diet_amount, user_profile_data, df_ingredient_NDB = get_recipe_list(session, user)
                 user_meal_plan = pd.read_json(session['user_meal_plan'])
@@ -471,64 +479,75 @@ def recipe_recommendation():
             # //END
             # //END
 
-            # Form and route to ignore Recipes from list
-            ignore_form = IgnoreRecipeForm(request.form)
+            # Get Forms for Processing Data Requests -----------------------------
+            # Get Names of Recipe plan
+            recipe_names = user_meal_plan.recipe_name.values
+            recipe_names_choices = [(i, x) for i, x in enumerate(recipe_names)]
+
+            # Form for customizing Serving Sizes
+            # scaleRecipeForm1 = scaleRecipeForm(request.form)
             scaleRecipeForm1 = scaleRecipeForm(request.form)
-            # Form for Ingredient Swap Page
+            scaleRecipeForm1.customizeRecipeName.choices = recipe_names_choices
+
+            # Get IgnoreRecipeForm and Populate Options for Checkboxes
+            ignoreRecipeForm = IgnoreRecipeForm(request.form)
+            # Add Choices for ignoreing Recipes to Forms
+            ignoreRecipeForm.ignore_list.choices = recipe_names_choices
+
+
+            # Form for Choosing the Recipe to choose ingredients to Subsitute
+            # TODO: Creat Drop Down List
             recipeNameIdForm = ChooseRecipeToSubIngredients(request.form)
+
             if request.method == 'POST':
+                print("HERE CHECK")
+                # print(request.form['submit'])
                 # Ingredient Replacment Request
                 if recipeNameIdForm.recipe_name.data is not '':
                     best_recipe_combo = user_meal_plan.recipe_id
                     recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
                     recipe_id = get_recipe_id_from_name(recipeNameIdForm.recipe_name.data, recipe_details)
-                    # def get_recipe_id_from_name(recipeNameIdForm, recipe_details):
-                    #     # recipe_id = recipeNameIdForm.recipe_name.data
-                    #     for itr, details in enumerate(recipe_details):
-                    #         if recipe_details[itr].get('name') == recipeNameIdForm.recipe_name.data:
-                    #             recipe_id = recipe_details[itr].get('id')
-                    #             break
-                    #     return recipe_id
 
                     # single_ingredient_replacement(recipe_id)
                     return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
 
                 if scaleRecipeForm1.customizeRecipeName.data is not '':
-                    best_recipe_combo = user_meal_plan.recipe_id
-                    recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
-                    recipe_id = get_recipe_id_from_name(scaleRecipeForm1.customizeRecipeName.data, recipe_details)
+                    print("Scale Recipe Form")
+                    # Get recipe Name
+                    t = user_meal_plan.iloc[int(scaleRecipeForm1.customizeRecipeName.data)]
+                    recipe_id = t.recipe_id
+                    recipe_details = get_recipe_details(user_meal_plan.recipe_id, user_profile_data)
                     return redirect(url_for('customize_serving_size', recipe_id=recipe_id))
 
-                else:
-                    if scaleRecipeForm1.customizeRecipeName.data is not '':
-                        best_recipe_combo = user_meal_plan.recipe_id
-                        recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
-                        recipe_id = get_recipe_id_from_name(scaleRecipeForm1.customizeRecipeName.data, recipe_details)
-                        return redirect(url_for('customize_serving_size', recipe_id=recipe_id))
-
-
-                    # Ignore ingredient request
+                # Ignore ingredient request
+                if ignoreRecipeForm.ignore_list.data is not '':
                     print("**TODO: Clear box when submitted")
                     # TODO: clear input box after submit
-                    print(ignore_form)
-                    print(ignore_form.data)
-                    process_ignore_form(session, ignore_form)
+                    process_ignore_form(session, ignoreRecipeForm)
                     # Render the Users Profile Page
                     update_text = 'Sorry you did not like the recipes! You will not see it again. Regenerate your recipe plan for new suggestions'
-                    # return redirect(url_for('recipe_recommendation'))
-                    return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignore_form, form2=recipeNameIdForm, update_text=update_text, ids=ids, graphJSON=graphJSON,
-                                       radar_data_macro=data_meal_plan_radar_macro,
-                                       radar_layout_macro=layout_meal_plan_radar_macro,
-                                           radar_data_micro=data_meal_plan_radar_micro,
-                                           radar_layout_micro=layout_meal_plan_radar_micro,
-                                           scaleRecipeForm=scaleRecipeForm1)
+
+
+                # Ignore ingredient request
+                print("**TODO: Clear box when submitted")
+                # TODO: clear input box after submit
+                return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignoreRecipeForm, form2=recipeNameIdForm,
+                                update_text=update_text, ids=ids, graphJSON=graphJSON,
+                                   radar_data_macro=data_meal_plan_radar_macro,
+                                   radar_layout_macro=layout_meal_plan_radar_macro,
+                                    radar_data_micro=data_meal_plan_radar_micro,
+                                       radar_layout_micro=layout_meal_plan_radar_micro,
+                                       scaleRecipeForm = scaleRecipeForm1
+                                       )
             else:
-                return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignore_form, form2=recipeNameIdForm, update_text=update_text, ids=ids, graphJSON=graphJSON,
-                                       radar_data_macro=data_meal_plan_radar_macro,
+                print(request.method)
+                print(ignoreRecipeForm.ignore_list)
+                return render_template('recipe_recommendation.html', user_data=user_profile_data, user_meal_plan=user_meal_plan, ignore_form=ignoreRecipeForm, form2=recipeNameIdForm, update_text=update_text,
+                ids=ids, graphJSON=graphJSON, radar_data_macro=data_meal_plan_radar_macro,
                                        radar_layout_macro=layout_meal_plan_radar_macro,
                                            radar_data_micro=data_meal_plan_radar_micro,
                                            radar_layout_micro=layout_meal_plan_radar_micro,
-                                           scaleRecipeForm=scaleRecipeForm1)
+                                           scaleRecipeForm = scaleRecipeForm1)
         else:
             # Render the New User SetUp page until they comlete prefernece
             return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros)
@@ -558,10 +577,24 @@ def single_ingredient_replacement(recipe_id):
             # Get user meal plan from session
             user_meal_plan = pd.read_json(session['user_meal_plan'])
             best_recipe_combo = user_meal_plan.recipe_id
-
+            print(best_recipe_combo)
             # Get input Form from models for html
             choices = ['one','two', 'three']
+            sub_choices = [('1', choices[0]), ('2',choices[1]), ('3',choices[2]), ('DNR', 'Do Not Replace')]
+            # TRY HERE
+            food_type_choice_list = [('1','Baked'), ('2','Beef'),
+            ('3','Beverages'), ('4','Breakfast_Cereals'), ('5','Cereal_Grains_and_Pasta'),
+            ('6','Dairy_and_Egg'), ('7','Fats_and_Oils'), ('8','Finfish_and_Shellfish'),
+            ('9','Fruits_and_Fruit_Juices'), ('10','Lamb_Veal_and_Game'), ('11','Legumes_and_Legume'),
+            ('12','Nut_and_Seed'), ('13','Pork'), ('14','Poultry'), ('15','Sausages_and_Luncheon_Meats'),
+            ('16','Soups_Sauces_and_Gravies'), ('17','Spices_and_Herbs'),
+            ('18','Sweets'), ('19','Vegetables_and_Vegetable')]
+
             ingredientSubForm = IngredientSubForm(request.form)
+            # ingredientSubForm = IngredientSubForm(request.POST, obj=food_types_list)
+            ingredientSubForm.foodType.choices = food_type_choice_list
+            ingredientSubForm.replacementChoice.choices = sub_choices
+            # ingredientSubForm = IngredientSubForm.edit_food_types(food_types_list=food_type_choice_list)
             recipe_id_exp = "RECIPE_"+str(recipe_id) # Recipe User is choosing to Edit
 
             # Get Ingredients from Recipe as options to replace
@@ -888,6 +921,11 @@ def master_run():
 @app.route('/sample_profile')
 def sample_profile():
    return render_template('sample_profile.html')
+
+
+@app.route('/about_the_models')
+def about_the_models():
+   return render_template('about_the_models.html')
 
 
 # # Plotly Test
