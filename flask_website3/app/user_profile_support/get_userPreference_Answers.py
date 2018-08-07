@@ -72,8 +72,6 @@ def create_ignore_list_from_session_df(session):
     if 'ignore_list' in session.keys():
         existing_ignores = pd.read_json(session['ignore_list'])
         ignore_list = []
-        print("existing_ignores", existing_ignores)
-        print(existing_ignores.recipe_ignore.values)
         for ignore in existing_ignores.recipe_ignore.values:
             print(ignore)
             ignore_list = ignore_list + ignore.split(', ')
@@ -102,6 +100,7 @@ def process_ignore_form(session, ignore_form):
     print(existing_ignore_list)
     session['ignore_list'] = pd.DataFrame(data={'recipe_ignore':existing_ignore_list}).to_json()
     print(pd.read_json(session['ignore_list']))
+
 
 
 def get_user_ignore_responses(session, user):

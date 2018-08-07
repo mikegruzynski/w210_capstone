@@ -42,7 +42,8 @@ def get_recipe_list(session, user):
     amount_per_population = 30
     amount_parents_mating = 10
     # Run GA Recipe/Meal Plan Optimization
-    GA = models.GA()
+    # (macro_list=profile_init.macro_label_list)
+    GA = models.GA(macro_list=profile_init.macro_label_list)
     label_of_weights = GA.labels
     weekly_diet_amount = (GA.user_df[GA.macro_labels] / 3.0) * meals_per_week
     best_recipe_combo, weekly_diet_amount = GA.AMGA(num_generations, meals_per_week, amount_per_population, amount_parents_mating, weekly_diet_amount, ignore_list)

@@ -285,16 +285,16 @@ def recipe_recommendation():
             if request.method == 'POST':
                 # Process Form Data
                 # Ingredient Replacment Request
-                if recipeNameIdForm.recipe_name.data is not '':
+                if recipeNameIdForm.recipe_name.data is not None:
                     t = user_meal_plan.iloc[int(recipeNameIdForm.recipe_name.data)]
                     recipe_name = t.recipe_name
                     best_recipe_combo = user_meal_plan.recipe_id
                     recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
                     recipe_id = get_recipe_id_from_name(recipe_name, recipe_details)
+                    print(recipe_details)
                     return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
 
-                if scaleRecipeForm1.customizeRecipeName.data is not '':
-                    print("Scale Recipe Form")
+                if scaleRecipeForm1.customizeRecipeName.data is not None:
                     # Get recipe Name
                     t = user_meal_plan.iloc[int(scaleRecipeForm1.customizeRecipeName.data)]
                     recipe_id = t.recipe_id
@@ -302,7 +302,7 @@ def recipe_recommendation():
                     return redirect(url_for('customize_serving_size', recipe_id=recipe_id))
 
                 # Ignore ingredient request
-                if ignoreRecipeForm.ignore_list.data is not '':
+                if ignoreRecipeForm.ignore_list.data is not None:
                     print("**TODO: Clear box when submitted")
                     # TODO: clear input box after submit
                     process_ignore_form(session, ignoreRecipeForm)
@@ -332,6 +332,18 @@ def recipe_recommendation():
             return render_template('userProfile_existing.html', user_data=user_profile_data, macros=macros, micros=micros)
         return redirect(url_for('index'))
 
+
+# Customize Serving Size of Recipe
+# @app.route('/customize_serving_size/<recipe_id>')
+# def customize_serving_size(recipe_id):
+#     print("Customize Recipe")
+#     print(recipe_id)
+#     user = current_user.username
+#     if pd.read_json(session['data']) is not False:
+#         user_meal_plan = pd.read_json(session['user_meal_plan'])
+#
+#         return render_template('customize_serving_size.html', recipe_id=recipe_id)
+#     return redirect(url_for('index'))
 
 # Customize Serving Size of Recipe
 @app.route('/customize_serving_size/<recipe_id>')
@@ -466,22 +478,18 @@ def single_ingredient_replacement(recipe_id):
     if current_user.is_authenticated:
         user = current_user.username
         if pd.read_json(session['data']) is not False:
-
             # Get user meal plan from session
             user_meal_plan = pd.read_json(session['user_meal_plan'])
             best_recipe_combo = user_meal_plan.recipe_id
-
             recipe_id_exp = "RECIPE_"+str(recipe_id) # Recipe User is choosing to Edit
             recipe_name = user_meal_plan.recipe_name[user_meal_plan.recipe_id == recipe_id_exp].values[0]
 
             # Get input Form from models for html
             # Get Ingredients from Recipe as options to replace
-            if 'df_ingredient_NDB' not in session.keys():
-                df_ingredient_NDB = get_ingredient_NDB_number(session, best_recipe_combo)
-                session['df_ingredient_NDB'] = df_ingredient_NDB.to_json()
-            else:
-                df_ingredient_NDB = pd.read_json(session['df_ingredient_NDB'])
+            df_ingredient_NDB = get_ingredient_NDB_number(session, best_recipe_combo)
+            session['df_ingredient_NDB'] = df_ingredient_NDB.to_json()
             df_ingredient_NDBi = df_ingredient_NDB[df_ingredient_NDB.recipe_id == recipe_id_exp]
+
 
             ingredient_choice_list = []
             for i, desc in enumerate(df_ingredient_NDBi[['Description']].values):
@@ -561,6 +569,7 @@ def single_ingredient_replacement(recipe_id):
                         ingredient_choice_list = ingredient_choice_list + [(i, desc[0])]
                     ingredientSubForm.ingredientSub.choices = ingredient_choice_list
 
+                print(df_ingredient_NDBi[['NDB_NO', 'Description']].values)
                 # Render the Subsitute Ingredient HTML
                 return render_template('subsitute_ingredients.html', form=ingredientSubForm, df_ingredient_NDB=df_ingredient_NDBi[['NDB_NO', 'Description']].values,
                 potential_switches=potential_switches, display_bottom=display_bottom, msg_print=msg_print, recipe_name=recipe_name)
@@ -694,9 +703,6 @@ def shopping_list():
             df_final = df_final[round(df_final['Weight (lb)'], 3) != round(0, 3)]
             # ingredient_list = list(set(df_final.Description))
             df_show = df_final[['Unit Total', 'Description']]
-
-
-
             return render_template('shopping_list.html', df_show=df_show.to_html(index=False, justify='left'), user_data=user_profile_data)
         else:
             # Render the New User SetUp page until they comlete prefernece

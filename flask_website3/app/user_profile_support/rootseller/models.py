@@ -64,6 +64,7 @@ class GA(object):
                        "sugar", "protein", "Iron, Fe (mg)", "Magnesium, Mg (mg)", "Manganese, Mn (mg)",
                        "Thiamin (mg)",
                        "Vitamin D (D2 + D3) (microg)"]
+
         self.macro_labels = kwargs['macro_list']
 
 
