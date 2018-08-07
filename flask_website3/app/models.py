@@ -3,7 +3,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import login
 from wtforms import Form, widgets, FloatField, StringField, SelectField, RadioField, SelectMultipleField #, validators,
-from app.user_profile_support.ingredientSubsitutions import get_potential_switch_choices
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -71,7 +70,8 @@ class InputMicroNutrientsForm(Form):
     Zinc = FloatField()
 
 class ChooseRecipeToSubIngredients(Form):
-    recipe_name = StringField()
+    # recipe_name = StringField()
+    recipe_name = SelectField('type', coerce=int)
 
 
 class MultiCheckboxField(SelectMultipleField):
@@ -85,7 +85,8 @@ class IgnoreRecipeForm(Form):
 
 class IngredientSubForm(Form):
     # TODO: Create Select field of choices
-    ingredientSub = StringField()
+    # ingredientSub = StringField()
+    ingredientSub = RadioField('type', coerce=int)
 
     # foodType = StringField()
     # food_types_list = [('1','Baked'), ('2','Beef'),

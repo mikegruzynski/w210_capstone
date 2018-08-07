@@ -120,7 +120,7 @@ def get_ingredient_NDB_number(session, best_recipe_combo):
 
 
 # Replaces 1 ingredient in a recipe as user chooses
-def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
+def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id, nbd_no):
     # Single food replacement based on macros
 
     # Get intial information on user
@@ -131,7 +131,7 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
 
     # temp_recipe_dict = {}
     # temp_recipe_dict[recipe_id] = recipe_init.recipe_clean[recipe_id].copy()
-    if len(ingredientSubForm.ingredientSub.data) > 0:
+    if ingredientSubForm.ingredientSub.data is not '':
         replacement_key_dict = {1:  'Baked',
                                 2:  'Beef',
                                 3:  'Beverages',
@@ -161,10 +161,12 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
         # for replacement_ndb_tag in range(len(ingredientSubForm.ingredientSub.data)):
         # replacement_ndb_tag = replacement.split(":")[0].lstrip(" ")
         # replacement_category_key = int(replacement.split(":")[-1].strip("'").strip('"'))
-        replacement_ndb_tag = ingredientSubForm.ingredientSub.data
-        replacement_category_key = ingredientSubForm.foodType.data
 
-        # Taglist = suggested replacemnt food indicies
+        # Get the replacement_ndb_tag from the entry form
+
+        # replacement_ndb_tag = ingredientSubForm.ingredientSub.data
+        replacement_ndb_tag = nbd_no
+        replacement_category_key = ingredientSubForm.foodType.data
         tag_list, potential_switches = research_init.macro_space_distance_top_n(4, replacement_ndb_tag, [replacement_key_dict[int(replacement_category_key)]])
 
         # Verify one of top three option is not the same as input
@@ -208,17 +210,9 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id):
         return switch_df, potential_switches[:3]
 
 
-# Return Choices for Ingredien Sub
-def get_potential_switch_choices():
-    # print(session.keys())
-    # print(session['potential_switches'])
-    choices = ['Subsitute 1', 'Subsitute 2', 'Subsitute 3']
-    # choices = session['potential_switches']
-    return(choices)
-
 # Switch the ingrediet out for the user selected ingredient
 # For Single Ingredient Subsitution
-def switch_out_ingredient(session, recipe_id, ingredientSubForm, switch_df, df_ingredient_NDB, df_ingredient_NDBi):
+def switch_out_ingredient(session, recipe_id, ingredientSubForm, switch_df, df_ingredient_NDB, df_ingredient_NDBi, old_nbd_no):
     # Get User information details
     user_meal_plan = pd.read_json(session['user_meal_plan'])
     best_recipe_combo = user_meal_plan.recipe_id
@@ -232,8 +226,8 @@ def switch_out_ingredient(session, recipe_id, ingredientSubForm, switch_df, df_i
             break
 
     # Save new tag and ingredient information as varibales
-    new_NBD_tag = switch_df.tags[int(ingredientSubForm.replacementChoice.data)-1]
-    new_ingredient = switch_df.potential_switches[int(ingredientSubForm.replacementChoice.data)-1]
+    new_NBD_tag = switch_df.tags[int(ingredientSubForm.replacementChoice.data)]
+    new_ingredient = switch_df.potential_switches[int(ingredientSubForm.replacementChoice.data)]
     curr_recipe = recipe_details[recipe_itr]
 
     # Get Ingredients and tags of Current Recipe
@@ -243,13 +237,12 @@ def switch_out_ingredient(session, recipe_id, ingredientSubForm, switch_df, df_i
     # Update Values in current recipe to reflect change
     # for i, tag in enumerate(NDB_no_tags):
     for i, tag in enumerate(df_ingredient_NDBi.NDB_NO):
-        if tag.strip('"') == ingredientSubForm.ingredientSub.data:
+        if tag.strip('"') == old_nbd_no.strip('"'):
             NDB_no_tags.remove(tag)
             NDB_no_tags.append(new_NBD_tag)
             index_val = df_ingredient_NDBi.NDB_NO.index[i]
             df_ingredient_NDBi.NDB_NO[index_val] = new_NBD_tag
             df_ingredient_NDBi.Description[index_val] = new_ingredient
-
     # curr_recipe["NDB_NO_tags"] = df_ingredient_NDBi.NDB_NO.values
     # curr_recipe["ingredients"] = df_ingredient_NDBi.Description.values
 
