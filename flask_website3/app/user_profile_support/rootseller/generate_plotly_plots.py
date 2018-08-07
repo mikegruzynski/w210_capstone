@@ -29,62 +29,6 @@ def create_recipe_rec_df(session, user_meal_plan):
     recipe_id_list = []
     name_list = []
     recipe_itr = 0
-    print("list_keys", list_keys)
-    for recipe in list_keys:
-        # print("*******************************", "Recipe Itr: ", recipe_itr, "Out of: ", len(list_keys) - 1, recipe)
-        try:
-            temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe)
-            print("temp_recipe_df", temp_recipe_df)
-            multiplier_normalizer = profile_init.profile_macro_filtered_df['calories'].get_values()[0] / 3.0
-            multiplier_normalizer = multiplier_normalizer / temp_recipe_df['Energy (kcal)'].sum()
-            for column in [profile_init.macro_list + profile_init.micro_list]:
-                print("column")
-                temp_recipe_df[column] = temp_recipe_df[column]*multiplier_normalizer
-            df_list.append(temp_recipe_df)
-            df_summed_list.append(temp_recipe_df.loc[:, profile_init.macro_list + profile_init.micro_list].sum().to_frame())
-            name_list.append(recipe_init.recipe_clean[recipe]['name'])
-            recipe_id_list.append(recipe)
-        except:
-            print("FAILED, Recipe concatenation...RECIPE=", recipe)
-        recipe_itr += 1
-
-    print("df_summed_list", df_summed_list)
-    df = pd.concat(df_summed_list, axis=1)
-    df = df.T.reset_index(drop=True)
-    se = pd.Series(name_list)
-    df['recipe_name'] = se.values
-    se2 = pd.Series(recipe_id_list)
-    df['recipe_id'] = se2.values
-    return df, df_list, df_summed_list, profile_init, name_list
-
-
-# Create dataframe to feed for single ingredient sub
-def create_ingredient_sub_df(session, recipe_id, og_nbd_no, new_nbd_no_list):
-    # takes session
-    # take recipe ID of what you are changing
-    # takes original ndb no and 3 possible ingredient subs nbd_nos
-
-    print("HERE, create_ingredient_sub_df")
-    user_profile_data = pd.read_json(session['data'])
-    #// START: initialize for df creation to plot bar/radar plots
-    profile_init = rootprofile.UserProfile(user_profile_data)
-    recipe_init = recipes.Recipes(profile_init)
-
-    list_keys = user_meal_plan['recipe_id'].get_values()
-    print(list_keys)
-    #// END
-
-    #// START: loop through each recipe and convert into mathmatical nutrition space
-    # return:
-    # df_list -> for stacked barplot graph of each recipe individual and what is inside the recipe
-    # df_summed_list -> for radar and barplot graph of meal plan
-    # recipe_id_list -> used book keeping/linking
-    # name_list -> used to help name and make images pretty
-    df_list = []
-    df_summed_list = []
-    recipe_id_list = []
-    name_list = []
-    recipe_itr = 0
     for recipe in list_keys:
         # print("*******************************", "Recipe Itr: ", recipe_itr, "Out of: ", len(list_keys) - 1, recipe)
         try:
@@ -110,7 +54,54 @@ def create_ingredient_sub_df(session, recipe_id, og_nbd_no, new_nbd_no_list):
     return df, df_list, df_summed_list, profile_init, name_list
 
 
-
+# # Create dataframe to feed for single ingredient sub
+# def create_ingredient_sub_df(session, recipe_id, og_nbd_no, new_nbd_no_list):
+#     # takes session
+#     # take recipe ID of what you are changing
+#     # takes original ndb no and 3 possible ingredient subs nbd_nos
+#
+#     user_profile_data = pd.read_json(session['data'])
+#     #// START: initialize for df creation to plot bar/radar plots
+#     profile_init = rootprofile.UserProfile(user_profile_data)
+#     recipe_init = recipes.Recipes(profile_init)
+#
+#     list_keys = user_meal_plan['recipe_id'].get_values()
+#     #// END
+#
+#     #// START: loop through each recipe and convert into mathmatical nutrition space
+#     # return:
+#     # df_list -> for stacked barplot graph of each recipe individual and what is inside the recipe
+#     # df_summed_list -> for radar and barplot graph of meal plan
+#     # recipe_id_list -> used book keeping/linking
+#     # name_list -> used to help name and make images pretty
+#     df_list = []
+#     df_summed_list = []
+#     recipe_id_list = []
+#     name_list = []
+#     recipe_itr = 0
+#     for recipe in list_keys:
+#         # print("*******************************", "Recipe Itr: ", recipe_itr, "Out of: ", len(list_keys) - 1, recipe)
+#         try:
+#             temp_recipe_df = recipe_init.recipe_list_to_conversion_factor_list(recipe)
+#             multiplier_normalizer = profile_init.profile_macro_filtered_df['calories'].get_values()[0] / 3.0
+#             multiplier_normalizer = multiplier_normalizer / temp_recipe_df['Energy (kcal)'].sum()
+#             for column in [profile_init.macro_list + profile_init.micro_list]:
+#                 temp_recipe_df[column] = temp_recipe_df[column]*multiplier_normalizer
+#             df_list.append(temp_recipe_df)
+#             df_summed_list.append(temp_recipe_df.loc[:, profile_init.macro_list + profile_init.micro_list].sum().to_frame())
+#             name_list.append(recipe_init.recipe_clean[recipe]['name'])
+#             recipe_id_list.append(recipe)
+#         except:
+#             print("FAILED, Recipe concatenation...RECIPE=", recipe)
+#         recipe_itr += 1
+#
+#     df = pd.concat(df_summed_list, axis=1)
+#     df = df.T.reset_index(drop=True)
+#     se = pd.Series(name_list)
+#     df['recipe_name'] = se.values
+#     se2 = pd.Series(recipe_id_list)
+#     df['recipe_id'] = se2.values
+#     return df, df_list, df_summed_list, profile_init, name_list
 
 # Create Radar and Bar Plots
 def full_recipe_rec_plots(df, df_list, df_summed_list, profile_init, session, name_list):

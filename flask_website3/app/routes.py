@@ -291,7 +291,6 @@ def recipe_recommendation():
                     best_recipe_combo = user_meal_plan.recipe_id
                     recipe_details = get_recipe_details(best_recipe_combo, user_profile_data)
                     recipe_id = get_recipe_id_from_name(recipe_name, recipe_details)
-                    # single_ingredient_replacement(recipe_id)
                     return redirect(url_for('single_ingredient_replacement', recipe_id=recipe_id))
 
                 if scaleRecipeForm1.customizeRecipeName.data is not '':
