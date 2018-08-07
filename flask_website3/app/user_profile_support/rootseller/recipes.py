@@ -263,6 +263,7 @@ class Recipes(object):
 
         return amount, unit
 
+
     def recipe_list_to_conversion_factor_list(self, recipe_id, **kwargs):
         # print([kwargs["filter_list"]])
         if kwargs:
@@ -319,7 +320,7 @@ class Recipes(object):
         return recipe_master_df
 
     def recipe_alternitive_create(self, replace_tag, tag_list, new_recipe_dict):
-
+        
         for key in new_recipe_dict.keys():
             if '_ALT_' not in key:
                 orig_recipe_dict_names = key

@@ -61,6 +61,17 @@
 							<div class="flex flex-1">
 							<div class="col col1">
 								<h3>My Recipe Plan</h3>
+								<div style="float: right; width: 100%;">
+									<ul>
+										{% for name in user_meal_plan.recipe_name %}
+											<li> {{name}} </li>
+										{%endfor%}
+									</ul>
+								</div>
+							</div>
+							</div>
+							<div class="flex flex-1">
+							<div class="col col1">
 								<h2></h2>
 								<h3>Choose Recipes to Ignore</h3>
 								<h5>Want to ignore one of these recipes and remove it from the possible recipe suggestions? </h5>
@@ -72,7 +83,7 @@
 											{{ ignore_form.ignore_list }}
 								</div>
 								<div>
-									<p><input id="ignore_form" type=submit>Ignore Recipes Listed</p>
+									<p><input id="ignore_form" type=submit value="Ignore Recipes Listed"></p>
 									<a href = "/rerun_recipe_plan" class="button">Create a New Recipe Plan</a>
 									<a href = "/recipe_center" class="button">See My Recipes</a>
 									<!-- <a href = "/display_recipe" class="button">See My Recipes</a> -->
