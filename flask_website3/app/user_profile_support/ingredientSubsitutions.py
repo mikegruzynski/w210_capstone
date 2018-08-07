@@ -172,7 +172,7 @@ def get_single_ingredient_replacement(session, ingredientSubForm, recipe_id, nbd
 
         # Verify one of top three option is not the same as input
         for i, tag in enumerate(tag_list):
-            if tag.strip('"') == replacement_ndb_tag:
+            if tag == replacement_ndb_tag:
                 tag_list.remove(tag)
                 potential_switches.remove(potential_switches[i])
         switch_df = pd.DataFrame(data={'tags':tag_list[:3], "potential_switches":potential_switches[:3]})
