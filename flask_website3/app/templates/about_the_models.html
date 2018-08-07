@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<head>
+  <title>RootCellar: About the Project</title>
+</head>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrolly.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery.scrollex.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	</head>
+	<body class="subpage">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="#menu">Menu</a>
+			</header>
+
+		<!-- Nav -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href = "/index">Home</a></li>
+					<li><a href = "/about">About the Project </a></li>
+					{% if current_user.is_anonymous %}
+					<li><a href="/login">Login</a></li>
+					{% else %}
+					<li><a href="/user_profile">User Profile</a></li>
+					<li><a href="/logout">Logout</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+
+		<!-- Main -->
+			<div id="main">
+
+				<!-- Section -->
+					<section class="wrapper">
+						<div class="inner">
+							<header class="align-center">
+								<h1>About The Models</h1>
+						
+							</header>
+									<h3>Overview</h3>
+									<p>The "Root Cellar" project leverages three main models that serve the client layer.  A Continuous Bag of Words (CBOW) Neural Net is used to lnk individual
+										recipe ingredients to a larger USDA nutritional database.  An Archive-based Micro Genetic Algorithm (AMGA) creates a meal 
+										plan optimized for user nutritional needs.  Finally, Principal Component Analysis (PCA) is used
+										to differentiate food categories based on nutritional features.  
+									</p>
+									<h4>CBOW Modeling Recipe Extracton</h4>
+
+									<p>
+											
+											Going into the models, we first investigated linear and nonlinear models to tag the recipes.
+											Most of the linear and non-neural net non-linear models did not perform so well with the complexity of ingredients.  An example
+											would be how asparagus washed in water would return water or trying to identify the difference between chicken breast skinless and boneless vs chicken breast skinless
+											This led to large errors in the linear models.
+											We decided to go to a CBOW to incorporate some more nonlinearity into the product.
+											Specifically, we chose a CBOW because it is a quick neural net to create, and we can predict the category based on the given context (or bucket of words in ingredient).
+											As you can see from the above data we are improving the "overfittedness" of the model with incorporating more data, but are still working.
+											Time contraints prevneted us from adding 20K or more additionally tagged data so we decided to move on.
+									</p>
+									
+									<img src="{{ url_for('static', filename='images/CBOW.jpg') }}" width="1250" height="600">
+
+									<br>
+									
+									<h4>Archive-Based Micro Genetic Algorithm</h4>
+
+									<p>
+											The next algorithm we would like to touch on is our Archive-based Micro Genetic Algorithm or AMGA.
+											We use it to perform piecewise optimization on a discrete map of possible recipe combinations and solve creating  
+											a meal plan or converting a recipe into a customized serving session.
+									</p>
+							
+									<p>
+										It follows the following steps:
+										<ul style="list-style-type:circle"></ul>	
+											<li> Start off by randomly grabbing a list of recipes for your meal plan (user decides how many per week)</li>
+											<li> Aggregate each recipe list and calculates a fitness score (or distance away from what a user should be consuming)</li>
+											<li> Averages the loss function</li>	 
+											<li> Choose the top N amount of parents that are the best in the list (or closest distance from what a user should be eating)</li> 
+											<li> Keeps those parents and also crossbreeds them to create new offspring (explain in colors)</li> 
+											<li> Crossbreed offspring then mutates to further minimize the loss function by finding macros/micros that are furthest away from the optimal amount and then
+												identifying recipes that are pulling the meal plan in that direction and goes back into the recipe list</li>
+											<li> Repeat N mutation cycles and concatenate with original parents and repeat the cycle </li>
+											
+										If we can look at the graph on the right, they are telling the same story, as how each generation improves the total loss function
+											
+
+									</p>
+									<br>
+									<br>
+
+									<img src="{{ url_for('static', filename='images/GA.jpg') }}" width="1250" height="600">
+
+									<br>
+
+									<h4>Food Substitution Algoirthm and PCA</h4>
+
+									The final major algorithm we used is an ingredient substitution algorithm.  
+									The user will tell the code what food they want translated out (for example Chicken for some seafood product).
+									The code will then do some filtering and calculate a nutrtitional next best N foods (based on food normalized by weight)
+									We then the cross evaluate the dataframe from the “social network of food” analysis and convert that into PCA dimensional space.
+									A cosine distance is calculated, and then the algorithm returns an ordered list of foods like other foods (which will serve as a rank assist to the nutritional distance information).
+									It will then go through the alternatives and plot them so user can see what happens when transforming the data (Radar and bar plot).
+									
+									<img src="{{ url_for('static', filename='images/PCA.jpg') }}" width="1250" height="600">
+							
+					</section>
+
+			</div>
+
+	</body>
+</html>
