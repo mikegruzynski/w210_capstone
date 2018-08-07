@@ -48,22 +48,14 @@
 							<div class="flex flex-1">
 							<div class="col col1">
 								<h2>Substitute  Ingredients</h2>
-								<h4>Recipe</h4>
-								<h5>Ingredient Options</h5>
-								<h1></h1>
-								<div style="float: left; width: 100%;">
-									<ul>
-										{% for ingredient in df_ingredient_NDB %}
-											<li> {{ ingredient[0] }}, {{ ingredient[1]}} </li>
-										{%endfor%}
-								  </ul>
-							  </div>
+								<h3>{{ recipe_name }}</h3>
+								<h4>Ingredient Options</h4>
 							</div>
 							</div>
-							<p></p>
 							<div>
 							<form method=post action="">
-									Choose the NBD Number of Ingredient to Substitute : {{form.ingredientSub}}
+									Choose the Ingredient You would like to Substitute : </p>
+									{{form.ingredientSub}}
 									<p></p>
 										Choose a Type of Food to Replace With (Choose from list):
 										{{form.foodType(class='dropdown-content hide')}}
@@ -76,18 +68,13 @@
 								{% if display_bottom == True %}
 								<h4>Choose What you Would like to Replace the Ingredient With</h4>
 								<div style="float: left; width: 100%;">
-									<ol>
-										{% for choice in potential_switches %}
-										<li>  {{ choice }}</li>
-										{%endfor%}
-									</ol>
-									{{form.replacementChoice()}}
+									{{ form.replacementChoice }}
 								</div>
 									<p></p>
 											<p><input type=submit value="Replace Ingredient"></p>
-												<h3>See how the Ingredient change will affect your nutrient goals</h3>
+												<!-- <h3>See how the Ingredient change will affect your nutrient goals</h3>
 												<p>Note this image is a placeholder. Will be updated</p>
-												<img src="{{ url_for('static', filename='images/test_replacement_radar_plot.png') }}" alt="" />
+												<img src="{{ url_for('static', filename='images/test_replacement_radar_plot.png') }}" alt="" /> -->
 									      <p></p>
 									{% else %}
 										<h5><font color="blue">{{ msg_print }}</font></h5>
